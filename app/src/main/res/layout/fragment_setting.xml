@@ -1,0 +1,82 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+
+        >
+
+
+        <TextView
+
+            android:id="@+id/txtRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="dfasd fasdf asdfsdf sdaf"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/btn_rate_method"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/button_blue"
+            android:gravity="center"
+            android:text="Change Rate Method"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="17dp"
+            android:layout_marginTop="10dp"  />
+
+
+        <TextView
+
+            android:id="@+id/txtPrint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="dfasd fasdf asdfsdf sdaf"
+            android:textSize="20dp" android:layout_marginTop="40dp"/>
+
+
+
+        <Button
+            android:id="@+id/btn_select_print"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/button_blue"
+            android:gravity="center"
+            android:text="Change Print Method"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:layout_marginTop="10dp"
+            android:textSize="17dp"
+            />
+
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

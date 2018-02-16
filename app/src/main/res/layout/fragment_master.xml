@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_width="250dp"
+        android:layout_marginRight="10dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:weightSum="10">
+
+        <Button
+            android:id="@+id/btn_addmember"
+            android:text="@string/mas_add_member"
+            android:textSize="20dp"
+            android:layout_weight="8"
+            android:layout_width="0dp"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_blue"
+            android:layout_height="50dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:weightSum="10">
+        <Button
+            android:id="@+id/btn_showmember"
+            android:text="@string/mas_show_member"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:textAllCaps="false"
+            android:layout_weight="8"
+            android:layout_width="0dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_blue"
+            android:layout_height="50dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/lay_addrate"
+        android:orientation="horizontal"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:weightSum="10">
+
+
+        <Button
+            android:id="@+id/btn_addrate"
+            android:text="@string/mas_add_rate"
+            android:textSize="20dp"
+            android:layout_weight="8"
+            android:layout_width="0dp"
+            android:textColor="#ffffff"
+            android:textAllCaps="false"
+            android:background="@drawable/button_blue"
+            android:layout_height="50dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_showrate"
+        android:orientation="horizontal"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:weightSum="10">
+        <Button
+            android:id="@+id/btn_showrate"
+            android:text="@string/mas_show_rt"
+            android:textSize="20dp"
+            android:layout_weight="8"
+            android:textAllCaps="false"
+            android:layout_width="0dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_blue"
+            android:layout_height="50dp" />
+    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lay_ratechart"
+            android:visibility="visible"
+            android:orientation="horizontal"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:weightSum="10">
+            <Button
+                android:id="@+id/btn_excel"
+                android:text="Rate Chart"
+                android:textSize="20dp"
+                android:layout_weight="8"
+                android:textAllCaps="false"
+                android:layout_width="0dp"
+                android:textColor="#ffffff"
+                android:background="@drawable/button_blue"
+                android:layout_height="50dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:weightSum="10">
+        <Button
+            android:id="@+id/btn_export"
+            android:text="@string/mas_export"
+            android:textSize="20dp"
+            android:layout_weight="8"
+            android:textAllCaps="false"
+            android:layout_width="0dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_blue"
+            android:layout_height="50dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:weightSum="10">
+        <Button
+            android:id="@+id/btn_import"
+            android:text="@string/mas_import"
+            android:textSize="20dp"
+            android:layout_weight="8"
+            android:textAllCaps="false"
+            android:layout_width="0dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_blue"
+            android:layout_height="50dp" />
+    </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:weightSum="10">
+            <Button
+                android:id="@+id/btn_mail"
+                android:text="@string/mas_mail"
+                android:textSize="20dp"
+                android:layout_weight="8"
+                android:textAllCaps="false"
+                android:layout_width="0dp"
+                android:textColor="#ffffff"
+                android:background="@drawable/button_blue"
+                android:layout_height="50dp" />
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+
+
+
+</ScrollView>

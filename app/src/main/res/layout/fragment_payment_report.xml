@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="10"
+    android:background="@android:color/white"
+    >
+
+    <LinearLayout
+        android:layout_weight="2.5"
+        android:layout_width="match_parent"
+        android:background="@drawable/rectangle"
+        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/density_ten">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+            <Button
+                android:id="@+id/btn_startdate"
+                android:layout_weight="3.9"
+                android:textSize="15dp"
+                android:text="start/date"
+                android:gravity="center"
+                android:layout_marginLeft="5dp"
+                android:onClick="startDate"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+            <TextView
+                android:layout_weight="2"
+                android:text="To"
+                android:gravity="center"
+                android:textSize="20dp"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="6dp"
+                android:textStyle="italic"
+                android:textColor="@color/colorPrimary"
+                android:background="@color/app_background"/>
+
+            <Button
+                android:id="@+id/btn_enddate"
+                android:layout_marginRight="5dp"
+                android:layout_weight="4"
+                android:textSize="15dp"
+                android:text="End/date"
+                android:gravity="center"
+                android:onClick="endDate"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_height="51dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+            <TextView
+                android:layout_weight="5"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+
+
+
+            <Button
+                android:id="@+id/btn_searchimage"
+                android:layout_weight="4"
+                android:textSize="18dp"
+                android:text="@string/lw_search"
+                android:textAllCaps="false"
+                android:textColor="@color/app_background"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/density_ten"
+                android:background="@drawable/button_blue"
+                android:layout_width="0dp"
+                android:layout_height="39dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_weight=".8"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <TextView
+            android:text="@string/code"
+            android:id="@+id/lv_code"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="visible"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:textSize="18dp"
+            android:layout_height="45dp"
+            />
+        <TextView
+            android:text="@string/lw_name"
+            android:id="@+id/lv_name"
+            android:layout_gravity="center"
+            android:gravity="center"
+
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:textSize="18dp"
+            android:layout_height="45dp"
+            />
+
+
+        <TextView
+            android:id="@+id/lv_weigh"
+            android:text="@string/weight"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:textSize="18dp"
+            android:layout_height="45dp"
+            />
+
+        <TextView
+            android:id="@+id/amount"
+            android:text="@string/amount"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:textSize="18dp"
+            android:layout_height="45dp"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_weight="6.8"
+        android:layout_width="match_parent"
+        android:background="@drawable/rectangle"
+        android:layout_height="0dp">
+        <TextView
+            android:id="@+id/empty_saved_list"
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            android:textSize="23sp"
+            android:paddingTop="40dp"
+            android:visibility="gone"
+            android:textColor="@color/colorPrimaryDark"
+            android:gravity="center_horizontal"
+            android:text="No Information are Search yet
+   Please Search your information"
+            />
+        <ListView
+            android:id="@+id/saved_listview"
+            android:layout_marginLeft="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ListView>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginRight="4dp"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:weightSum="10">
+        <ImageView
+            android:id="@+id/iv_share"
+            android:layout_weight="2.3"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:background="@drawable/img"
+            />
+        <TextView
+            android:id="@+id/search_weight"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="13dp"
+            android:text="@string/weight"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_weight="3.3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/search_amount"
+            android:text="@string/amount"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="13dp"
+            android:layout_weight="4.5"
+            android:layout_width="0dp"
+            android:layout_height="45dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

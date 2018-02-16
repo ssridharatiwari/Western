@@ -1,0 +1,42 @@
+<android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/my_awesome_toolbar"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:minHeight="?attr/actionBarSize"
+    android:background="?attr/colorPrimary">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textSize="17sp"
+            android:id="@+id/titletool" />
+         <ImageView
+           android:id="@+id/iv_home"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:src="@drawable/home_small"
+           android:layout_toLeftOf="@+id/btn_searchimage"
+           android:layout_toStartOf="@+id/btn_searchimage"
+             />
+       <ImageView
+           android:id="@+id/btn_addimage"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentRight="true"
+           android:layout_marginRight="10dp"
+           />
+
+       <ImageView
+           android:id="@+id/btn_searchimage"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_toLeftOf="@+id/btn_addimage"
+           android:layout_marginRight="10dp"
+           />
+    </RelativeLayout>
+
+</android.support.v7.widget.Toolbar>

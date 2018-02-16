@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" />
+
+            <TextView
+                android:hint="Info"
+                android:id="@+id/textInfo"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent" />
+
+            <LinearLayout
+                android:baselineAligned="false"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:ems="10"
+                    android:hint="Server ip Address"
+                    android:id="@+id/editIpAddress"
+                    android:inputType="text|textCapCharacters|textCapWords|textCapSentences|textAutoCorrect|textAutoComplete|textMultiLine|textImeMultiLine|textNoSuggestions|textUri|textEmailAddress|textEmailSubject|textShortMessage|textLongMessage|textPersonName|textPostalAddress|textPassword|textVisiblePassword|textWebEditText|textFilter|textPhonetic|textWebEmailAddress|textWebPassword|phone"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.32"
+                    android:layout_width="match_parent">
+
+                    <requestFocus />
+                </EditText>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <EditText
+                    android:ems="10"
+                    android:hint="Server port"
+                    android:id="@+id/editTcpPort"
+                    android:inputType="number|numberSigned|numberDecimal|numberPassword|phone"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:layout_width="match_parent" />
+
+                <Button
+                    android:clickable="true"
+                    android:id="@+id/btnConnect"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Connect" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <EditText
+                    android:bufferType="editable"
+                    android:clickable="true"
+                    android:ems="10"
+                    android:fadeScrollbars="false"
+                    android:fitsSystemWindows="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:freezesText="false"
+                    android:gravity="top|bottom|center_vertical|fill_vertical|center|fill"
+                    android:hint="Write here the frame to send..."
+                    android:id="@+id/editSend"
+                    android:inputType="text|textCapCharacters|textCapWords|textCapSentences|textAutoCorrect|textAutoComplete|textMultiLine|textImeMultiLine|textNoSuggestions|textUri|textEmailAddress|textEmailSubject|textShortMessage|textLongMessage|textPersonName|textPostalAddress|textPassword|textVisiblePassword|textWebEditText|textFilter|textPhonetic|textWebEmailAddress|textWebPassword|phone"
+                    android:isScrollContainer="false"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.69"
+                    android:layout_width="wrap_content"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:scrollbarStyle="outsideOverlay"
+                    android:scrollbars="vertical"
+                    android:textSize="12dp"
+                    android:typeface="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:baselineAligned="false"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <CheckBox
+                    android:id="@+id/checkHex"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Hex" />
+
+                <Button
+                    android:bufferType="editable"
+                    android:id="@+id/btnSend"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.01"
+                    android:layout_width="wrap_content"
+                    android:text="Send" />
+
+                <Button
+                    android:id="@+id/btnClear"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.01"
+                    android:layout_width="wrap_content"
+                    android:text="Clear" />
+            </LinearLayout>
+
+            <EditText
+                android:bufferType="editable"
+                android:clickable="true"
+                android:editable="false"
+                android:ems="10"
+                android:fadeScrollbars="false"
+                android:fitsSystemWindows="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:freezesText="false"
+                android:gravity="top|bottom|center_vertical|fill_vertical|center|fill"
+                android:hint="Answer from server..."
+                android:id="@+id/editReceive"
+                android:inputType="text|textCapCharacters|textCapWords|textCapSentences|textAutoCorrect|textAutoComplete|textMultiLine|textImeMultiLine|textNoSuggestions|textUri|textEmailAddress|textEmailSubject|textShortMessage|textLongMessage|textPersonName|textPostalAddress|textPassword|textVisiblePassword|textWebEditText|textFilter|textPhonetic|textWebEmailAddress|textWebPassword|phone"
+                android:isScrollContainer="false"
+                android:layout_gravity="top|bottom|center_vertical|fill_vertical|center|fill"
+                android:layout_height="48dp"
+                android:layout_width="wrap_content"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="vertical"
+                android:textSize="14dp"
+                android:typeface="normal" />
+
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="center|fill"
+                android:bufferType="editable"
+                android:clickable="true"
+                android:editable="false"
+                android:ems="10"
+                android:fadeScrollbars="false"
+                android:fitsSystemWindows="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:freezesText="false"
+
+                android:hint="Answer from server..."
+                android:inputType="text|textCapCharacters|textCapWords|textCapSentences|textAutoCorrect|textAutoComplete|textMultiLine|textImeMultiLine|textNoSuggestions|textUri|textEmailAddress|textEmailSubject|textShortMessage|textLongMessage|textPersonName|textPostalAddress|textPassword|textVisiblePassword|textWebEditText|textFilter|textPhonetic|textWebEmailAddress|textWebPassword|phone"
+                android:isScrollContainer="false"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="vertical"
+                android:textSize="14dp"
+                android:typeface="normal" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

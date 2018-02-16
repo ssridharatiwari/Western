@@ -1,0 +1,96 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginRight="@dimen/density_twenty"
+        android:layout_gravity="center"
+        android:layout_height="55dp"
+        android:layout_marginTop="50dp" >
+        <EditText
+            android:id="@+id/member_code"
+            android:paddingLeft="@dimen/density_ten"
+            android:layout_width="match_parent"
+            android:inputType="number"
+            android:background="@drawable/rectangle"
+            android:layout_height="45dp"
+            android:maxLength="3"
+            android:hint="@string/mem_enter_code"
+            android:textSize="25dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginRight="@dimen/density_twenty"
+        android:layout_gravity="center"
+        android:layout_marginTop="0dp"
+        android:layout_height="55dp">
+        <EditText
+            android:id="@+id/member_name"
+            android:layout_width="match_parent"
+            android:maxLength="10"
+            android:paddingLeft="@dimen/density_ten"
+            android:inputType="textCapSentences"
+            android:background="@drawable/rectangle"
+            android:layout_height="45dp"
+            android:hint="@string/mem_enter_name"
+            android:textSize="25dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginRight="@dimen/density_twenty"
+        android:layout_gravity="center"
+        android:layout_height="60dp">
+        <EditText
+            android:id="@+id/member_mobile"
+            android:paddingLeft="@dimen/density_ten"
+            android:layout_width="match_parent"
+            android:inputType="number"
+            android:maxLength="10"
+            android:background="@drawable/rectangle"
+            android:layout_height="45dp"
+            android:hint="@string/mem_enter_phone"
+            android:textSize="25dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <Button
+            android:id="@+id/btn_member_add"
+            android:text="@string/save"
+            android:textSize="25dp"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textAllCaps="false"
+            android:background="@drawable/button_blue"
+            android:layout_width="150dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="5dp"/>
+
+         <Button
+            android:id="@+id/btn_member_update"
+            android:text="@string/update"
+            android:textSize="25dp"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textAllCaps="false"
+             android:layout_marginLeft="5dp"
+            android:background="@drawable/button_blue"
+            android:layout_width="150dp"
+            android:layout_height="45dp" />
+
+
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:background="@drawable/rectangle"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@color/action_bar_color"
+            android:layout_height="40dp">
+            <TextView
+                android:text="@string/lw_rate_detail"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:textColor="@color/app_background"
+                android:layout_width="match_parent"
+                android:layout_height="45dp" />
+        </LinearLayout>
+        <ListView
+            android:id="@+id/saved_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
+        <TextView
+            android:id="@+id/empty_saved_list"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:textSize="23sp"
+            android:paddingTop="40dp"
+            android:visibility="gone"
+            android:textColor="@color/colorPrimaryDark"
+            android:gravity="center_horizontal"
+            android:text="No Information are saved yet
+                             Please create your information"
+            />
+    </RelativeLayout>
+
+</LinearLayout>
