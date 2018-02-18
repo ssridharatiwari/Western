@@ -185,31 +185,23 @@ public class PinActivity extends AppCompatActivity {
 
             String ts = PinActivity.this.TELEPHONY_SERVICE;
             TelephonyManager mTelephonyMgr = (TelephonyManager) getSystemService(ts);
+            AndroidID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
             try {
+
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     imeiNumber = "0";
                     return;
                 }
+
                 switch (imeiNumber = mTelephonyMgr.getSubscriberId()) {
                 }
                 switch (sim_no = mTelephonyMgr.getLine1Number()) {
                 }
 
 
-            } catch (Exception e) {
-                    // Toast.makeText(PinActivity.this, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();}
-                try {
-                    switch ( AndroidID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID)) {
-                    }
-
-                } catch (Exception e) {
-                    // Toast.makeText(PinActivity.this, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
-
+            } catch (Exception e) {e.printStackTrace();}
             } catch (Exception e) {
                // Toast.makeText(PinActivity.this, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
                 e.printStackTrace();
