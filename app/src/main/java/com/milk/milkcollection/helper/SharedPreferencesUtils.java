@@ -89,6 +89,22 @@ SharedPreferences prefs;
     }
 
 
+    public String getImported() {
+        if(prefs.contains("imported"))
+            return prefs.getString("imported", "");
+        else
+            return "0";
+    }
+
+    public void setImported()
+    {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("imported", "1");
+        editor.commit();
+    }
+
+
+
     public String getRateMethodCode() {
         if(prefs.contains("rateby"))
             return prefs.getString("rateby", "");
@@ -102,6 +118,9 @@ SharedPreferences prefs;
         else
             return "null";
     }
+
+
+
 
     public void setMobile(String settitle)
     {

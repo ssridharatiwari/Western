@@ -1,5 +1,6 @@
 package com.milk.milkcollection.Activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,6 +13,9 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
@@ -50,6 +55,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -81,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return instace;
     }
+    int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-     /*   else if (position == 3) {
+        /*   else if (position == 3) {
             toolbartitle.setText("Add Member");
             Fragment fragment = new Fragment_Addmember();
             android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -250,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
             ft.addToBackStack("home");
             ft.commit();
         }*/
+
     }
 
 
@@ -261,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.content_frame, fragment);
         ft.addToBackStack(backStateName + "");
         ft.commit();
-
     }
 
 
@@ -272,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
         //toolbartitle.setText(mTitle);
     }
 
-    /**
+     /*
      * When using the ActionBarDrawerToggle, you must call it during
      * onPostCreate() and onConfigurationChanged()...
      */
@@ -717,36 +724,84 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static public String lineBreak() throws IOException {
-        return "----------------------------\n";
+        return "===========================\n";
     }
-
 
 
     static public void sendWhatsApp(String message) {
-        try {
-            Intent waIntent = new Intent(Intent.ACTION_SEND);
-            waIntent.setType("text/plain");
-            PackageManager pm = instace.getPackageManager();
-            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-            waIntent.setPackage("com.whatsapp");
-            waIntent.putExtra(Intent.EXTRA_TEXT, message);
-            instace.startActivity(Intent.createChooser(waIntent, "Share with"));
-        } catch (Exception e) {
-            Toast.makeText(instace, "Whats App Not installed", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
+
+
+
+            try {
+                Intent waIntent = new Intent(Intent.ACTION_SEND);
+                waIntent.setType("text/plain");
+                PackageManager pm = instace.getPackageManager();
+                PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+                waIntent.setPackage("com.whatsapp");
+                waIntent.putExtra(Intent.EXTRA_TEXT, message);
+                instace.startActivity(Intent.createChooser(waIntent, "Share with"));
+            } catch (Exception e) {
+                Toast.makeText(instace, "Whats App Not installed", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+
+
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == MY_PERMISSIONS_REQUEST_SEND_SMS) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+///             Toast.makeText(this,"Alredy DONE",Toast.LENGTH_SHORT).show();
+                TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+
+
+
+            } else {
+                Toast.makeText(this,"ehgehfg",Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
+
     static public void sendTextSms(String message , String number) {
-        try {
-            SmsManager smsManager = SmsManager.getDefault();
-            Log.e("--message----", number + message);
-            smsManager.sendTextMessage(number, null, message, null, null);
-            Toast.makeText(instace, "SMS Sent.", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(instace, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
+
+        if (ActivityCompat.checkSelfPermission(instace, Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(instace,
+                    Manifest.permission.SEND_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(instace, new String[]{Manifest.permission.SEND_SMS},
+                        instace.MY_PERMISSIONS_REQUEST_SEND_SMS);
+            }
+        } else {
+
+            try {
+                SmsManager smsManager = SmsManager.getDefault();
+                Log.e("--message----", number + message);
+                smsManager.sendTextMessage(number, null, message, null, null);
+                Toast.makeText(instace, "SMS Sent.", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(instace, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
         }
+
     }
 
     static public void shareText(String shareText ) {
@@ -790,4 +845,18 @@ public class MainActivity extends AppCompatActivity {
             return "Snf";
 
     }
+
+    private void GetCaledarDate() {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.getTime();
+        int day = calendar.get(Calendar.DATE);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        int ampm = calendar.get(Calendar.AM_PM);
+        String date = String.valueOf(day) + "/" + String.valueOf(month + 1) + "/" + String.valueOf(year);
+
+        int sssd = String.valueOf(year).length();
+    }
+
 }

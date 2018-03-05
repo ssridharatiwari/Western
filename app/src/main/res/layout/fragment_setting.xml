@@ -75,6 +75,21 @@
             />
 
 
+        <Button
+            android:id="@+id/btn_select_old_chart"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/button_blue"
+            android:gravity="center"
+            android:text="Fetch Default FAT,SNF,CLR Chart"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:layout_marginTop="50dp"
+            android:textSize="15dp"
+            android:visibility="gone"
+            />
 
     </LinearLayout>
 

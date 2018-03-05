@@ -1,9 +1,11 @@
 package com.milk.milkcollection.Activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -59,10 +61,10 @@ public class PinActivity extends AppCompatActivity {
     EditText title, mobile;
     String settitle;
     SharedPreferencesUtils sharedPreferencesUtils;
-    String pin1, mobile_string, verifypin, imeiNumber = "",sim_no = "", deviceID = "", RandomNumber = "", AndroidID = "" , User_id = "";
-    int tagLogin = 0;
+    String pin1, mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "";
 
-    public static String deviceEmiNumber = "9114517502176099";
+    private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
+
 
     ProgressDialog progress;
 
@@ -75,6 +77,7 @@ public class PinActivity extends AppCompatActivity {
 
         getDeviceIDS();
 
+        genRandomNo();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
@@ -84,7 +87,6 @@ public class PinActivity extends AppCompatActivity {
             finish();
         } else {
 
-            genRandomNo();
             getDeviceIDS();
 
             btnVerify.setOnClickListener(new View.OnClickListener() {
@@ -117,18 +119,24 @@ public class PinActivity extends AppCompatActivity {
 
                         if (mobile_string.length() > 9) {
 
-                            showLoading("Sending...");
-                            hideSoftKeyBoard();
-                            PinActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        makeRequest();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                            if (!AndroidID.equals("0")){
+                                showLoading("Sending...");
+                                hideSoftKeyBoard();
+                                PinActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            makeRequest();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
-                            });
+                                });
+
+                            }
+                            else {
+                                Toast.makeText(PinActivity.this, "Device ID NOT genrated", Toast.LENGTH_LONG).show();
+                            }
 
                         } else {
                             Toast.makeText(PinActivity.this, "सही मोबाइल नंबर भरें", Toast.LENGTH_LONG).show();
@@ -143,14 +151,6 @@ public class PinActivity extends AppCompatActivity {
 
     }
 
-
-    private void hideSoftKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-
-        if (imm.isAcceptingText()) { // verify if the soft keyboard is open
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }
-    }
 
     public void showDialoag() {
 
@@ -180,32 +180,75 @@ public class PinActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    @SuppressLint("HardwareIds")
     private void getDeviceIDS() {
         try {
 
-            String ts = PinActivity.this.TELEPHONY_SERVICE;
-            TelephonyManager mTelephonyMgr = (TelephonyManager) getSystemService(ts);
-            AndroidID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
             try {
 
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    imeiNumber = "0";
-                    return;
+                if (isPermissionGranted(PinActivity.this)){
+
+                    AndroidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+                    // Check if the READ_PHONE_STATE permission is already available.
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                                Manifest.permission.READ_PHONE_STATE)) {
+                        } else {
+                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},
+                                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                        }
+                    } else {
+
+                        AndroidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+                        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                        assert mngr != null;
+                        imeiNumber = mngr.getDeviceId();
+
+                        emi.setText("Device - " + AndroidID);
+
+                        // READ_PHONE_STATE permission is already been granted.
+                        //  Toast.makeText(this, "Alredy granted", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
-                switch (imeiNumber = mTelephonyMgr.getSubscriberId()) {
-                }
-                switch (sim_no = mTelephonyMgr.getLine1Number()) {
-                }
 
 
-            } catch (Exception e) {e.printStackTrace();}
+
             } catch (Exception e) {
-               // Toast.makeText(PinActivity.this, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
+        } catch (Exception e) {
+            // Toast.makeText(PinActivity.this, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressLint("HardwareIds")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+
+                TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                assert mngr != null;
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                AndroidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+                imeiNumber = mngr.getDeviceId();
+                emi.setText("Device - " + AndroidID);
+                getDeviceIDS();
+
+
     }
 
     private void sendSMS() {
@@ -257,10 +300,6 @@ public class PinActivity extends AppCompatActivity {
 
     }
 
-    private void PinLength() {
-        pinCode1 = (EditText) findViewById(R.id.pinCode1);
-    }
-
 
     public void showLoading(String message){
         progress = new ProgressDialog(this);
@@ -270,6 +309,8 @@ public class PinActivity extends AppCompatActivity {
     }
 
     private void makeRequest() throws JSONException {
+
+
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://wokosoftware.com/western/index.php?name=" + settitle +
@@ -286,9 +327,11 @@ public class PinActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         progress.dismiss();
                         try {
+                            Log.e("resonce", response);
+
                             if (response.length()>0) {
                                 JSONObject jsonObject = new JSONObject(response);
-                                User_id =  jsonObject.getString("id").toString();
+                                // User_id =  jsonObject.getString("id").toString();
                                 makeToast(jsonObject.getString("message").toString());
                             }else{
                                 makeToast("Responce Error");
@@ -326,7 +369,10 @@ public class PinActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         progress.dismiss();
+
                         try {
+                            Log.e("resonce", response);
+
                             if (response.length() > 0) {
                                 Log.e("responce ",response);
                                 JSONObject jsonObject = new JSONObject(response);
@@ -381,8 +427,10 @@ public class PinActivity extends AppCompatActivity {
                 progress.dismiss();
 
                 try {
+                    Log.e("resonce", response);
                     if (response.length()>0) {
                         JSONObject jsonObject = new JSONObject(response);
+
                         makeToast(jsonObject.getString("message").toString());
                     }else{
                         makeToast("Detail sending failed : network or server error");
@@ -436,31 +484,24 @@ public class PinActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private void GetCaledarDate() {
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.getTime();
-        int day = calendar.get(Calendar.DATE);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        int ampm = calendar.get(Calendar.AM_PM);
-        String date = String.valueOf(day) + "/" + String.valueOf(month + 1) + "/" + String.valueOf(year);
-
-        int sssd = String.valueOf(year).length();
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        dialog.dismiss();
     }
 
     public static boolean isPermissionGranted(Activity activity) {
+
         if (Build.VERSION.SDK_INT >= 23) {
+
             if ((activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) &&
-                    (activity.checkSelfPermission(android.Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED)) {
+                    (activity.checkSelfPermission(android.Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) &&
+                    (activity.checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED)  &&
+                    (activity.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED) &&
+                    (activity.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED)){
                 Log.e("Permission", "Permission is granted");
                 return true;
             } else {
@@ -468,7 +509,10 @@ public class PinActivity extends AppCompatActivity {
                 Log.e("Permission", "Permission is revoked");
                 activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.SEND_SMS}, REQUEST_CODE);
+                        Manifest.permission.SEND_SMS,Manifest.permission.ACCESS_WIFI_STATE,
+                        Manifest.permission.ACCESS_NETWORK_STATE,Manifest.permission.INTERNET}, REQUEST_CODE);
+
+
                 return false;
             }
         } else { //permission is automatically granted on sdk<23 upon installation
@@ -481,52 +525,39 @@ public class PinActivity extends AppCompatActivity {
     /**
      * Callback received when a permissions request has been completed.
      */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.length > 3 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startNewActivity();
-            }
-        }
-    }
+
 
     public void genRandomNo() {
 
-        long gett = (long) Math.floor(Math.random() * (999999999 - 111111111 + 1)) + 111111000;
-        gett = gett * 9;
-        RandomNumber = String.valueOf(gett);
-        final String imsiSIM1 = String.valueOf(gett);
-        long matchvale = Long.parseLong(imsiSIM1) / 111615;
-        matchvale = matchvale * 99;
-        matchvale = matchvale / 23;
-        matchvale = matchvale * 74;
-        matchvale = matchvale + 453453;
-        matchvale = matchvale * 3;
+//        long gett = (long) Math.floor(Math.random() * (999999999 - 111111111 + 1)) + 111111000;
+//        gett = gett * 9;
+//        RandomNumber = String.valueOf(gett);
+//        final String imsiSIM1 = String.valueOf(gett);
+//        long matchvale = Long.parseLong(imsiSIM1) / 111615;
+//        matchvale = matchvale * 99;
+//        matchvale = matchvale / 23;
+//        matchvale = matchvale * 74;
+//        matchvale = matchvale + 453453;
+//        matchvale = matchvale * 3;
+//
+//        int val = (int) matchvale;
+//        String value = String.valueOf(val);
+//
+//        if (value.length() > 7) {
+//            for (int i = 0; i < (value.length() - 7); i++) {
+//                val = val / 10;
+//            }
+//        }
 
-        int val = (int) matchvale;
-        String value = String.valueOf(val);
+        RandomNumber = "12344353";
 
-        if (value.length() > 7) {
-            for (int i = 0; i < (value.length() - 7); i++) {
-                val = val / 10;
-            }
-        }
+        match = RandomNumber;
 
-        match = String.valueOf(val);
-
-        dialog = new ProgressDialog(PinActivity.this, AlertDialog.THEME_HOLO_LIGHT);
-        dialog.setMessage("Loading...");
-        dialog.setCancelable(false);
-        dialog.show();
-        GetCaledarDate();
-        PinLength();
 
         emi = (TextView) findViewById(R.id.emi);
-        emi.setText("Device Number :- " + gett);
-
         btnVerify = (TextView) findViewById(R.id.btnVerify);
         btnSend = (TextView) findViewById(R.id.btnSend);
+        pinCode1 = (EditText) findViewById(R.id.pinCode1);
 
         title = (EditText) findViewById(R.id.title);
         mobile = (EditText) findViewById(R.id.mobile);
@@ -536,6 +567,15 @@ public class PinActivity extends AppCompatActivity {
     public void makeToast(String message){
         Toast.makeText(PinActivity.this, message, Toast.LENGTH_LONG).show();
     }
+
+    private void hideSoftKeyBoard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
+        if (imm.isAcceptingText()) { // verify if the soft keyboard is open
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
 }
 
 

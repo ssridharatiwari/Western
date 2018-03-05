@@ -1,11 +1,17 @@
 package com.milk.milkcollection.Fragment;
 
+import android.Manifest;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.telephony.TelephonyManager;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +44,7 @@ public class Fragment_Master extends Fragment {
     MilkDBHelpers milkDBHelpers;
     private File backupDB;
     private LinearLayout lay_addrate,lay_showrate,lay_ratechart;
+    private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
 
     public Fragment_Master() {
     }
@@ -73,8 +80,17 @@ public class Fragment_Master extends Fragment {
         btn_import.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                importDB(v);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                            Manifest.permission.READ_PHONE_STATE)) {
+                    } else {
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_PHONE_STATE},
+                                MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
+                    }
+                } else {
+                    importDB(v);
+                }
             }
         });
 
@@ -121,19 +137,19 @@ public class Fragment_Master extends Fragment {
             public void onClick(View v) {
 
                 toolbartitle.setText(getResources().getString(R.string.mas_add_rate));
-
                 Fragment fragment = new Fragment_CreateBhav();
                 android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, fragment);
                 ft.addToBackStack("home");
                 ft.commit();
 
-               /* Fragment fragment = new Fragment_DailyReport();
+                /* Fragment fragment = new Fragment_DailyReport();
                 android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, fragment);
                 ft.addToBackStack("home");
-                ft.commit();*/
-               // startActivity(new Intent(getActivity(), ShowAllMilkActivity.class));
+                ft.commit();  */
+                // startActivity(new Intent(getActivity(), ShowAllMilkActivity.class));
+
             }
         });
 

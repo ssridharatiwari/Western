@@ -415,7 +415,8 @@ public class Fragment_home extends Fragment {
                                       "\nRate/Ltr: " + rateliter +
                                       "\nAmount:  Rs " + totalamount + "\n\n   _western_ \n";
 
-                        printString = printString + MainActivity.lineBreak() + "\n";
+
+                        printString = printString + MainActivity.lineBreak() + "\n\n";
 
                         milkDBHelpers.AddMilk(code, df.format(Float.parseFloat(weight)), rateperliter,
                                 totalamount, replaceDate,

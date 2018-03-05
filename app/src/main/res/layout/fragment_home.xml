@@ -250,8 +250,8 @@
         <Button
             android:layout_weight="1"
             android:id="@+id/btn_rate_home"
-            android:text="@string/save"
-            android:textSize="20dp"
+            android:text="save print sms"
+            android:textSize="18dp"
             android:gravity="center"
             android:textAllCaps="false"
             android:textColor="@color/app_background"
