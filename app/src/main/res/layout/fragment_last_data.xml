@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="10"
+    android:background="@android:color/white"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/density_ten"
+        android:background="@drawable/rectangle"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/previousDate"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_weight="2"
+            android:background="@color/app_background"
+            android:gravity="center"
+            android:text="Previous  - "
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="22dp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginTop="60dp"
+            android:layout_weight="2"
+            android:background="@color/app_background"
+            android:gravity="center"
+            android:text="Selct below dates to start commulative total"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20dp"
+            android:textStyle="italic" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:orientation="horizontal"
+            android:weightSum="10"
+            android:layout_marginTop="30dp">
+
+
+            <Button
+                android:id="@+id/btn_fromDate"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="3.9"
+                android:gravity="center"
+                android:onClick="startDate"
+                android:text="start/date"
+                android:textSize="15dp" />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="2"
+                android:background="@color/app_background"
+                android:gravity="center"
+                android:text="To"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20dp"
+                android:textStyle="italic" />
+
+
+            <Button
+                android:id="@+id/btn_lastDate"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:onClick="endDate"
+                android:text="End/date"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/lay_ratechart"
+            android:visibility="visible"
+            android:orientation="horizontal"
+            android:layout_width="250dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="50dp"
+            android:weightSum="10">
+
+            <Button
+                android:id="@+id/btn_DoneDate"
+                android:text="OK"
+                android:textSize="20dp"
+                android:layout_weight="8"
+                android:textAllCaps="false"
+                android:layout_width="0dp"
+                android:textColor="#ffffff"
+                android:background="@drawable/button_blue"
+                android:layout_height="50dp"/>
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

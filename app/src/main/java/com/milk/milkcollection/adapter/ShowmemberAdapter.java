@@ -34,7 +34,7 @@ public class ShowmemberAdapter extends BaseAdapter {
 
     /*private view holder class*/
     private class ViewHolder {
-        TextView txtcode,txtweight,txtamount;;
+        TextView txtcode,txtweight,txtamount,txtSrno;
     }
 
     @Override
@@ -63,6 +63,8 @@ public class ShowmemberAdapter extends BaseAdapter {
             holder.txtcode = (TextView) convertView.findViewById(R.id.lv_code);
             holder.txtweight = (TextView) convertView.findViewById(R.id.lv_name);
             holder.txtamount = (TextView) convertView.findViewById(R.id.lv_mobile);
+            holder.txtSrno = (TextView) convertView.findViewById(R.id.lv_sno);
+
             convertView.setTag(holder);
         }
         else
@@ -71,7 +73,10 @@ public class ShowmemberAdapter extends BaseAdapter {
             holder.txtcode.setText(showMember.getMember_code());
             holder.txtweight.setText(showMember.getMember_name());
             holder.txtamount.setText(showMember.getMember_contact());
-        }
+            holder.txtSrno.setText(String.valueOf(position+1)+ ".");
+
+
+            }
         return convertView;
     }
 }

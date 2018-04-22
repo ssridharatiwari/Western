@@ -90,12 +90,22 @@
         android:orientation="horizontal"
         android:weightSum="10">
         <TextView
+            android:text="@string/serial_no"
+            android:layout_gravity="center"
+            android:gravity="left|center_vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:textSize="18dp"
+            android:layout_height="45dp"
+            />
+
+        <TextView
             android:text="@string/code"
             android:layout_gravity="center"
             android:gravity="left|center_vertical"
-            android:layout_weight="1.5"
+            android:layout_weight="1.1"
             android:layout_width="0dp"
-            android:textSize="18dp"
+            android:textSize="17dp"
             android:layout_height="45dp"
             />
         <TextView
@@ -111,7 +121,7 @@
             android:text="@string/fat"
             android:layout_gravity="center"
             android:gravity="left|center_vertical"
-            android:layout_weight="1.5"
+            android:layout_weight="1.4"
             android:layout_width="0dp"
             android:textSize="18dp"
             android:layout_height="45dp"
@@ -121,7 +131,7 @@
             android:text="@string/snf"
             android:layout_gravity="center"
             android:gravity="left|center_vertical"
-            android:layout_weight="1.5"
+            android:layout_weight="1.4"
             android:layout_width="0dp"
             android:textSize="18dp"
             android:layout_height="45dp"
@@ -130,7 +140,7 @@
             android:text="@string/lw_rate"
             android:layout_gravity="center"
             android:gravity="left|center_vertical"
-            android:layout_weight="2"
+            android:layout_weight="1.7"
             android:layout_width="0dp"
             android:textSize="18dp"
             android:layout_height="45dp"

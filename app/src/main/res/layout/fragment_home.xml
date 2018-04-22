@@ -250,7 +250,7 @@
         <Button
             android:layout_weight="1"
             android:id="@+id/btn_rate_home"
-            android:text="save print sms"
+            android:text="@string/save_print_sms"
             android:textSize="18dp"
             android:gravity="center"
             android:textAllCaps="false"
@@ -288,7 +288,7 @@
         <Button
             android:layout_weight="1"
             android:id="@+id/btn_print"
-            android:text="Print"
+            android:text="@string/print"
             android:textSize="20dp"
             android:gravity="center"
             android:textAllCaps="false"

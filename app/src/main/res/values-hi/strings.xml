@@ -14,6 +14,7 @@
     <string name="master">मास्टर</string>
     <string name="report">रिपोर्ट</string>
     <string name="planguage">भाषा</string>
+    <string name="setting">सेटिंग</string>
 
 
     <string name="morning">सुबह</string>
@@ -21,13 +22,17 @@
     <string name="code">कोड</string>
     <string name="weight">वजन</string>
     <string name="fat">फैट</string>
-    <string name="snf">सनफ</string>
+    <string name="सनफ">सनफ</string>
     <string name="save">सेव</string>
-    <string name="print">प्रिंट</string>
+    <string name="print">प्रिन्ट</string>
     <string name="update">अपडेट</string>
     <string name="mobile">मोबाइल</string>
     <string name="date">तारीख</string>
     <string name="amount">रुपए</string>
+    <string name="serial_no">अनु क्र.</string>
+
+    <string name="save_print_sms">सेव प्रिन्ट मेसज</string>
+
 
 
     <string name="no_entry_text">आज की कोई जमा नहीं है</string>
@@ -51,6 +56,7 @@
     <string name="mas_export">सूची बाहर</string>
     <string name="mas_import">सूची</string>
     <string name="mas_mail">मेल भेजे</string>
+    <string name="mas_rate_chart">रेट चार्ट</string>
 
 
     <string name="rep_mem_lzr">मेंबर रिपोर्ट </string>
@@ -71,7 +77,7 @@
     <string name="lw_sift">सिफ्ट</string>
     <string name="lw_name">नाम</string>
     <string name="lw_to">से</string>
-    <string name="lw_rate_detail">रेट सूची </string>
+    <string name="lw_rate_detail">रेट सूची</string>
 
 
     <string name="rt_from_fat">फैट से </string>
@@ -82,6 +88,13 @@
     <string name="rt_kg_snf_rt">KG सनफ रेट</string>
     <string name="rt_comition">कमीशन</string>
     <string name="rt_comition_type">कमीशन टाइप :</string>
+
+
+
+    <string name="change_rate_method">रेट विधि बदलें</string>
+    <string name="change_print_method">प्रिन्ट विधि बदलें</string>
+    <string name="change_society_name">सोसाइटी नाम बदलें</string>
+    <string name="change_comultive">Change Society Name</string>
 
 
 </resources>

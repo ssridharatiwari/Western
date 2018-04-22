@@ -8,6 +8,7 @@ public class ShowMember {
     String member_code;
     String member_contact;
     String member_date;
+    String sno;
 
     public String getMember_name() {
         return member_name;
@@ -28,7 +29,6 @@ public class ShowMember {
     public String getMember_contact() {
         return member_contact;
     }
-
     public void setMember_contact(String member_contact) {
         this.member_contact = member_contact;
     }
@@ -36,8 +36,16 @@ public class ShowMember {
     public String getMember_date() {
         return member_date;
     }
-
     public void setMember_date(String member_date) {
         this.member_date = member_date;
     }
+
+
+    public String getMember_sno() {
+        return sno;
+    }
+    public void setNo(String sno) {
+        this.sno = sno;
+    }
+
 }

@@ -50,6 +50,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class PinActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 123;
@@ -80,12 +81,15 @@ public class PinActivity extends AppCompatActivity {
         genRandomNo();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+         String isLogin = preferences.getString("isLogin", "");
 
-        if (preferences.getBoolean("isLogin", false)) {
+         if (isLogin.equals("1") || isLogin.equals("2") ){
 
             startActivity(new Intent(PinActivity.this, MainActivity.class));
             finish();
-        } else {
+        }
+
+        else {
 
             getDeviceIDS();
 
@@ -147,7 +151,6 @@ public class PinActivity extends AppCompatActivity {
                 }
             });
         }
-
 
     }
 
@@ -292,10 +295,6 @@ public class PinActivity extends AppCompatActivity {
         sharedPreferencesUtils.setMobile(mobile_string);
         sharedPreferencesUtils.printBy("wifi");
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("isLogin", true);
-        editor.commit();
         finish();
 
     }
@@ -319,6 +318,9 @@ public class PinActivity extends AppCompatActivity {
                      "&iemi_id=" + imeiNumber +
                      "&mobile=" + mobile_string +
                      "&action=1"  ;
+
+
+        url = url.replaceAll(" ", "%20");
 
         Log.e("final ulr" , url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -374,25 +376,69 @@ public class PinActivity extends AppCompatActivity {
                             Log.e("resonce", response);
 
                             if (response.length() > 0) {
-                                Log.e("responce ",response);
+
                                 JSONObject jsonObject = new JSONObject(response);
-                                jsonObject = jsonObject.getJSONObject("details");
-                                String status = jsonObject.getString("status").toString();
-                                settitle = jsonObject.getString("name").toString();
-                                mobile_string = jsonObject.getString("mobile").toString();
+
+                                String jsonStatus = jsonObject.getString("status").toString();
+
+                                if (jsonStatus.equals("401")){
+
+                                    makeToast("Submit Your Detail first");
 
 
-                                if (status.equals("1")){
-                                    makeToast("Thank you : registration successful");
-                                    startNewActivity();
+                                }else if (jsonStatus.equals("200")) {
+
+                                    jsonObject = jsonObject.getJSONObject("details");
+
+
+
+                                    String userStatus = jsonObject.getString("status").toString();
+
+                                    String userID = jsonObject.getString("id").toString();
+
+                                    if (userID != "") {
+                                        sharedPreferencesUtils.setUserId(userID);
+                                    }
+                                    if (!userStatus.equals("")){
+                                        setStatus(userStatus);
+                                    }
+
+                                    if (userStatus.equals("1")){
+                                        makeToast("Thank you : registration successful");
+                                        settitle = jsonObject.getString("name").toString();
+                                        mobile_string = jsonObject.getString("mobile").toString();
+
+
+                                        startNewActivity();
+
+
+                                    }else if (userStatus.equals("2")){
+
+                                        sharedPreferencesUtils.setIsDemoTrue();
+
+                                        makeToast("Demo App");
+                                        settitle = "DEMO";
+                                        mobile_string = "DEMO";
+                                        startNewActivity();
+
+                                    }else if (userStatus.equals("3")){
+                                        makeToast("You are not verified");
+                                    }
+
+
+                                    else
+                                        makeToast("You are not verified");
+
+                                }else{
+
                                 }
-                                else
-                                    makeToast("You are not verified");
+
+
                             } else {
-                                makeToast("Responce Error");
+                                makeToast("Network Error");
                             }
                         } catch (JSONException e) {
-                            makeToast("Responce Error");
+                            makeToast("Network Error");
                             e.printStackTrace();
                         }
                     }
@@ -412,6 +458,14 @@ public class PinActivity extends AppCompatActivity {
     }
     }
 
+
+    public void setStatus (String status){
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("isLogin", status);
+        editor.commit();
+    }
 
 
 

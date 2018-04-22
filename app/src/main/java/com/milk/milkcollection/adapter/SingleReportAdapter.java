@@ -50,7 +50,8 @@ public class SingleReportAdapter extends ArrayAdapter<SingleReport> {
         } else
             holder = (ViewHolder) convertView.getTag();
         if(singleReport.getDate()!=null) {
-            holder.txtcode.setText(singleReport.getCode());
+            holder.txtcode.setText(String.valueOf(position+1) + ".");
+            //holder.txtcode.setText(singleReport.getCode());
             holder.txtdate.setText(singleReport.getDate());
             holder.txtsift.setText(singleReport.getSift());
             holder.txtweight.setText(singleReport.getWeight());

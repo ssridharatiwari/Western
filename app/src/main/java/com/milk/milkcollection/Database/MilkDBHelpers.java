@@ -11,6 +11,7 @@ import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.ShowMember;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -127,6 +128,28 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		db.execSQL(query);
 		db.close();
 	}
+
+
+
+
+
+	public void updateRateByRow(String fat, String snf, String rate) {
+
+		String query = "UPDATE ratechart SET rate='" + rate + "' WHERE fat ='" + fat + "' AND snf ='" + snf + "'";
+		SQLiteDatabase db = getWritableDatabase();
+		db.execSQL(query);
+		db.close();
+	}
+
+	public void updateRateClrByRow(String fat, String snf, String rate ) {
+		String query = "UPDATE ratechartclr SET rate='" + rate + "'  WHERE fat ='" + fat + "' AND snf ='" + snf + "'";
+		SQLiteDatabase db = getWritableDatabase();
+		db.execSQL(query);
+		db.close();
+	}
+
+
+
 
 
 	public void emptyClrTable() {
@@ -344,11 +367,15 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		Cursor cursor = db.rawQuery(selectQuery, null);
 
 		if (cursor != null && cursor.moveToFirst()) {
+
+			int count = 1;
 			do {
 				ShowMember showMember = new ShowMember();
 				showMember.setMember_code(cursor.getString(cursor.getColumnIndex("membercode")));
 				showMember.setMember_contact(cursor.getString(cursor.getColumnIndex("membermobile")));
 				showMember.setMember_name(cursor.getString(cursor.getColumnIndex("membername")));
+				//showMember.setNo(String.get  count);
+
 				memberCodeList.add(showMember);
 
 				Log.e(" cursor in members ",cursor.getString(cursor.getColumnIndex("membercode"))+" "+
@@ -543,7 +570,9 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
             }
         }else if (rateMethod.equals("3")){
 
-            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+
+
+			SQLiteDatabase sqLiteDatabase = getReadableDatabase();
             Cursor cursor = sqLiteDatabase.rawQuery("Select * From 'ratechartclr' WHERE fat ='" + fat + "' and snf ='" + snf + "'", null);
             if (cursor != null && cursor.moveToFirst()) {
                 return  (String.valueOf(cursor.getString(cursor.getColumnIndex("rate"))));
@@ -557,5 +586,6 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
         }
 
     }
+
 
 }

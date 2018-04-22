@@ -322,6 +322,9 @@ if (position == 0)
         yy=endDate.substring(4,8);
         endDate = yy+mm+dd;
 
+
+
+
         if (membername.equals("Select"))
             Toast.makeText(getActivity(), "Please Select Member Code First", Toast.LENGTH_LONG).show();
         else {
@@ -361,12 +364,12 @@ if (position == 0)
 
                         try
                         {
-                            String line = String.format("%5s%1s %-4s %-4s %-4s %-6s", date.substring(0,4) ,
+                                    String line = String.format("%5s%1s %-4s %-4s %-4s %-6s", date.substring(0,5),
                                     cursor.getString(cursor.getColumnIndex("sift")),
-                                    MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("fat"))) ,
+                                    MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("fat"))),
                                     MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("snf"))),
-                                    MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("milkweight"))) ,
-                                    MainActivity.twoDecimalString(cursor.getString(cursor.getColumnIndex("totalamount"))) );
+                                    MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("milkweight"))),
+                                    MainActivity.twoDecimalString(cursor.getString(cursor.getColumnIndex("totalamount"))));
 
                             alldata = alldata + "\n" + line;
 

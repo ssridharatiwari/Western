@@ -221,7 +221,7 @@
                 android:id="@+id/et_rate_fill"
                 android:paddingLeft="@dimen/density_ten"
                 android:layout_width="match_parent"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 android:background="@drawable/rectangle"
                 android:layout_height="45dp"
                 android:maxLength="6"

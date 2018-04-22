@@ -17,7 +17,19 @@
             android:layout_marginRight="4dp"
             android:layout_height="0dp"
             android:orientation="horizontal"
-            android:weightSum="5">
+            android:weightSum="3">
+
+            <TextView
+                android:text="@string/serial_no"
+                android:id="@+id/lv_sno"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:visibility="visible"
+                android:layout_weight="0.5"
+                android:layout_width="0dp"
+                android:textSize="17dp"
+                android:layout_height="45dp"
+                />
 
             <TextView
                 android:text="@string/code"
@@ -25,22 +37,25 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:visibility="visible"
-                android:layout_weight="1.5"
+                android:layout_weight=".5"
                 android:layout_width="0dp"
                 android:textSize="17dp"
                 android:layout_height="45dp"
                 />
+
+
             <TextView
                 android:text="@string/lw_name"
                 android:id="@+id/lv_name"
                 android:layout_gravity="center"
                 android:gravity="center"
 
-                android:layout_weight="1.5"
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:textSize="17dp"
                 android:layout_height="45dp"
                 />
+
 
 
             <TextView
@@ -48,7 +63,7 @@
                 android:text="@string/mobile"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_weight="1.8"
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:textSize="17dp"
                 android:layout_height="45dp"
@@ -63,6 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </ListView>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

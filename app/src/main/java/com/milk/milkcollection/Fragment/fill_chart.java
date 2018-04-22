@@ -46,7 +46,12 @@ public class fill_chart extends Fragment {
     ImageView left_side,rite_side;
 
     String rateMethod = "1";
+    Boolean isAlready = false;
+
     public fill_chart() {}
+
+    float difrence = (float) 0.1;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,7 +110,6 @@ public class fill_chart extends Fragment {
 
                     txt_show_rate.setText(strRt + "0.00");
 
-
                 }else if (strRt.length() == 2) {
                     txt_show_rate.setText( strRt + ".00");
 
@@ -129,11 +133,9 @@ public class fill_chart extends Fragment {
 
                         }
 
-
                     }, 500);
 
             }
-
 
 
             }
@@ -164,6 +166,19 @@ public class fill_chart extends Fragment {
 
 
         //   getAllData();
+
+
+
+        if (rateMethod.equals("3")){
+
+            from_snf.setHint("from clr");
+            to_snf.setHint("to clr");
+
+            MainActivity.instace.toolbartitle.setText("Fill Rate Chart");
+            difrence = (float) 0.5;
+        }
+
+
         return rootView;
     }
 
@@ -183,7 +198,7 @@ public class fill_chart extends Fragment {
             return;
         }
 
-        txt_show_rate.setText("00.00");
+        //txt_show_rate.setText("00.00");
         text_rate.setText("");
         focasontext();
 
@@ -191,7 +206,7 @@ public class fill_chart extends Fragment {
         float fatNum = parseFloat(fat);
 
         float snfNum = parseFloat(snf);
-        snfNum = (float)(snfNum + 0.1);
+        snfNum = (float)(snfNum + difrence);
 
 
         if (Float.parseFloat(to_snf_str) < snfNum) {
@@ -200,7 +215,7 @@ public class fill_chart extends Fragment {
         }
 
         if (Float.parseFloat(to_fat) < fatNum) {
-            fatNum =  parseFloat(str_from_snf);
+            fatNum =  parseFloat(str_from_fat);
         }
 
             try {
@@ -224,7 +239,7 @@ public class fill_chart extends Fragment {
             return;
         }
 
-        txt_show_rate.setText("00.00");
+        //txt_show_rate.setText("00.00");
         text_rate.setText("");
         focasontext();
 
@@ -233,7 +248,7 @@ public class fill_chart extends Fragment {
 
         float snfNum = parseFloat(snf);
 
-        snfNum = (float)(snfNum - 0.1);
+        snfNum = (float)(snfNum - difrence);
 
         if (snfNum <  parseFloat(str_from_snf)){
 
@@ -246,8 +261,7 @@ public class fill_chart extends Fragment {
         }
 
 
-
-            try {
+        try {
                 snf = MainActivity.oneDecimalFloatToString(snfNum);
                 fat = MainActivity.oneDecimalFloatToString(fatNum);
 
@@ -273,6 +287,9 @@ public class fill_chart extends Fragment {
             lbl_fat.setText("FAT : " + MainActivity.twoDecimalString(fat) );
             lbl_snf.setText("SNF : " +  MainActivity.oneDecimalString(snf));
 
+            if (rateMethod.equals("3")) {
+                lbl_snf.setText("CLR : " +  MainActivity.oneDecimalString(snf));
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -293,10 +310,21 @@ public class fill_chart extends Fragment {
             Log.e("rate" ,rate);
 
             if (rateMethod.equals("2")){
-                milkDBHelpers.addRate(fat,snf, (String)txt_show_rate.getText());
+
+                if (isAlready){
+                    milkDBHelpers.updateRateByRow(fat,snf, (String)txt_show_rate.getText());
+                }else{
+                    milkDBHelpers.addRate(fat,snf, (String)txt_show_rate.getText());
+                }
+
 
             }else {
-                milkDBHelpers.addRateClr(fat,snf, (String)txt_show_rate.getText());
+
+                if (isAlready){
+                    milkDBHelpers.updateRateClrByRow(fat,snf, (String)txt_show_rate.getText());
+                }else{
+                    milkDBHelpers.addRateClr(fat,snf, (String)txt_show_rate.getText());
+                }
             }
         }
 
@@ -318,14 +346,12 @@ public class fill_chart extends Fragment {
         to_fat = String.valueOf(to_fate.getText());
         to_snf_str = String.valueOf(to_snf.getText());
 
-        lbl_fat.setText("fat : " + fat);
-        lbl_snf.setText("snf : " + snf);
+        setData();
+
 
         str_from_fat = fat;
         str_from_snf = snf;
 
-        Log.e("fat --- ",fat);
-        Log.e("snf --- ",snf);
 
 
         getData();
@@ -340,12 +366,14 @@ public class fill_chart extends Fragment {
             String rate =  milkDBHelpers.getRatePerLiter(fat,snf);
             if (rate.length()>0)
                 txt_show_rate.setText(MainActivity.trimString(rate));
+                isAlready = true;
 
             if (rate.equals("0")){
                 txt_show_rate.setText("00.00");
-
+                isAlready = false;
             }
         } catch (IOException e) {
+            isAlready = false;
             e.printStackTrace();
         }
 

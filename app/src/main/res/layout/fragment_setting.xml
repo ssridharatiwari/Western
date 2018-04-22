@@ -26,7 +26,7 @@
             android:foregroundGravity="center"
             android:gravity="center"
             android:textColor="@color/black"
-            android:text="dfasd fasdf asdfsdf sdaf"
+            android:text="changed name"
             android:textSize="20dp" />
 
         <Button
@@ -37,7 +37,7 @@
             android:layout_marginRight="5dp"
             android:background="@drawable/button_blue"
             android:gravity="center"
-            android:text="Change Rate Method"
+            android:text="@string/change_rate_method"
             android:textAllCaps="false"
             android:textColor="#ffffff"
             android:textSize="17dp"
@@ -67,7 +67,7 @@
             android:layout_marginRight="5dp"
             android:background="@drawable/button_blue"
             android:gravity="center"
-            android:text="Change Print Method"
+            android:text="@string/change_print_method"
             android:textAllCaps="false"
             android:textColor="#ffffff"
             android:layout_marginTop="10dp"
@@ -83,13 +83,44 @@
             android:layout_marginRight="5dp"
             android:background="@drawable/button_blue"
             android:gravity="center"
-            android:text="Fetch Default FAT,SNF,CLR Chart"
+            android:text="@string/change_society_name"
             android:textAllCaps="false"
             android:textColor="#ffffff"
             android:layout_marginTop="50dp"
             android:textSize="15dp"
-            android:visibility="gone"
             />
+
+
+        <Button
+            android:id="@+id/btn_fetch"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/button_blue"
+            android:gravity="center"
+            android:text="Commulative"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:layout_marginTop="50dp"
+            android:textSize="15dp"
+            />
+
+        <TextView
+
+            android:id="@+id/txtCommulative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="dfasd fasdf asdfsdf sdaf"
+            android:textSize="18dp"/>
+
+
+
 
     </LinearLayout>
 

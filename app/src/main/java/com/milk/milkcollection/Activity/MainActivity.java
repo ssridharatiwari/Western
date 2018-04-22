@@ -4,15 +4,18 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -58,7 +61,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+
+
 public class MainActivity extends AppCompatActivity {
+
+
+    public  static String ruppe = "₹";
 
     private ArrayList<String> categories;
     private DrawerLayout mDrawerLayout;
@@ -78,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     public static Socket nsocket = new Socket();
     public static SocketAddress sockaddr;
 
-    ProgressDialog progress;
+    public static ProgressDialog progress;
     public static MainActivity instace;
 
     public MainActivity getInstace(){
@@ -180,6 +188,9 @@ public class MainActivity extends AppCompatActivity {
             selectItem(0);
         }
 
+
+        sharedPreferencesUtils.setDmeoCount(100);
+
       runConnection();
 
     }
@@ -237,15 +248,14 @@ public class MainActivity extends AppCompatActivity {
 
         } else if (position == 3 && !backStateName.equals("Print by")) {
 
-            toolbartitle.setText("Setting");
-
+            toolbartitle.setText(getResources().getString(R.string.setting));
+            toolbartitle.setText(getResources().getString(R.string.setting));
             replaceFragment(new Fragment_Setting());
 
         }
-             else {
-
+        else if (position == 4) {
                 changeLanguage(MainActivity.this);
-            }
+        }
 
 
 
@@ -781,26 +791,36 @@ public class MainActivity extends AppCompatActivity {
 
     static public void sendTextSms(String message , String number) {
 
-        if (ActivityCompat.checkSelfPermission(instace, Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(instace,
-                    Manifest.permission.SEND_SMS)) {
-            } else {
-                ActivityCompat.requestPermissions(instace, new String[]{Manifest.permission.SEND_SMS},
-                        instace.MY_PERMISSIONS_REQUEST_SEND_SMS);
-            }
-        } else {
 
-            try {
-                SmsManager smsManager = SmsManager.getDefault();
-                Log.e("--message----", number + message);
-                smsManager.sendTextMessage(number, null, message, null, null);
-                Toast.makeText(instace, "SMS Sent.", Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
-                Toast.makeText(instace, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
-                e.printStackTrace();
+
+            if (ActivityCompat.checkSelfPermission(instace, Manifest.permission.SEND_SMS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(instace,
+                        Manifest.permission.SEND_SMS)) {
+                } else {
+                    ActivityCompat.requestPermissions(instace, new String[]{Manifest.permission.SEND_SMS},
+                            instace.MY_PERMISSIONS_REQUEST_SEND_SMS);
+                }
+            } else {
+
+                try {
+
+                    SmsManager sms = SmsManager.getDefault();
+                    PendingIntent sentPI;
+                    String SENT = "SMS_SENT";
+
+                    sentPI = PendingIntent.getBroadcast(instace, 0,new Intent(SENT), 0);
+
+                    ArrayList<String> msgArray = sms.divideMessage(message);
+
+                    sms.sendMultipartTextMessage(number, null,msgArray, null, null);
+                    Toast.makeText(instace, "SMS Sent", Toast.LENGTH_LONG).show();
+
+                } catch (Exception e) {
+                    Toast.makeText(instace, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
             }
-        }
 
     }
 
@@ -819,18 +839,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showLoading(String message){
+
         progress = new ProgressDialog(this);
         progress.setMessage(message);
         progress.setCancelable(false);
         progress.show();
     }
 
-    public void dismiss(){
+    public static void dismiss(){
+
         progress.dismiss();
+
     }
 
-    static public void showToast(String message) throws IOException {
-        Toast.makeText(instace, message, Toast.LENGTH_LONG).show();
+    static public void showToast(String message) throws IOException  {
+
+            Toast.makeText(instace, message, Toast.LENGTH_LONG).show();
     }
     static public String trimString(String str) throws IOException {
         return str.replace(" ", "");
@@ -859,4 +883,59 @@ public class MainActivity extends AppCompatActivity {
         int sssd = String.valueOf(year).length();
     }
 
+    public boolean isDemo() {
+
+        String isDemo = sharedPreferencesUtils.getISDemo();
+        if (isDemo.equals("1"))
+            return true;
+        else {
+            return false;
+        }
+
+    }
+
+    public String userID() {
+        String userID = sharedPreferencesUtils.getUserID();
+        return userID;
+    }
+
+    public void decDemoCount() {
+
+        if (isDemo()){
+            int count = sharedPreferencesUtils.getDemoCount();
+            count--;
+            sharedPreferencesUtils.setDmeoCount(count);
+        }
+    }
+
+    public boolean isDemoNotAccess() throws IOException {
+
+        if (isDemo()){
+
+            if (sharedPreferencesUtils.getDemoCount() < 1){
+                instace.showToast("Your Demo Entries are Finished");
+                return true;
+            }
+
+        }return false;
+    }
+
+    public void setStatus (String status){
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("isLogin", status);
+        editor.commit();
+    }
+
+    static public void makeToast(String message)   {
+
+        try {
+
+                 Toast.makeText(instace, message, Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+
+        }
+    }
 }
+

@@ -26,7 +26,7 @@ public class DailyReportAdapter  extends ArrayAdapter<DailyReport> {
 
     /*private view holder class*/
     private class ViewHolder {
-        TextView txtcode,txtweight,txtfat,txtsnf,txtrate,txtamount;
+        TextView txtcode,txtweight,txtfat,txtsnf,txtrate,txtamount,txtSno;
     }
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
@@ -36,6 +36,8 @@ public class DailyReportAdapter  extends ArrayAdapter<DailyReport> {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.dailyreport_listview, null);
             holder = new ViewHolder();
+            holder.txtSno = (TextView) convertView.findViewById(R.id.lv_sno);
+
             holder.txtcode = (TextView) convertView.findViewById(R.id.lv_code);
             holder.txtweight = (TextView) convertView.findViewById(R.id.lv_weight);
             holder.txtfat = (TextView) convertView.findViewById(R.id.lv_fat);
@@ -46,6 +48,8 @@ public class DailyReportAdapter  extends ArrayAdapter<DailyReport> {
         } else
             holder = (ViewHolder) convertView.getTag();
         if(dailyReport.getCode()!=null) {
+
+            holder.txtSno.setText(String.valueOf(position+1)+ ".");
             holder.txtcode.setText(dailyReport.getCode());
             holder.txtweight.setText(dailyReport.getWeight());
             holder.txtfat.setText(dailyReport.getFat());

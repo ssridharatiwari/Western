@@ -8,12 +8,24 @@
         android:layout_marginLeft="2dp"
         android:orientation="horizontal"
         android:weightSum="10">
+
+        <TextView
+            android:id="@+id/lv_sno"
+            android:text="Code"
+            android:layout_gravity="center"
+            android:gravity="left|center_vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:textSize="14dp"
+            android:layout_height="45dp"
+            />
+
         <TextView
             android:id="@+id/lv_code"
             android:text="Code"
             android:layout_gravity="center"
             android:gravity="left|center_vertical"
-            android:layout_weight="1.5"
+            android:layout_weight="1"
             android:layout_width="0dp"
             android:textSize="14dp"
             android:layout_height="45dp"
@@ -33,7 +45,7 @@
             android:text="Fat"
             android:layout_gravity="center"
             android:gravity="left|center_vertical"
-            android:layout_weight="1.6"
+            android:layout_weight="1.5"
             android:layout_width="0dp"
             android:textSize="14dp"
             android:layout_height="45dp"
@@ -43,7 +55,7 @@
             android:text="Snf"
             android:layout_gravity="center"
             android:gravity="left|center_vertical"
-            android:layout_weight="1.6"
+            android:layout_weight="1.5"
             android:layout_width="0dp"
             android:textSize="14dp"
             android:layout_height="45dp"

@@ -105,6 +105,21 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         android:weightSum="10">
+
+
+        <TextView
+            android:text="@string/serial_no"
+            android:id="@+id/lv_code"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="visible"
+            android:layout_weight="1.1"
+            android:layout_width="0dp"
+            android:textSize="15dp"
+            android:layout_height="45dp"
+            />
+
+
         <TextView
             android:text="@string/date"
             android:id="@+id/lv_date"
@@ -115,17 +130,7 @@
             android:textSize="15dp"
             android:layout_height="45dp"
             />
-        <TextView
-            android:text="@string/code"
-            android:id="@+id/lv_code"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:visibility="visible"
-            android:layout_weight="1.5"
-            android:layout_width="0dp"
-            android:textSize="15dp"
-            android:layout_height="45dp"
-            />
+
 
         <TextView
             android:id="@+id/lv_sift"
@@ -162,7 +167,7 @@
             android:text="@string/lw_amout"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_weight="2.2"
+            android:layout_weight="2.5"
             android:layout_width="0dp"
             android:textSize="16dp"
             android:layout_height="45dp"

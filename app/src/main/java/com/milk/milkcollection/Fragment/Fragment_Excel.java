@@ -628,6 +628,8 @@ public class Fragment_Excel extends Fragment {
 //                            tempClr = (float)(tempClr - 0.5);
 //                        }
 //                    }
+
+
                     MainActivity.instace.dismiss();
                     MainActivity.showToast("Data Successfully updated");
 

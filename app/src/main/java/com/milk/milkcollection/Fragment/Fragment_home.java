@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.telephony.SmsManager;
 import android.text.Editable;
@@ -35,6 +36,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Activity.PinActivity;
@@ -70,12 +76,16 @@ import java.io.OutputStream;
 
 import android.bluetooth.BluetoothSocket;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
+import static java.lang.System.exit;
 
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class Fragment_home extends Fragment {
@@ -86,7 +96,7 @@ public class Fragment_home extends Fragment {
     EditText et_weight, et_fat, et_snf, et_code;
     TextView rate, total, btnrate, btntotal, tv_datepicker, tv_code_holder,lbl_avgFat,
             lbl_avgSnf,lbl_wgt,lbl_amt,lbl_SeriolNo,lbl_snf_home,lbl_snf_avg,toolbartitle;
-    String weight, fat, snf, code;
+    String weight, fat, snf, code , myCode;
     String phone_number, message, sift, printString, titlename, mobile_self,comission;
     float rateperltr;
     Spinner sp_shift;
@@ -94,6 +104,8 @@ public class Fragment_home extends Fragment {
     ProgressDialog dialog;
     MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
     SharedPreferencesUtils sharedPreferencesUtils;
+
+    Boolean isSMSSemd = false,isPrint;
 
     public Fragment_home() {
     }
@@ -212,6 +224,7 @@ public class Fragment_home extends Fragment {
             @Override
             public void onClick(View v) {
 
+             //   funSaveEntry();
                 toolbartitle.setText("Pay");
                 Fragment fragment = new Fragment_DailyReport();
                 android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -264,10 +277,13 @@ public class Fragment_home extends Fragment {
         btn_ratesave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                isPrint = true;
+                isSMSSemd = true;
                 if (funSaveEntry() == true) {
-                    printMethod();
-                    messageAlertDialog();
+
                 }
+
             }
         });
 
@@ -275,8 +291,9 @@ public class Fragment_home extends Fragment {
             @Override
             public void onClick(View v) {
 
-               if (funSaveEntry() == true) {
-                   printMethod();
+                isPrint = true;
+
+                if (funSaveEntry() == true) {
                }
             }
         });
@@ -284,8 +301,11 @@ public class Fragment_home extends Fragment {
         btn_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                isSMSSemd = true;
+
                 if (funSaveEntry()==true){
-                    messageAlertDialog();
+
                 }
             }
         });
@@ -293,15 +313,21 @@ public class Fragment_home extends Fragment {
         getCurrentCollection();
         setTextsAccordingRate();
 
+        verifyDetailApi();
+
         return rootView;
     }
 
     private void messageAlertDialog() {
+
+        Log.e("meessage",message);
+        isSMSSemd = false;
         MainActivity.sendTextSms(message,phone_number);
     }
 
     private void printMethod() {
 
+        isPrint = false;
         try {
             try {
                 MainActivity.print(printString);
@@ -316,6 +342,7 @@ public class Fragment_home extends Fragment {
     }
 
     public boolean funSaveEntry() {
+
         code = et_code.getText().toString();
         if (code.length() == 0) {
             et_code.setError("Code is required!");
@@ -338,6 +365,14 @@ public class Fragment_home extends Fragment {
 
     private void SaveAllData() {
 
+        try {
+            if (MainActivity.instace.isDemoNotAccess()){
+                return;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         weight = et_weight.getText().toString();
         fat = et_fat.getText().toString();
         snf = et_snf.getText().toString();
@@ -359,6 +394,9 @@ public class Fragment_home extends Fragment {
             Toast.makeText(getActivity(), "Please create Total Rs/- ", Toast.LENGTH_LONG).show();
         } else {
             try {
+
+                MainActivity.instace.decDemoCount();
+
                 milkDBHelpers = new MilkDBHelpers(getActivity());
                 SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
 
@@ -402,8 +440,7 @@ public class Fragment_home extends Fragment {
                         }
 
                         message = titlename + "\n" + "Date: " + date + "(" + strShipt + ")" + "\nCode: " + code + "-" + member_name +
-                                "\nQTY=" + weight + ", FAT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT=" + rateperliter + "/- AMT=" + totalrupees + "/-";
-                        String getDate = getDateTimeOne();
+                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT= ₹ " + rateperliter + " AMT= ₹ " + totalrupees + "";
 
                         printString = "";
                         printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
@@ -413,10 +450,14 @@ public class Fragment_home extends Fragment {
                                       "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
                                       "\nFat: " + fat + "  "+MainActivity.instace.rateString()+": " + snf +
                                       "\nRate/Ltr: " + rateliter +
-                                      "\nAmount:  Rs " + totalamount + "\n\n   _western_ \n";
+                                      "\nAmount:  Rs " + totalamount + "\n";
 
 
-                        printString = printString + MainActivity.lineBreak() + "\n\n";
+
+                        printString = printString + MainActivity.lineBreak() ;
+
+
+                        myCode = code;
 
                         milkDBHelpers.AddMilk(code, df.format(Float.parseFloat(weight)), rateperliter,
                                 totalamount, replaceDate,
@@ -427,14 +468,20 @@ public class Fragment_home extends Fragment {
                         et_weight.setText("");
                         et_fat.setText("");
                         et_snf.setText("");
-                        et_code.setText("");
                         resetValue();
+
+
+
+
+                        //et_code.setText("");
 
                         et_code.requestFocus();
                         Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateperliter + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
                         cursor.moveToNext();
 
                         getCurrentCollection();
+
+                        commulativeMethod();
 
                     }
                 } else {
@@ -444,6 +491,103 @@ public class Fragment_home extends Fragment {
             }
         }
     }
+
+
+    private void commulativeMethod(){
+
+
+                if (sharedPreferencesUtils.getLastDate().length() > 1) {
+
+                    float totalAmount = 0;
+                    float totalWeight = 0;
+
+                    MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+                    SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
+
+
+                    Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM 'milk_amount' WHERE memberCode = '" + myCode + "' and date >= '" + sharedPreferencesUtils.getfromDate() + "' and date <= '" + sharedPreferencesUtils.getLastDate() + "'", null);
+
+
+                    if (cursor != null && cursor.moveToFirst()) {
+                        while (cursor.isAfterLast() == false) {
+
+
+                            totalAmount += cursor.getFloat(cursor.getColumnIndex("totalamount"));
+                            totalWeight += cursor.getFloat(cursor.getColumnIndex("milkweight"));
+
+                            cursor.moveToNext();
+
+                            ///  totalWeight = (cursor.getString(cursor.getColumnIndex("total")));
+                        }
+                    }
+
+                    Log.e("total", String.valueOf(totalAmount));
+                    Log.e("total", String.valueOf(totalWeight));
+
+
+
+                    String preDate = sharedPreferencesUtils.getfromDate();
+                    String endDate = sharedPreferencesUtils.getLastDate();
+
+                    if (preDate.length() > 1){
+
+                        String yy = preDate.substring(0, 4);
+                        String mm = preDate.substring(4, 6);
+                        String dd = preDate.substring(6, 8);
+
+                        preDate = dd + "/" + mm + "/" + yy;
+
+
+                    }
+                    if (endDate.length() > 1){
+
+                        String yy = endDate.substring(0, 4);
+                        String mm = endDate.substring(4, 6);
+                        String dd = endDate.substring(6, 8);
+
+                        endDate = dd + "/" + mm + "/" + yy;
+
+                    }
+
+
+                    printString = printString + "\n" + "Commilative Total :" +
+                            "\nFrom : " + preDate +
+                            "To : " + endDate + "\n" +
+                            "Weight : " + totalWeight + "\nAmount : " + totalAmount ;
+
+                    try {
+                        printString = printString + MainActivity.lineBreak() ;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    message = message + "\n" + "Com. Ttl(" + preDate +
+                            " - " + endDate + ") :\n" +
+                            "QTY=" + totalWeight + "\nAMT= ₹ " + totalAmount;
+
+                }
+
+
+
+
+        printString = printString + "\n   _western_ \n";
+
+                Log.e("printing string",printString);
+
+        if (isSMSSemd){
+            isSMSSemd = false;
+            messageAlertDialog();
+        }
+
+        if (isPrint) {
+            isPrint = false;
+            printMethod();
+        }
+
+    }
+
+
 
     private void getCurrentDate() {
 
@@ -489,9 +633,30 @@ public class Fragment_home extends Fragment {
 
                         try
                         {
+
+
+                            if (sharedPreferencesUtils.getRateMethodCode().equals("3")){
+                                double value = Double.parseDouble(snf);
+
+                                value = roundToHalf(value);
+                                Log.e("--------value", String.valueOf(value));
+
+                                try {
+                                    snf = MainActivity.oneDecimalString(String.valueOf(value));
+                                    et_snf.setText(snf);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+
                             fat = MainActivity.oneDecimalString(fat);
                             snf = MainActivity.oneDecimalString(snf);
                             rateperltr = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
+
+
+
 
                             if (rateperltr == 0){
                                 Toast.makeText(getActivity(), "Problem to rate found", Toast.LENGTH_LONG).show();
@@ -583,42 +748,141 @@ public class Fragment_home extends Fragment {
     }
 
     public void getCurrentCollection() {
-        try {
-            MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-            SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
 
-            String date = milkDBHelpers.getCurrentDateFromPublic();
-            date = date.replace("/", "");
-            String dd = date.substring(0, 2);
-            String mm = date.substring(2, 4);
-            String yy = date.substring(4, 8);
-            date = yy + mm + dd;
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
-            Cursor cursor = sqLiteDatabase.rawQuery(" SELECT * FROM 'milk_amount' WHERE sift = '" + sift + "' and date = '" + date + "' ", null);
-            int value = 1;
-            float wgt = 0 ,avgFat =0, avgSnf =0,amt =  0;
-            if (cursor != null && cursor.moveToFirst()) {
-                while (cursor.isAfterLast() == false) {
-                    wgt +=  cursor.getFloat(cursor.getColumnIndex("milkweight"));
-                    avgFat +=  cursor.getFloat(cursor.getColumnIndex("fat_wt"));
-                    avgSnf +=  cursor.getFloat(cursor.getColumnIndex("snf_wt"));
-                    amt += cursor.getFloat(cursor.getColumnIndex("totalamount"));
-                    value++;
-                    cursor.moveToNext();
+
+                try {
+                    MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+                    SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
+
+                    String date = milkDBHelpers.getCurrentDateFromPublic();
+                    date = date.replace("/", "");
+                    String dd = date.substring(0, 2);
+                    String mm = date.substring(2, 4);
+                    String yy = date.substring(4, 8);
+                    date = yy + mm + dd;
+
+                    Cursor cursor = sqLiteDatabase.rawQuery(" SELECT * FROM 'milk_amount' WHERE sift = '" + sift + "' and date = '" + date + "' ", null);
+                    int value = 1;
+                    float wgt = 0 ,avgFat =0, avgSnf =0,amt =  0;
+                    if (cursor != null && cursor.moveToFirst()) {
+                        while (cursor.isAfterLast() == false) {
+                            wgt +=  cursor.getFloat(cursor.getColumnIndex("milkweight"));
+                            avgFat +=  cursor.getFloat(cursor.getColumnIndex("fat_wt"));
+                            avgSnf +=  cursor.getFloat(cursor.getColumnIndex("snf_wt"));
+                            amt += cursor.getFloat(cursor.getColumnIndex("totalamount"));
+                            value++;
+                            cursor.moveToNext();
+                        }
+                        lbl_avgFat.setText( MainActivity.oneDecimalFloatToString(avgFat/wgt) );
+                        lbl_avgSnf.setText( MainActivity.oneDecimalFloatToString(avgSnf/wgt) );
+                        lbl_wgt.setText( MainActivity.twoDecimalFloatToString(wgt) );
+                        lbl_amt.setText( MainActivity.twoDecimalFloatToString(amt) );
+                        lbl_SeriolNo.setText("Sr. No. " + value);
+                    } else {
+                        lbl_avgFat.setText("0") ;
+                        lbl_avgSnf.setText("0");
+                        lbl_wgt.setText("0");
+                        lbl_amt.setText("0");
+                        lbl_SeriolNo.setText("Sr. No. 1");
+                    }
                 }
-                lbl_avgFat.setText( MainActivity.oneDecimalFloatToString(avgFat/wgt) );
-                lbl_avgSnf.setText( MainActivity.oneDecimalFloatToString(avgSnf/wgt) );
-                lbl_wgt.setText( MainActivity.twoDecimalFloatToString(wgt) );
-                lbl_amt.setText( MainActivity.twoDecimalFloatToString(amt) );
-                lbl_SeriolNo.setText("Sr. No. " + value);
-            } else {
-                lbl_avgFat.setText("0") ;
-                lbl_avgSnf.setText("0");
-                lbl_wgt.setText("0");
-                lbl_amt.setText("0");
-                lbl_SeriolNo.setText("Sr. No. 1");
+                catch (Exception e) {}
+
             }
-        }
-        catch (Exception e) {}
+
+
+        }, 100);
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    private void verifyDetailApi(){
+
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url = "http://wokosoftware.com/western/index.php?uid=" + MainActivity.instace.userID() + "&action=6";
+
+        Log.e("final ulr", url);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+
+                        try {
+                            Log.e("resonce", response);
+
+                            if (response.length() > 0) {
+                                Log.e("responce ",response);
+                                JSONObject jsonObject = new JSONObject(response);
+                                jsonObject = jsonObject.getJSONObject("details");
+                                String status = jsonObject.getString("status").toString();
+
+                                String userID = jsonObject.getString("id").toString();
+
+
+                                if (!status.equals("")){
+                                    MainActivity.instace.setStatus(status);
+                                }
+
+                                if (status.equals("1") ){
+
+                                    sharedPreferencesUtils.setIsDemoFalse();
+                                    String settitle = jsonObject.getString("name").toString();
+                                    String mobile_string = jsonObject.getString("mobile").toString();
+
+                                    sharedPreferencesUtils.setTitle(settitle);
+                                    sharedPreferencesUtils.setMobile(mobile_string);
+                                }
+
+
+                                if (status.equals("2")){
+
+                                    sharedPreferencesUtils.setIsDemoTrue();
+                                    sharedPreferencesUtils.setTitle("DEMO");
+                                    sharedPreferencesUtils.setMobile("DEMO");
+                                }
+
+                                if (status.equals("3") ){
+                                    exit(0);
+                                }
+
+                            } else {
+                              //   MainActivity.showToast("Network Error");
+                            }
+                        } catch (JSONException e) {
+
+                            e.printStackTrace();
+                            MainActivity.dismiss();
+
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(stringRequest);
+
+    }
+
+    public static double roundToHalf(double d) {
+        return Math.round(d * 2) / 2.0;
     }
 }

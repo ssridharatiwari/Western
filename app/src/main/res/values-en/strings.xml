@@ -13,6 +13,7 @@
     <string name="master">Master</string>
     <string name="report">Report</string>
     <string name="planguage">Language</string>
+    <string name="setting">Setting</string>
 
 
     <string name="morning">morning</string>
@@ -27,6 +28,11 @@
     <string name="mobile">Mobile</string>
     <string name="date">Date</string>
     <string name="amount">Amount</string>
+    <string name="serial_no">s no</string>
+
+
+    <string name="save_print_sms">save print sms</string>
+
 
     <string name="no_entry_text">No Entry Today</string>
     <string name="print_save">Print Save</string>
@@ -51,6 +57,7 @@
     <string name="mas_export">Export</string>
     <string name="mas_import">Import</string>
     <string name="mas_mail">Mail</string>
+    <string name="mas_rate_chart">Rate Chart</string>
 
 
     <string name="rep_mem_lzr">Member Lazer</string>
@@ -71,6 +78,12 @@
     <string name="rt_kg_snf_rt">kg snf rate</string>
     <string name="rt_comition">Comition</string>
     <string name="rt_comition_type">Comition Type:</string>
+
+
+    <string name="change_rate_method">Change Rate Method</string>
+    <string name="change_print_method">Change Print Method</string>
+    <string name="change_society_name">Change Society Name</string>
+    <string name="change_comultive">Change Society Name</string>
 
 
 </resources>

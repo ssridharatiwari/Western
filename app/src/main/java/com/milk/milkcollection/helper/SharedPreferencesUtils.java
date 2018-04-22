@@ -21,6 +21,7 @@ SharedPreferences prefs;
         editor.commit();
     }
 
+
     public void printBy(String printBy) {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("printBy", printBy);
@@ -136,4 +137,88 @@ SharedPreferences prefs;
         else
             return "null";
     }
+
+
+    public void setIsDemoTrue() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("isDemo", "1");
+        editor.commit();
+    }
+    public void setIsDemoFalse() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("isDemo", "0");
+        editor.commit();
+    }
+
+    public String getISDemo() {
+        if(prefs.contains("isDemo"))
+            return prefs.getString("isDemo", "");
+        else
+            return "0";
+    }
+
+
+
+
+    public void setUserId(String userId) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("userID", userId);
+        editor.commit();
+    }
+
+    public String getUserID() {
+        if(prefs.contains("userID"))
+            return prefs.getString("userID", "");
+        else
+            return "0";
+    }
+
+
+
+    public void setDmeoCount(int count) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("demoCount", count);
+        editor.commit();
+    }
+
+    public int getDemoCount() {
+        if(prefs.contains("demoCount"))
+            return prefs.getInt("demoCount", 1);
+        else
+            return 0;
+    }
+
+
+
+    public void setFromDateData(String date) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("setFromDateData", date);
+        editor.commit();
+    }
+
+
+
+    public void setLastDateData(String date) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("setLastDateData", date);
+        editor.commit();
+    }
+
+    public String getfromDate () {
+
+        if(prefs.contains("setFromDateData"))
+            return prefs.getString("setFromDateData", "");
+        else
+            return "";
+    }
+
+
+    public String getLastDate () {
+
+        if(prefs.contains("setLastDateData"))
+            return prefs.getString("setLastDateData", "");
+        else
+            return "";
+    }
+
 }
