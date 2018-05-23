@@ -170,7 +170,7 @@ public class Fragment_home extends Fragment {
                 }
                 return false;
             }
-        });g
+        });
 
         et_fat.setOnKeyListener(new View.OnKeyListener() {
             @Override
