@@ -172,6 +172,24 @@ public class Fragment_home extends Fragment {
             }
         });
 
+        et_fat.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if (keyCode == event.KEYCODE_ENTER) {
+
+                    if (sharedPreferencesUtils.getDefaultSNF()>0) {
+                        createmilkvalue();
+                        hideKeyboard(getActivity());
+                    }
+                }
+
+                return false;
+            }
+        });
+
+
+
         et_code.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
@@ -314,6 +332,8 @@ public class Fragment_home extends Fragment {
         setTextsAccordingRate();
 
         verifyDetailApi();
+        checkDefaultSnf();
+
 
         return rootView;
     }
@@ -623,6 +643,13 @@ public class Fragment_home extends Fragment {
             fat = et_fat.getText().toString();
             snf = et_snf.getText().toString();
 
+            if (sharedPreferencesUtils.getDefaultSNF() > 0){
+                snf = String.valueOf(sharedPreferencesUtils.getDefaultSNF());
+            }else{
+                snf = et_snf.getText().toString();
+            }
+
+
             if (weight.length() == 0)
                 et_weight.setError("Weight is required!");
             else if (fat.length() == 0)
@@ -746,6 +773,33 @@ public class Fragment_home extends Fragment {
             e.printStackTrace();
         }
     }
+
+
+
+
+
+    private void  checkDefaultSnf(){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (sharedPreferencesUtils.getDefaultSNF() > 0){
+                    et_snf.setText(String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
+                    et_snf.setEnabled(false);
+
+                }else{
+                    et_snf.setText("");
+                    et_snf.setEnabled(true);
+
+                }
+
+            }
+
+
+        }, 100);
+
+    }
+
 
     public void getCurrentCollection() {
 

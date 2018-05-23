@@ -14,6 +14,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,7 @@ import static java.lang.System.exit;
  */
 public class Fragment_Setting extends Fragment {
     private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
-    private Button btn_rate_method,btn_select_print,btn_select_old_chart,btn_fetch;
+    private Button btn_rate_method,btn_select_print,btn_select_old_chart,btn_fetch,btn_defaultSnf;
     private ContentProvider contentResolver;
     SharedPreferencesUtils sharedPreferencesUtils;
     int PERMISSION_REQUEST_CODE = 1;
@@ -80,6 +81,7 @@ public class Fragment_Setting extends Fragment {
         lblRate = (TextView) rootView.findViewById(R.id.txtRate);
         lblPrint = (TextView) rootView.findViewById(R.id.txtPrint);
         txtCommulative = (TextView) rootView.findViewById(R.id.txtCommulative);
+        btn_defaultSnf =(Button)rootView.findViewById(R.id.btn_defaultSnf);
 
         lblRate.setText("Selected : " + sharedPreferencesUtils.getRateMethodText());
         lblPrint.setText("Selected : " + sharedPreferencesUtils.getprintByText());
@@ -243,10 +245,71 @@ public class Fragment_Setting extends Fragment {
 
         });
 
+        btn_defaultSnf.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
 
+
+                String messge = "Use Default SNF";
+
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+                builder.setTitle(messge );
+                builder.setItems(new CharSequence[] {"Start", "Stop"},
+
+                        new DialogInterface.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.M)
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                switch (which) {
+
+                                    case 0:
+
+
+                                        putDefaultSNF();
+                                        break;
+
+                                    case 1:
+
+                                        sharedPreferencesUtils.setDefaultSNF(0);
+                                        updateSNF();
+
+                                        break;
+
+                                }
+                            }
+                        });
+                builder.create().show();
+
+
+
+
+                //   verifyDetailApi();
+
+            }
+
+        });
+
+
+
+        updateSNF();
 
         return rootView;
     }
+
+
+    public void updateSNF(){
+        if (sharedPreferencesUtils.getDefaultSNF() > 0){
+
+            btn_defaultSnf.setText("Default SNF - " + String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
+
+        }else{
+            btn_defaultSnf.setText("Default SNF - " + "OFF");
+
+        }
+
+    }
+
 
     public void updateData(){
         lblRate.setText("Selected : " + sharedPreferencesUtils.getRateMethodText());
@@ -418,6 +481,63 @@ public class Fragment_Setting extends Fragment {
         alert.show();
 
     }
+
+
+
+
+
+    private void putDefaultSNF (){
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+        final EditText edittext = new EditText(getActivity());
+
+        edittext.setInputType( InputType.TYPE_NUMBER_FLAG_DECIMAL );
+        edittext.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+        alert.setMessage("Default SNF");
+        alert.setTitle("Enter SNF");
+
+        alert.setView(edittext);
+
+        final AlertDialog.Builder ok = alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public String toString() {
+                return "$classname{}";
+            }
+
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+
+
+                String YouEditTextValue = edittext.getText().toString();
+
+                if ( Float.parseFloat(YouEditTextValue) > 0.0) {
+
+                    sharedPreferencesUtils.setDefaultSNF( Float.parseFloat(YouEditTextValue));
+                    updateSNF();
+                } else {
+                    try {
+                        MainActivity.showToast("Wrong value");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
+
+    }
+
 
 
 

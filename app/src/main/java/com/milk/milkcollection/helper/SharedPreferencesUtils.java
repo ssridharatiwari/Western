@@ -3,6 +3,10 @@ package com.milk.milkcollection.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.milk.milkcollection.Activity.MainActivity;
+
+import java.io.IOException;
+
 /**
  * Created by Parasme on 4/21/2016.
  */
@@ -219,6 +223,29 @@ SharedPreferences prefs;
             return prefs.getString("setLastDateData", "");
         else
             return "";
+    }
+
+
+
+    public void setDefaultSNF(float snf) {
+
+
+        try {
+            float value = Float.parseFloat(MainActivity.twoDecimalFloatToString(snf));
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putFloat("defaultSNF", value);
+            editor.commit();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public float getDefaultSNF() {
+        if(prefs.contains("defaultSNF"))
+            return prefs.getFloat("defaultSNF", (float) 0.0);
+        else
+            return 0;
     }
 
 }

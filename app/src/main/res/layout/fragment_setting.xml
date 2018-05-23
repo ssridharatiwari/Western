@@ -121,6 +121,24 @@
 
 
 
+        <Button
+            android:id="@+id/btn_defaultSnf"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/button_blue"
+            android:gravity="center"
+            android:text="Defallt SNF - Off"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:layout_marginTop="50dp"
+            android:textSize="15dp"
+            />
+
+
+
+
 
     </LinearLayout>
 
