@@ -26,6 +26,7 @@ import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import static java.lang.Float.parseFloat;
 
@@ -206,7 +207,18 @@ public class fill_chart extends Fragment {
         float fatNum = parseFloat(fat);
 
         float snfNum = parseFloat(snf);
-        snfNum = (float)(snfNum + difrence);
+        snfNum = (snfNum + difrence);
+
+        snfNum = round(snfNum,1);
+
+//        Log.e("snf num ", String.valueOf(snfNum));
+//        Log.e("fat num ", String.valueOf(fatNum));
+//        Log.e(" to snf num ", String.valueOf(to_snf_str));
+//        Log.e("from snf num ", String.valueOf(str_from_snf));
+//
+//        Log.e("to fat  num ", String.valueOf(to_fat));
+//        Log.e("from fat num ", String.valueOf(str_from_fat));
+//        Log.e("Difference ", String.valueOf(difrence));
 
 
         if (Float.parseFloat(to_snf_str) < snfNum) {
@@ -379,4 +391,10 @@ public class fill_chart extends Fragment {
 
     }
 
+
+    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
+    }
 }

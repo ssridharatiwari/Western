@@ -659,7 +659,7 @@ public class Fragment_home extends Fragment {
 
 
                             if (rateperltr == 0){
-                                Toast.makeText(getActivity(), "Problem to rate found", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "rate not found", Toast.LENGTH_LONG).show();
                             } else {
 
                                 rate.setText(String.valueOf(rateperltr));
