@@ -2,15 +2,23 @@ package com.milk.milkcollection.Fragment;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
@@ -27,25 +35,42 @@ import android.widget.Toast;
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
+import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+import com.milk.milkcollection.helper.UploadFile;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.FileChannel;
+
+import static android.content.ContentValues.TAG;
+import static com.milk.milkcollection.Activity.MainActivity.*;
 
 
 public class Fragment_Master extends Fragment {
 
-    private Button btn_showrate, btn_addrate, btn_showmember, btn_addmember,btn_import,send_mail,btn_excel,btn_export,btn_preImport;
+    private Button btn_showrate, btn_addrate, btn_showmember, btn_addmember, btn_import, send_mail, btn_excel, btn_export, btn_preImport;
     public TextView toolbartitle;
     private String url;
     private String sqlitePath;
     MilkDBHelpers milkDBHelpers;
     private File backupDB;
-    private LinearLayout lay_addrate,lay_showrate,lay_ratechart;
+    private LinearLayout lay_addrate, lay_showrate, lay_ratechart;
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
 
     public Fragment_Master() {
@@ -61,8 +86,8 @@ public class Fragment_Master extends Fragment {
         btn_addrate = (Button) rootView.findViewById(R.id.btn_addrate);
         btn_showmember = (Button) rootView.findViewById(R.id.btn_showmember);
         btn_addmember = (Button) rootView.findViewById(R.id.btn_addmember);
-        btn_import=(Button)rootView.findViewById(R.id.btn_import);
-        send_mail=(Button)rootView.findViewById(R.id.btn_mail);
+        btn_import = (Button) rootView.findViewById(R.id.btn_import);
+        send_mail = (Button) rootView.findViewById(R.id.btn_mail);
         btn_export = (Button) rootView.findViewById(R.id.btn_export);
         btn_excel = (Button) rootView.findViewById(R.id.btn_excel);
         btn_preImport = (Button) rootView.findViewById(R.id.btn_preImport);
@@ -71,11 +96,10 @@ public class Fragment_Master extends Fragment {
         lay_showrate = (LinearLayout) rootView.findViewById(R.id.lay_showrate);
 
 
-
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                    showHideMethod();
+                showHideMethod();
             }
         });
 
@@ -125,7 +149,7 @@ public class Fragment_Master extends Fragment {
         btn_showrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // startActivity(new Intent(getActivity(), SearchActivity.class));
+                // startActivity(new Intent(getActivity(), SearchActivity.class));
                 toolbartitle.setText(getResources().getString(R.string.mas_show_rt));
                 Fragment fragment = new Fragment_Searchfat();
                 android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -170,22 +194,15 @@ public class Fragment_Master extends Fragment {
 
 
 
-        btn_preImport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               preImportDB();
-            }
-        });
 
         send_mail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String db_name=milkDBHelpers.DATABASE_NAME;
+                String db_name = milkDBHelpers.DATABASE_NAME;
                 File sd = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
-                        File.separator + "MyData"+
-                        File.separator );
-
+                        File.separator + "MyData" +
+                        File.separator);
 
 
                 //Log.e("Export", String.valueOf(sd));
@@ -196,9 +213,9 @@ public class Fragment_Master extends Fragment {
                 if (success) {
 
                     File data = Environment.getDataDirectory();
-                    FileChannel source=null;
-                    FileChannel destination=null;
-                    String currentDBPath = "/data/"+ getActivity().getPackageName() +"/databases/"+db_name;
+                    FileChannel source = null;
+                    FileChannel destination = null;
+                    String currentDBPath = "/data/" + getActivity().getPackageName() + "/databases/" + db_name;
                     String backupDBPath = db_name;
                     File currentDB = new File(data, currentDBPath);
                     File backupDB = new File(sd, backupDBPath);
@@ -211,17 +228,17 @@ public class Fragment_Master extends Fragment {
                         Uri path = Uri.fromFile(backupDB);
                         Intent emailIntent = new Intent(Intent.ACTION_SEND);
 // set the type to 'email'
-                        emailIntent .setType("vnd.android.cursor.dir/email");
+                        emailIntent.setType("vnd.android.cursor.dir/email");
                         String to[] = {"kishorejangir@gmail.com"};
-                        emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, to);
 // the attachment
-                        emailIntent .putExtra(Intent.EXTRA_STREAM, path);
+                        emailIntent.putExtra(Intent.EXTRA_STREAM, path);
 // the mail subject
-                        emailIntent .putExtra(Intent.EXTRA_SUBJECT, "Subject");
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
                         startActivity(Intent.createChooser(emailIntent, "Send email..."));
 
 
-                    } catch(IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -230,57 +247,100 @@ public class Fragment_Master extends Fragment {
             }
         });
         btn_export.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-             askForExport();
-         }
-     });
-
+            @Override
+            public void onClick(View v) {
+                askForExport();
+            }
+        });
 
 
         return rootView;
     }
 
-    public void exportDB()
-    {
-        String db_name=milkDBHelpers.DATABASE_NAME;
-        File sd = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
-                File.separator + "MyData"+
-                File.separator );
+    int PERMISSION_REQUEST_CODE;
 
-        Log.e("Export", String.valueOf(sd));
-        boolean success = true;
-        if (!sd.exists()) {
-            success = sd.mkdir();
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void exportDB() {
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED  || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.v(TAG, "Permission is granted");
+
+            requestPermissions(new String[]{ android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_CODE);                }
+        else {
+            uploadFile();
         }
-        if (success) {
 
 
-            File data = Environment.getDataDirectory();
-            FileChannel source=null;
-            FileChannel destination=null;
-            String currentDBPath = "/data/"+ getActivity().getPackageName() +"/databases/"+db_name;
-            String backupDBPath = db_name;
 
-
-            File currentDB = new File(data, currentDBPath);
-            File backupDB = new File(sd, backupDBPath);
-            try {
-                source = new FileInputStream(currentDB).getChannel();
-                destination = new FileOutputStream(backupDB).getChannel();
-                destination.transferFrom(source, 0, source.size());
-                source.close();
-                destination.close();
-                Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_SHORT).show();
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        String db_name = milkDBHelpers.DATABASE_NAME ;
+//        File sd = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
+//                File.separator + "MyData" +
+//                File.separator );
+//
+//        Log.e("Export", String.valueOf(sd));
+//        boolean success = true;
+//        if (!sd.exists()) {
+//            success = sd.mkdir();
+//        }
+//        if (success) {
+//
+//            File data = Environment.getDataDirectory();
+//            FileChannel source = null;
+//            FileChannel destination = null;
+//
+//            String currentDBPath = "/data/" + getActivity().getPackageName() + "/databases/" + db_name;
+//            String backupDBPath = "western"+".db";
+//
+//
+//            File currentDB = new File(data, currentDBPath);
+//            File backupDB = new File(sd, backupDBPath );
+//
+//            if (backupDB.exists()){
+//
+//            try {
+//                source = new FileInputStream(currentDB).getChannel();
+//                destination = new FileOutputStream(backupDB).getChannel();
+//                destination.transferFrom(source, 0, source.size());
+//                source.close();
+//                destination.close();
+//                 Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_SHORT).show();
+//
+//               if (MainActivity.instace.isNetworkConnected()){
+//                   //uploadFile();
+//                   instace.showLoading("Uploading..");
+//                   new UploadFileAsync().execute(backupDB.getPath());
+//
+//
+//               }else{
+//                   MainActivity.makeToast("Internet Connection not available");
+//               }
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            }
+//        }
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-    private void askForImport(){
+        if (requestCode == PERMISSION_REQUEST_CODE){
+            uploadFile();
+        }else {
+            exportDB();
+        }
+
+    }
+
+
+    private void askForImport() {
 
         new AlertDialog.Builder(getActivity()).setTitle("IMPORT")
                 .setMessage("Do you want to import data from external storage")
@@ -295,19 +355,17 @@ public class Fragment_Master extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-
             }
         }).show();
-
-
     }
 
 
-    private void askForExport(){
+    private void askForExport() {
 
-        new AlertDialog.Builder(getActivity()).setTitle("IMPORT")
-                .setMessage("Do you want Export data to external storage")
+        new AlertDialog.Builder(getActivity()).setTitle("")
+                .setMessage("Make online Backup")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -326,121 +384,81 @@ public class Fragment_Master extends Fragment {
     }
 
 
-    public void importDB()
-    {
+    public void importDB() {
 
-        preExportDB();
+        //preExportDB();
+
+        downloadFile();
 
 
-        String db_name= milkDBHelpers.DATABASE_NAME;
-          File sd = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
-                File.separator + "MyData"+ File.separator );
-
-        Log.e("ImportDb", String.valueOf(sd.getPath()));
-        Log.e("ImportDb", String.valueOf(sd));
-        File data = Environment.getDataDirectory();
-        FileChannel source=null;
-        FileChannel destination=null;
-
-        String backupDBPath = "/data/"+ getActivity().getPackageName() +"/databases/"+db_name;
-        String currentDBPath = db_name;
-        File currentDB = new File(sd, currentDBPath);
-        File backupDB = new File(data, backupDBPath);
-        try {
-            source = new FileInputStream(currentDB).getChannel();
-            destination = new FileOutputStream(backupDB).getChannel();
-            destination.transferFrom(source, 0, source.size());
-            source.close();
-            destination.close();
-            Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_SHORT).show();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
+//        String db_name = milkDBHelpers.DATABASE_NAME;
+//        File sd = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
+//                File.separator + "MyData" + File.separator);
+//
+//        Log.e("ImportDb", String.valueOf(sd.getPath()));
+//        Log.e("ImportDb", String.valueOf(sd));
+//        File data = Environment.getDataDirectory();
+//        FileChannel source = null;
+//        FileChannel destination = null;
+//
+//        String backupDBPath = "/data/" + getActivity().getPackageName() + "/databases/" + db_name;
+//        String currentDBPath = db_name;
+//        File currentDB = new File(sd, currentDBPath);
+//        File backupDB = new File(data, backupDBPath);
+//        try {
+//            source = new FileInputStream(currentDB).getChannel();
+//            destination = new FileOutputStream(backupDB).getChannel();
+//            destination.transferFrom(source, 0, source.size());
+//            source.close();
+//            destination.close();
+//            Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
-
-    public void preExportDB()
-    {
-
-        String db_name=milkDBHelpers.DATABASE_NAME;
-        File sd = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
-                File.separator + "PreMyData"+
-                File.separator );
-
-        Log.e("Export", String.valueOf(sd));
-        boolean success = true;
-        if (!sd.exists()) {
-            success = sd.mkdir();
-        }
-        if (success) {
-
-
-            File data = Environment.getDataDirectory();
-            FileChannel source=null;
-            FileChannel destination=null;
-            String currentDBPath = "/data/"+ getActivity().getPackageName() +"/databases/"+db_name;
-            String backupDBPath = db_name;
-
-
-            File currentDB = new File(data, currentDBPath);
-            File backupDB = new File(sd, backupDBPath);
-            try {
-                source = new FileInputStream(currentDB).getChannel();
-                destination = new FileOutputStream(backupDB).getChannel();
-                destination.transferFrom(source, 0, source.size());
-                source.close();
-                destination.close();
-                //  Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_SHORT).show();
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    public void preImportDB()
-    {
-
-        String db_name= milkDBHelpers.DATABASE_NAME;
-        File sd = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
-                File.separator + "PreMyData"+ File.separator );
-
-        Log.e("ImportDb", String.valueOf(sd.getPath()));
-        Log.e("ImportDb", String.valueOf(sd));
-        File data = Environment.getDataDirectory();
-        FileChannel source=null;
-        FileChannel destination=null;
-
-        String backupDBPath = "/data/"+ getActivity().getPackageName() +"/databases/"+db_name;
-        String currentDBPath = db_name;
-        File currentDB = new File(sd, currentDBPath);
-        File backupDB = new File(data, backupDBPath);
-        try {
-            source = new FileInputStream(currentDB).getChannel();
-            destination = new FileOutputStream(backupDB).getChannel();
-            destination.transferFrom(source, 0, source.size());
-            source.close();
-            destination.close();
-            Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_SHORT).show();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 
     private void showHideMethod() {
 
-        final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(MainActivity.instace);
-        String rateMethod =  sharedPreferencesUtils.getRateMethodCode();
+        final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(instace);
+        String rateMethod = sharedPreferencesUtils.getRateMethodCode();
 
-        if (rateMethod.equals("1")){
+        if (rateMethod.equals("1")) {
             lay_ratechart.setVisibility(View.GONE);
             lay_addrate.setVisibility(View.VISIBLE);
             lay_showrate.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             lay_ratechart.setVisibility(View.VISIBLE);
             lay_addrate.setVisibility(View.GONE);
             lay_showrate.setVisibility(View.GONE);
         }
     }
+
+
+    private static void downloadFile() {
+
+        instace.showLoading("Downloading..");
+
+        SharedPreferencesUtils unit = new SharedPreferencesUtils(instace);
+        String url =   "http://wokosoftware.com/western/uploads/" + unit.getUserID() + "/MyDBName";
+        Log.e("url",url);
+
+        new DownloadFile().execute(url);
+    }
+
+    public void uploadFile(){
+        if (MainActivity.instace.isNetworkConnected()){
+            //uploadFile();
+            MainActivity.getInstace().showLoading("Uploading..");
+            new UploadFile().execute();
+
+
+        }else{
+            MainActivity.makeToast("Internet Connection not available");
+        }
+    }
+
+
 }
+
+//

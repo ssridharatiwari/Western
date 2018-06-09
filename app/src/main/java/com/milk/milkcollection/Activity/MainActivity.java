@@ -14,7 +14,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -51,12 +53,16 @@ import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -86,10 +92,15 @@ public class MainActivity extends AppCompatActivity {
     public static Socket nsocket = new Socket();
     public static SocketAddress sockaddr;
 
+
     public static ProgressDialog progress;
     public static MainActivity instace;
 
-    public MainActivity getInstace(){
+     SharedPreferencesUtils sharedPreferencesUtils;
+
+
+
+    public static MainActivity getInstace(){
         if(instace == null){
             instace = new MainActivity ();
         }
@@ -190,6 +201,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         sharedPreferencesUtils.setDmeoCount(100);
+
+       //importDB();
 
       runConnection();
 
@@ -373,7 +386,6 @@ public class MainActivity extends AppCompatActivity {
         }).show();
     }
 
-    SharedPreferencesUtils sharedPreferencesUtils;
 
     public void changePrinter(Activity activity) {
 
@@ -848,7 +860,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static void dismiss(){
 
-        progress.dismiss();
+        if (progress.isShowing())
+                progress.dismiss();
 
     }
 
@@ -937,5 +950,42 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    public void importDB() {
+
+        // preExportDB();
+
+
+
+        String current_db_name = "Data.db";
+        String pre_db_name = "MyDBName";
+
+
+        File data = Environment.getDataDirectory();
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        String dbPath = "/data/" + MainActivity.instace.getPackageName() + "/databases/" ;
+
+        File preDB = new File(data, dbPath + pre_db_name);
+        File currentDB = new File(data, dbPath + current_db_name);
+
+        try {
+            source = new FileInputStream(preDB).getChannel();
+            destination = new FileOutputStream(currentDB).getChannel();
+            destination.transferFrom(source, 0, source.size());
+            source.close();
+            destination.close();
+            Toast.makeText(MainActivity.instace, "Please wait", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+
 }
 

@@ -198,7 +198,8 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_marginRight="10dp"
-            android:weightSum="10">
+            android:weightSum="10"
+            android:visibility="gone">
             <Button
                 android:id="@+id/btn_mail"
                 android:text="@string/mas_mail"

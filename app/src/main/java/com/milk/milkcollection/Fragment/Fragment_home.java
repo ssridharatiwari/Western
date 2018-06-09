@@ -49,6 +49,7 @@ import com.milk.milkcollection.R;
 import com.milk.milkcollection.SClient;
 import com.milk.milkcollection.application.AppApplication;
 import com.milk.milkcollection.helper.DatePickerFragment;
+import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.myutility;
 import com.milk.milkcollection.retrofit.HttpServerBackend;
@@ -85,6 +86,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
+import static com.milk.milkcollection.Activity.MainActivity.instace;
 import static java.lang.System.exit;
 
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
@@ -333,7 +335,7 @@ public class Fragment_home extends Fragment {
 
         verifyDetailApi();
         checkDefaultSnf();
-
+        downloadFile();
 
         return rootView;
     }
@@ -845,15 +847,13 @@ public class Fragment_home extends Fragment {
                         lbl_SeriolNo.setText("Sr. No. 1");
                     }
                 }
+
                 catch (Exception e) {}
 
             }
 
 
         }, 100);
-
-
-
     }
 
 
@@ -866,9 +866,13 @@ public class Fragment_home extends Fragment {
 
     private void verifyDetailApi(){
 
+        if (!MainActivity.instace.isNetworkConnected()){
+            return;
+        }
+
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://wokosoftware.com/western/index.php?uid=" + MainActivity.instace.userID() + "&action=6";
+        String url = "http://wokosoftware.com/western/index.php?uid=" + MainActivity.instace.userID() + "&action=6&android_id=10" + PinActivity.getInstace().AndroidID;
 
         Log.e("final ulr", url);
 
@@ -882,12 +886,12 @@ public class Fragment_home extends Fragment {
                             Log.e("resonce", response);
 
                             if (response.length() > 0) {
-                                Log.e("responce ",response);
+
                                 JSONObject jsonObject = new JSONObject(response);
+
+
                                 jsonObject = jsonObject.getJSONObject("details");
                                 String status = jsonObject.getString("status").toString();
-
-                                String userID = jsonObject.getString("id").toString();
 
 
                                 if (!status.equals("")){
@@ -899,20 +903,16 @@ public class Fragment_home extends Fragment {
                                     sharedPreferencesUtils.setIsDemoFalse();
                                     String settitle = jsonObject.getString("name").toString();
                                     String mobile_string = jsonObject.getString("mobile").toString();
-
                                     sharedPreferencesUtils.setTitle(settitle);
                                     sharedPreferencesUtils.setMobile(mobile_string);
                                 }
-
-
-                                if (status.equals("2")){
+                                else if (status.equals("2")){
 
                                     sharedPreferencesUtils.setIsDemoTrue();
                                     sharedPreferencesUtils.setTitle("DEMO");
                                     sharedPreferencesUtils.setMobile("DEMO");
                                 }
-
-                                if (status.equals("3") ){
+                                else {
                                     exit(0);
                                 }
 
@@ -936,7 +936,32 @@ public class Fragment_home extends Fragment {
 
     }
 
-    public static double roundToHalf(double d) {
+
+
+    public void downloadFile() {
+
+        if (!MainActivity.instace.isNetworkConnected()){
+            return;
+        }
+
+        if (sharedPreferencesUtils.isDownloaded().equals("0")){
+
+            sharedPreferencesUtils.setIsDownloaded();
+            MainActivity.instace.showLoading("Data Downloading...");
+            SharedPreferencesUtils unit = new SharedPreferencesUtils(getActivity());
+            String url =   "http://wokosoftware.com/western/uploads/" + unit.getUserID() + "/MyDBName";
+            Log.e("url",url);
+            new DownloadFile().execute(url);
+
+        }
+
+    }
+
+
+        public static double roundToHalf(double d) {
         return Math.round(d * 2) / 2.0;
     }
 }
+
+
+

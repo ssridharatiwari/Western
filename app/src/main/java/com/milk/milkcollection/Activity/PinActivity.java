@@ -11,7 +11,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -20,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.text.InputType;
 import android.util.Log;
 
 import android.view.View;
@@ -40,15 +44,30 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.milk.milkcollection.R;
+import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.channels.FileChannel;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.milk.milkcollection.Activity.MainActivity.dismiss;
+import static com.milk.milkcollection.Activity.MainActivity.instace;
+import static java.lang.System.exit;
 
 
 public class PinActivity extends AppCompatActivity {
@@ -57,15 +76,24 @@ public class PinActivity extends AppCompatActivity {
 
     private String match;
     private EditText pinCode1;
-    private TextView btnVerify, emi, btnSend;
+    private TextView btnVerify, emi, btnSend,btnOldCustomer;
     ProgressDialog dialog;
     EditText title, mobile;
     String settitle;
     SharedPreferencesUtils sharedPreferencesUtils;
-    String pin1, mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "";
+    public String pin1, mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "";
 
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
 
+
+    public static PinActivity instace;
+
+    public static PinActivity getInstace(){
+        if(instace == null){
+            instace = new PinActivity();
+        }
+        return instace;
+    }
 
     ProgressDialog progress;
 
@@ -73,6 +101,9 @@ public class PinActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin);
+
+
+        instace = PinActivity.this;
 
         sharedPreferencesUtils = new SharedPreferencesUtils(PinActivity.this);
 
@@ -83,12 +114,16 @@ public class PinActivity extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
          String isLogin = preferences.getString("isLogin", "");
 
+
+
+
+
+
          if (isLogin.equals("1") || isLogin.equals("2") ){
 
             startActivity(new Intent(PinActivity.this, MainActivity.class));
             finish();
         }
-
         else {
 
             getDeviceIDS();
@@ -108,6 +143,15 @@ public class PinActivity extends AppCompatActivity {
 
                 }
             });
+
+             btnOldCustomer.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+
+
+                     OldCustomer();
+                 }
+             });
 
 
             btnSend.setOnClickListener(new View.OnClickListener() {
@@ -360,7 +404,14 @@ public class PinActivity extends AppCompatActivity {
 
     private void verifyDetailApi(){
 
-    if (AndroidID.length() > 0) {
+
+        if (!isNetworkConnected()){
+            makeToast("Internet Required");
+            return;
+        }
+
+
+        if (AndroidID.length() > 0) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://wokosoftware.com/western/index.php?android_id=" + AndroidID + "&action=2";
@@ -390,8 +441,6 @@ public class PinActivity extends AppCompatActivity {
 
                                     jsonObject = jsonObject.getJSONObject("details");
 
-
-
                                     String userStatus = jsonObject.getString("status").toString();
 
                                     String userID = jsonObject.getString("id").toString();
@@ -407,7 +456,6 @@ public class PinActivity extends AppCompatActivity {
                                         makeToast("Thank you : registration successful");
                                         settitle = jsonObject.getString("name").toString();
                                         mobile_string = jsonObject.getString("mobile").toString();
-
 
                                         startNewActivity();
 
@@ -469,77 +517,6 @@ public class PinActivity extends AppCompatActivity {
 
 
 
-
-    private void postRequest(){
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String URL = "http://wokosoftware.com/western/index.php";
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                progress.dismiss();
-
-                try {
-                    Log.e("resonce", response);
-                    if (response.length()>0) {
-                        JSONObject jsonObject = new JSONObject(response);
-
-                        makeToast(jsonObject.getString("message").toString());
-                    }else{
-                        makeToast("Detail sending failed : network or server error");
-                    }
-                } catch (JSONException e) {
-                    makeToast("Detail sending failed : network or server error");
-                    e.printStackTrace();
-                }
-
-
-                Log.i("VOLLEY", response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progress.dismiss();
-                makeToast("Detail sending failed : network or server error");
-            }
-        }) {
-            @Override
-            public String getBodyContentType() {
-                progress.dismiss();
-
-                return "application/json; charset=utf-8";
-            }
-
-
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  jsonBody = new HashMap<String, String>();
-
-                jsonBody.put("name", settitle);
-                jsonBody.put("sim_id", sim_no);
-                jsonBody.put("android_id", AndroidID);
-                jsonBody.put("iemi_id", imeiNumber);
-                jsonBody.put("mobile", mobile_string);
-                jsonBody.put("action","1");
-                return jsonBody;
-            }
-            @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                String responseString = "";
-                if (response != null) {
-                    responseString = String.valueOf(response.statusCode);
-                    // can get more details such as response.headers
-                }
-                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-            }
-        };
-
-        requestQueue.add(stringRequest);
-    }
-
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -548,6 +525,9 @@ public class PinActivity extends AppCompatActivity {
     public static boolean isPermissionGranted(Activity activity) {
 
         if (Build.VERSION.SDK_INT >= 23) {
+
+
+
 
             if ((activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
@@ -583,25 +563,6 @@ public class PinActivity extends AppCompatActivity {
 
     public void genRandomNo() {
 
-//        long gett = (long) Math.floor(Math.random() * (999999999 - 111111111 + 1)) + 111111000;
-//        gett = gett * 9;
-//        RandomNumber = String.valueOf(gett);
-//        final String imsiSIM1 = String.valueOf(gett);
-//        long matchvale = Long.parseLong(imsiSIM1) / 111615;
-//        matchvale = matchvale * 99;
-//        matchvale = matchvale / 23;
-//        matchvale = matchvale * 74;
-//        matchvale = matchvale + 453453;
-//        matchvale = matchvale * 3;
-//
-//        int val = (int) matchvale;
-//        String value = String.valueOf(val);
-//
-//        if (value.length() > 7) {
-//            for (int i = 0; i < (value.length() - 7); i++) {
-//                val = val / 10;
-//            }
-//        }
 
         RandomNumber = "12344353";
 
@@ -612,6 +573,8 @@ public class PinActivity extends AppCompatActivity {
         btnVerify = (TextView) findViewById(R.id.btnVerify);
         btnSend = (TextView) findViewById(R.id.btnSend);
         pinCode1 = (EditText) findViewById(R.id.pinCode1);
+        btnOldCustomer = (TextView) findViewById(R.id.btnOldCustomer);
+
 
         title = (EditText) findViewById(R.id.title);
         mobile = (EditText) findViewById(R.id.mobile);
@@ -630,7 +593,190 @@ public class PinActivity extends AppCompatActivity {
         }
     }
 
+
+    private void OldCustomer(){
+
+
+
+        android.support.v7.app.AlertDialog.Builder alert = new android.support.v7.app.AlertDialog.Builder(PinActivity.this);
+
+        final EditText edittext = new EditText(PinActivity.this);
+
+        edittext.setInputType( InputType.TYPE_NUMBER_FLAG_SIGNED );
+        edittext.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+        alert.setMessage("");
+        alert.setTitle("Customer Code");
+
+        alert.setView(edittext);
+
+        final android.support.v7.app.AlertDialog.Builder ok = alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public String toString() {
+                return "$classname{}";
+            }
+
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+
+
+                String YouEditTextValue = edittext.getText().toString();
+                userID =  YouEditTextValue;
+
+                if ( Float.parseFloat(YouEditTextValue) > 0.0) {
+
+                    verifyOLDUSER();
+
+                } else {
+
+
+                }
+
+
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
+
+
+    }
+
+
+    String userID = "";
+
+
+
+
+    private void verifyOLDUSER(){
+
+
+        if (!isNetworkConnected()){
+            makeToast("Internet Required");
+            return;
+        }
+
+        showLoading("Wait...");
+
+        RequestQueue queue = Volley.newRequestQueue(PinActivity.this);
+        String url = "http://wokosoftware.com/western/index.php?uid=" + userID + "&action=9&android_id=" + AndroidID;
+
+        Log.e("final ulr", url);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                          progress.dismiss();
+
+                        try {
+
+                            Log.e("resonce", response);
+
+                            if (response.length() > 0) {
+
+
+                                Log.e("responce ",response);
+
+
+                                JSONObject jsonObject = new JSONObject(response);
+
+                                String jsonStatus = jsonObject.getString("status").toString();
+
+                                if (jsonStatus.equals("200")) {
+
+                                    jsonObject = jsonObject.getJSONObject("details");
+
+
+
+
+
+
+                                    String userStatus = jsonObject.getString("status").toString();
+
+                                    String userID = jsonObject.getString("id").toString();
+
+                                    if (userID != "") {
+                                        sharedPreferencesUtils.setUserId(userID);
+                                    }
+                                    if (!userStatus.equals("")){
+                                        setStatus(userStatus);
+                                    }
+
+                                    if (userStatus.equals("1")){
+                                        makeToast("Thank you : registration successful");
+                                        settitle = jsonObject.getString("name").toString();
+                                        mobile_string = jsonObject.getString("mobile").toString();
+
+
+                                        startNewActivity();
+
+
+                                    }else if (userStatus.equals("2")){
+
+                                        sharedPreferencesUtils.setIsDemoTrue();
+
+                                        makeToast("Demo App");
+                                        settitle = "DEMO";
+                                        mobile_string = "DEMO";
+                                        startNewActivity();
+
+                                    }else if (userStatus.equals("3")){
+                                        makeToast("You are not verified");
+                                    }
+
+
+                                    else
+                                        makeToast("You are not verified");
+
+                                }else{
+
+
+                                    makeToast(jsonObject.getString("message").toString());
+
+                                }
+
+
+
+
+                            } else {
+                                //   MainActivity.showToast("Network Error");
+                            }
+                        } catch (JSONException e) {
+
+                            e.printStackTrace();
+                            MainActivity.dismiss();
+
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(stringRequest);
+
+    }
+
+
+    public boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+
+
 }
+
+
+
+
 
 
 

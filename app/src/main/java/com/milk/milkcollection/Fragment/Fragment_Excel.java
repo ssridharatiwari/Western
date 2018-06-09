@@ -164,9 +164,9 @@ public class Fragment_Excel extends Fragment {
                             PERMISSION_REQUEST_CODE_DOWNLOAD);                }
                 else {
 
-                importFromDownload();
+                    importFromDownload();
 
-                // downloadFile();
+                    // downloadFile();
                 }
             }
         });

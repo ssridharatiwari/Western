@@ -137,7 +137,7 @@ android:weightSum="10">
     <TextView
         android:layout_marginRight="@dimen/density_twenty"
         android:layout_marginLeft="@dimen/density_twenty"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/btnVerify"
         android:layout_width="222dp"
         android:inputType="textNoSuggestions"
@@ -150,6 +150,26 @@ android:weightSum="10">
         android:background="@drawable/button_pink"
         android:layout_weight="0.49"
         android:visibility="visible" />
+
+
+
+    <LinearLayout
+
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        >
+
+    </LinearLayout>
+
+
+
+
+
+
+
+
 
 
     <LinearLayout
@@ -174,7 +194,26 @@ android:weightSum="10">
             android:layout_marginBottom="0dp"/>
 
 
+
+
+
     </LinearLayout>
+
+    <TextView
+        android:layout_marginRight="@dimen/density_twenty"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginTop="10dp"
+        android:id="@+id/btnOldCustomer"
+        android:layout_width="230dp"
+        android:inputType="textNoSuggestions"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:text="Old Customer"
+        android:textColor="#fff"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:background="@drawable/button_pink"
+        android:layout_weight="0.38" />
 
 </LinearLayout>
 

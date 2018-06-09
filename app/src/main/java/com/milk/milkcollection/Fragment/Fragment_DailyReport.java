@@ -1,5 +1,6 @@
 package com.milk.milkcollection.Fragment;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -9,7 +10,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +34,7 @@ import com.milk.milkcollection.R;
 import com.milk.milkcollection.adapter.DailyReportAdapter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+import com.milk.milkcollection.helper.UploadFile;
 import com.milk.milkcollection.model.DailyReport;
 
 import java.io.IOException;
@@ -38,6 +43,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+
+import static android.content.ContentValues.TAG;
+import static com.milk.milkcollection.Activity.MainActivity.instace;
 
 /**
  * Created by Alpha on 07-01-2016.
@@ -73,6 +81,7 @@ public class Fragment_DailyReport extends Fragment {
     public Fragment_DailyReport() {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -213,6 +222,7 @@ public class Fragment_DailyReport extends Fragment {
 
         setTextsAccordingRate();
         getCalendarDate();
+        uploadFile();
         return rootView;
     }
 
@@ -516,4 +526,47 @@ public class Fragment_DailyReport extends Fragment {
         }
 
     }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void uploadFile() {
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED  || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.v(TAG, "Permission is granted");
+
+            requestPermissions(new String[]{ android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    0);                }
+        else {
+            if (instace.isNetworkConnected()){
+                MainActivity.getInstace().showLoading("Uploading..");
+                new UploadFile().execute("");
+            }else{
+                // MainActivity.makeToast("internet not connected");
+            }
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 0){
+            if (instace.isNetworkConnected()){
+                MainActivity.getInstace().showLoading("Uploading..");
+                new UploadFile().execute("");
+            }else{
+                // MainActivity.makeToast("internet not connected");
+            }
+        }else {
+            uploadFile();
+        }
+    }
+
+
+
+
 }

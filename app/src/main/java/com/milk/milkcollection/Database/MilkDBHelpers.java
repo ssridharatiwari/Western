@@ -5,13 +5,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.ShowMember;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -584,8 +590,39 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
         else {
             return "0";
         }
-
     }
+
+
+	public void importDB() {
+
+		//preExportDB();
+
+		String db_name = DATABASE_NAME;
+		File tempFile = new File("/data/" + MainActivity.instace.getPackageName() + "/databases/" + "MyDBName");
+
+		Log.e("ImportDb", String.valueOf(tempFile.getPath()));
+		Log.e("ImportDb", String.valueOf(tempFile));
+		File data = Environment.getDataDirectory();
+		FileChannel source = null;
+		FileChannel destination = null;
+
+		String mainFileToimport = "/data/" + MainActivity.instace.getPackageName() + "/databases/" + db_name;
+		String tempFileName = db_name;
+
+		//File currentDB = new File(tempFile, tempFileName);
+		File backupDB = new File(data, mainFileToimport);
+
+		try {
+			source = new FileInputStream(tempFile).getChannel();
+			destination = new FileOutputStream(backupDB).getChannel();
+			destination.transferFrom(source, 0, source.size());
+			source.close();
+			destination.close();
+			Toast.makeText(MainActivity.instace, "Please wait", Toast.LENGTH_SHORT).show();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 
 }

@@ -12,6 +12,22 @@ import java.io.IOException;
  */
 public class SharedPreferencesUtils {
 private Context _context;
+
+
+    public static SharedPreferencesUtils shared;
+
+    public SharedPreferencesUtils() {
+
+    }
+
+
+    public SharedPreferencesUtils getInstace(){
+        if(shared == null){
+            shared = new SharedPreferencesUtils();
+        }
+        return shared;
+    }
+
 SharedPreferences prefs;
         public SharedPreferencesUtils(Context _context) {
             this._context = _context;
@@ -248,4 +264,23 @@ SharedPreferences prefs;
             return 0;
     }
 
+
+
+
+
+
+    public void setIsDownloaded() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("isDownloaded", "1");
+        editor.commit();
+    }
+
+
+
+    public String isDownloaded() {
+        if(prefs.contains("isDownloaded"))
+            return prefs.getString("isDownloaded", "0");
+        else
+            return "0";
+    }
 }

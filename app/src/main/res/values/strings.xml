@@ -52,7 +52,7 @@
     <string name="mas_show_member">Show Member</string>
     <string name="mas_add_rate">Add Rate</string>
     <string name="mas_show_rt">Show Rate</string>
-    <string name="mas_export">Export</string>
+    <string name="mas_export">Backup</string>
     <string name="mas_import">Import</string>
     <string name="mas_mail">Mail</string>
     <string name="mas_rate_chart">Rate Chart</string>
