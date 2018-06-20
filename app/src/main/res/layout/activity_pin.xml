@@ -56,10 +56,6 @@ android:weightSum="10">
     android:weightSum="0">
 
 
-
-
-
-
     </LinearLayout>
 
 
@@ -94,8 +90,6 @@ android:weightSum="10">
         android:singleLine="true"
         android:background="@drawable/rectangle"
         android:textColor="@android:color/black"/>
-
-
 
 <TextView
     android:layout_marginRight="@dimen/density_twenty"

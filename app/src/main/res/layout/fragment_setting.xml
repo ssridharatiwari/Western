@@ -10,11 +10,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical"
 
         >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
 
+        >
+
+        <Button
+            android:id="@+id/btn_rate_method"
+            android:layout_width="160dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/button_blue"
+            android:gravity="center"
+            android:text="@string/change_rate_method"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:foregroundGravity="center"
+            android:textSize="15dp"
+            />
 
         <TextView
 
@@ -25,25 +46,37 @@
             android:layout_weight="1"
             android:foregroundGravity="center"
             android:gravity="center"
+
             android:textColor="@color/black"
             android:text="changed name"
-            android:textSize="20dp" />
+            android:textSize="17dp" />
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+
 
         <Button
-            android:id="@+id/btn_rate_method"
-            android:layout_width="200dp"
+            android:id="@+id/btn_select_print"
+            android:layout_width="160dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             android:background="@drawable/button_blue"
             android:gravity="center"
-            android:text="@string/change_rate_method"
+            android:text="@string/change_print_method"
             android:textAllCaps="false"
             android:textColor="#ffffff"
-            android:textSize="17dp"
-            android:layout_marginTop="10dp"  />
 
-
+            android:textSize="15dp"
+            />
         <TextView
 
             android:id="@+id/txtPrint"
@@ -55,54 +88,69 @@
             android:gravity="center"
             android:textColor="@color/black"
             android:text="dfasd fasdf asdfsdf sdaf"
-            android:textSize="20dp" android:layout_marginTop="40dp"/>
-
-
-
-        <Button
-            android:id="@+id/btn_select_print"
-            android:layout_width="200dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/button_blue"
-            android:gravity="center"
-            android:text="@string/change_print_method"
-            android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:layout_marginTop="10dp"
             android:textSize="17dp"
             />
 
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal" >
+
         <Button
             android:id="@+id/btn_select_old_chart"
-            android:layout_width="200dp"
+            android:layout_width="160dp"
             android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
             android:layout_gravity="center"
-            android:layout_marginRight="5dp"
             android:background="@drawable/button_blue"
             android:gravity="center"
             android:text="@string/change_society_name"
             android:textAllCaps="false"
             android:textColor="#ffffff"
-            android:layout_marginTop="50dp"
-            android:textSize="15dp"
-            />
+            android:foregroundGravity="center"
+            android:textSize="15dp"/>
 
+        <TextView
+
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="name"
+            android:textSize="17dp"/>
+
+    </LinearLayout>
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/btn_fetch"
-            android:layout_width="200dp"
+            android:layout_width="160dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             android:background="@drawable/button_blue"
             android:gravity="center"
             android:text="Commulative"
             android:textAllCaps="false"
             android:textColor="#ffffff"
-            android:layout_marginTop="50dp"
+
             android:textSize="15dp"
             />
 
@@ -116,28 +164,62 @@
             android:foregroundGravity="center"
             android:gravity="center"
             android:textColor="@color/black"
-            android:text="dfasd fasdf asdfsdf sdaf"
-            android:textSize="18dp"/>
+            android:text="coomulative"
+            android:textSize="17dp"/>
 
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+
+        >
 
         <Button
             android:id="@+id/btn_defaultSnf"
-            android:layout_width="200dp"
+            android:layout_width="160dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             android:background="@drawable/button_blue"
             android:gravity="center"
-            android:text="Defallt SNF - Off"
+            android:text="Defallt SNF"
             android:textAllCaps="false"
             android:textColor="#ffffff"
+            android:textSize="15dp"/>
+
+
+
+        <TextView
+
+            android:id="@+id/txtDsnf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="snf"
+            android:textSize="17dp"/>
+
+    </LinearLayout>
+
+        <TextView
+
+            android:id="@+id/txtStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="Verified"
             android:layout_marginTop="50dp"
-            android:textSize="15dp"
-            />
-
-
-
+            android:textSize="17dp"/>
 
 
     </LinearLayout>

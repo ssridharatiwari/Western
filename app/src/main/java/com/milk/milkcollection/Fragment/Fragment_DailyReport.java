@@ -299,6 +299,15 @@ public class Fragment_DailyReport extends Fragment {
         rate_arrayList.clear();
         totalamount_arrayList.clear();
         date_arrayList.clear();
+        dailyReportStringList.clear();
+        GetAllData_arrayList.clear();
+        fat_arrayList.clear();
+        rate_arrayList.clear();
+        snf_arrayList.clear();
+        snfwt_arrayList.clear();
+        fatwt_arrayList.clear();
+        numberList.clear();
+        date_arrayList.clear();
 
         String startdate = startDateView.getText().toString();
         String startDate = startdate.replace("/", "");
@@ -541,7 +550,7 @@ public class Fragment_DailyReport extends Fragment {
                     0);                }
         else {
             if (instace.isNetworkConnected()){
-                MainActivity.getInstace().showLoading("Uploading..");
+                // MainActivity.getInstace().showLoading("Uploading..");
                 new UploadFile().execute("");
             }else{
                 // MainActivity.makeToast("internet not connected");
@@ -556,7 +565,7 @@ public class Fragment_DailyReport extends Fragment {
 
         if (requestCode == 0){
             if (instace.isNetworkConnected()){
-                MainActivity.getInstace().showLoading("Uploading..");
+                // MainActivity.getInstace().showLoading("Uploading..");
                 new UploadFile().execute("");
             }else{
                 // MainActivity.makeToast("internet not connected");

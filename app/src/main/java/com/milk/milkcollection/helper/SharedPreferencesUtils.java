@@ -97,7 +97,7 @@ SharedPreferences prefs;
             }
 
             else if (dat.equals("2")) {
-                dat = "Fat Snf Rate Chart";
+                dat = "Fat Snf Chart";
             }
             else if (dat.equals("3")) {
                 dat = "Fat Clr Chart";
@@ -168,6 +168,19 @@ SharedPreferences prefs;
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("isDemo", "0");
         editor.commit();
+    }
+
+
+    public void setDemoDate(String date) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("demodate", date);
+        editor.commit();
+    }
+    public String getDemoDate() {
+        if(prefs.contains("isDemo"))
+            return prefs.getString("demodate", "");
+        else
+            return "";
     }
 
     public String getISDemo() {

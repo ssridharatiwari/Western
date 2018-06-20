@@ -60,7 +60,7 @@ public class Fragment_Setting extends Fragment {
     private ContentProvider contentResolver;
     SharedPreferencesUtils sharedPreferencesUtils;
     int PERMISSION_REQUEST_CODE = 1;
-    TextView lblRate,lblPrint,txtCommulative;
+    TextView lblRate,lblPrint,txtCommulative,lblTitle,lblSnf,lblStatus;
     String uName = "";
 
     public Fragment_Setting() {}
@@ -80,11 +80,16 @@ public class Fragment_Setting extends Fragment {
         btn_fetch =(Button)rootView.findViewById(R.id.btn_fetch);
         lblRate = (TextView) rootView.findViewById(R.id.txtRate);
         lblPrint = (TextView) rootView.findViewById(R.id.txtPrint);
+        lblTitle = (TextView) rootView.findViewById(R.id.txtTitle);
+        lblSnf = (TextView) rootView.findViewById(R.id.txtDsnf);
+        lblStatus = (TextView) rootView.findViewById(R.id.txtStatus);
         txtCommulative = (TextView) rootView.findViewById(R.id.txtCommulative);
         btn_defaultSnf =(Button)rootView.findViewById(R.id.btn_defaultSnf);
 
-        lblRate.setText("Selected : " + sharedPreferencesUtils.getRateMethodText());
-        lblPrint.setText("Selected : " + sharedPreferencesUtils.getprintByText());
+        lblRate.setText( sharedPreferencesUtils.getRateMethodText());
+        lblPrint.setText( sharedPreferencesUtils.getprintByText());
+        lblTitle.setText( sharedPreferencesUtils.getTitle());
+
 
         setValuses();
         btn_select_print.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +97,7 @@ public class Fragment_Setting extends Fragment {
             public void onClick(View v) {
 
 
-                    String printBefore = sharedPreferencesUtils.getprintBy();
+                    final String printBefore = sharedPreferencesUtils.getprintBy();
                     String messge = "";
 
                     if (printBefore.equals("wifi"))
@@ -113,15 +118,22 @@ public class Fragment_Setting extends Fragment {
                                     switch (which) {
                                         case 0:
 
-                                            sharedPreferencesUtils.printBy("wifi");
-                                            updateData();
+                                            if (!printBefore.equals("wifi")){
+                                                MainActivity.getInstace().runConnection();
+                                                sharedPreferencesUtils.printBy("wifi");
+                                                updateData();
+                                                Log.e("print method" , printBefore);
+                                            }
+
                                             break;
                                         case 1:
-                                            updateData();
+
+                                            MainActivity.getInstace().stopSocket();
                                             sharedPreferencesUtils.printBy("blutooth");
                                             updateData();
                                             break;
                                         case 2:
+                                            MainActivity.getInstace().stopSocket();
                                             sharedPreferencesUtils.printBy("pos");
                                             updateData();
                                             break;
@@ -298,16 +310,26 @@ public class Fragment_Setting extends Fragment {
     }
 
 
+
     public void updateSNF(){
+//        if (sharedPreferencesUtils.getDefaultSNF() > 0){
+//
+//            btn_defaultSnf.setText("Default SNF - " + String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
+//
+//        }else{
+//            btn_defaultSnf.setText("Default SNF - " + "OFF");
+//
+//        }
+
+
         if (sharedPreferencesUtils.getDefaultSNF() > 0){
 
-            btn_defaultSnf.setText("Default SNF - " + String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
+            lblSnf.setText("Default : " + String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
 
         }else{
-            btn_defaultSnf.setText("Default SNF - " + "OFF");
+            lblSnf.setText("No SNF");
 
         }
-
     }
 
 
@@ -723,6 +745,13 @@ MainActivity.instace.showLoading("");
 
         Log.e("date saved" , preDate);
         Log.e("date saved" , endDate);
+
+
+        if (sharedPreferencesUtils.getISDemo().equals("1")){
+            lblStatus.setText("Demo up to  " + sharedPreferencesUtils.getDemoDate());
+        }else{
+            lblStatus.setText("Verified Customer");
+        }
 
     }
 

@@ -314,7 +314,8 @@ public class Fragment_home extends Fragment {
                 isPrint = true;
 
                 if (funSaveEntry() == true) {
-               }
+
+                }
             }
         });
 
@@ -387,12 +388,23 @@ public class Fragment_home extends Fragment {
 
     private void SaveAllData() {
 
-        try {
-            if (MainActivity.instace.isDemoNotAccess()){
-                return;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+
+        String date = tv_datepicker.getText().toString();
+
+        String replaceDate = date.replace("/", "");
+
+        String dd = replaceDate.substring(0, 2);
+        String mm = replaceDate.substring(2, 4);
+        String yy = replaceDate.substring(4, 8);
+
+        String printDate = dd + "." + mm;
+
+        replaceDate = yy + mm + dd;
+
+
+        if (MainActivity.getInstace().isDemoNotAccess(replaceDate)){
+            return;
         }
 
         weight = et_weight.getText().toString();
@@ -417,7 +429,6 @@ public class Fragment_home extends Fragment {
         } else {
             try {
 
-                MainActivity.instace.decDemoCount();
 
                 milkDBHelpers = new MilkDBHelpers(getActivity());
                 SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
@@ -428,7 +439,6 @@ public class Fragment_home extends Fragment {
 
                     while (cursor.isAfterLast() == false) {
 
-                        String date = tv_datepicker.getText().toString();
                         MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
                         Float rateperliter = Float.valueOf(rateliter);
                         Float currentweight = Float.parseFloat(weight);
@@ -444,15 +454,7 @@ public class Fragment_home extends Fragment {
                         snf = String.valueOf(df.format(Float.parseFloat(snf)));
                         weight = String.valueOf(df.format(Float.parseFloat(weight)));
 
-                        String replaceDate = date.replace("/", "");
 
-                        String dd = replaceDate.substring(0, 2);
-                        String mm = replaceDate.substring(2, 4);
-                        String yy = replaceDate.substring(4, 8);
-
-                        String printDate = dd + "." + mm;
-
-                        replaceDate = yy + mm + dd;
 
 
 
@@ -466,7 +468,7 @@ public class Fragment_home extends Fragment {
 
                         printString = "";
                         printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
-                                      "Name: " + member_name +
+                                      "Name: " + member_name + "(" + code + ")" +
                                       "\nDate: " + date +
                                       "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
                                       "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
@@ -475,9 +477,7 @@ public class Fragment_home extends Fragment {
                                       "\nAmount:  Rs " + totalamount + "\n";
 
 
-
-                        printString = printString + MainActivity.lineBreak() ;
-
+                        printString = printString + MainActivity.lineBreak();
 
                         myCode = code;
 
@@ -492,10 +492,6 @@ public class Fragment_home extends Fragment {
                         et_snf.setText("");
                         resetValue();
 
-
-
-
-                        //et_code.setText("");
 
                         et_code.requestFocus();
                         Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateperliter + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
@@ -526,9 +522,7 @@ public class Fragment_home extends Fragment {
                     MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
                     SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
 
-
                     Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM 'milk_amount' WHERE memberCode = '" + myCode + "' and date >= '" + sharedPreferencesUtils.getfromDate() + "' and date <= '" + sharedPreferencesUtils.getLastDate() + "'", null);
-
 
                     if (cursor != null && cursor.moveToFirst()) {
                         while (cursor.isAfterLast() == false) {
@@ -578,7 +572,7 @@ public class Fragment_home extends Fragment {
                             "Weight : " + totalWeight + "\nAmount : " + totalAmount ;
 
                     try {
-                        printString = printString + MainActivity.lineBreak() ;
+                        printString = printString + "\n" + MainActivity.lineBreak() ;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -587,15 +581,10 @@ public class Fragment_home extends Fragment {
                     message = message + "\n" + "Com. Ttl(" + preDate +
                             " - " + endDate + ") :\n" +
                             "QTY=" + totalWeight + "\nAMT= ₹ " + totalAmount;
-
                 }
 
-
-
-
         printString = printString + "\n   _western_ \n";
-
-                Log.e("printing string",printString);
+        Log.e("printing string",printString);
 
         if (isSMSSemd){
             isSMSSemd = false;
@@ -628,12 +617,20 @@ public class Fragment_home extends Fragment {
     }
 
     private void resetValue() {
+
         total.setText("Total Amount");
         rate.setText("Rate/ltr");
         et_weight.setText("");
         et_fat.setText("");
-        et_snf.setText("");
+
         et_code.setText("");
+
+        if (sharedPreferencesUtils.getDefaultSNF() > 0){
+            et_snf.setText(String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
+
+        }else{
+            et_snf.setText("");
+        }
     }
 
     private void createmilkvalue() {
@@ -683,8 +680,6 @@ public class Fragment_home extends Fragment {
                             fat = MainActivity.oneDecimalString(fat);
                             snf = MainActivity.oneDecimalString(snf);
                             rateperltr = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
-
-
 
 
                             if (rateperltr == 0){
@@ -781,6 +776,7 @@ public class Fragment_home extends Fragment {
 
 
     private void  checkDefaultSnf(){
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -907,6 +903,10 @@ public class Fragment_home extends Fragment {
                                     sharedPreferencesUtils.setMobile(mobile_string);
                                 }
                                 else if (status.equals("2")){
+
+
+                                    String demo_date = jsonObject.getString("demo_date").toString();
+                                    sharedPreferencesUtils.setDemoDate(demo_date);
 
                                     sharedPreferencesUtils.setIsDemoTrue();
                                     sharedPreferencesUtils.setTitle("DEMO");

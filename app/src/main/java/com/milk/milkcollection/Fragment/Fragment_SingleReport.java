@@ -414,7 +414,7 @@ if (position == 0)
                 SharedPreferencesUtils  sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
                 String titlename = sharedPreferencesUtils.getTitle();
 
-                printString = titlename +  "\nMember Lazer\n"+memberNameReal + "   "+printString;
+                printString = titlename +  "\nMember Ladger\n"+memberNameReal + "   "+printString;
                 printString = printString.toUpperCase();
             } catch (Exception e) {
                 Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
@@ -480,6 +480,9 @@ if (position == 0)
             endDateView.setText(date);
         }
     }
+
+
+
     private void shareDialog() {
         final CharSequence[] options = { "WhatsApp", "Mail","Other Share","Print Report" };
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
@@ -529,8 +532,7 @@ if (position == 0)
 
             }
              else if (options[item].equals("Print Report")) {
-
-print(printString);
+                    print(printString);
                 }
             }
         });

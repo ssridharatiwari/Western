@@ -10,11 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
+import com.milk.milkcollection.adapter.ShowmemberAdapter;
+import com.milk.milkcollection.model.ShowMember;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Created by Alpha on 13-12-2015.
@@ -25,6 +32,12 @@ public class Fragment_Addmember extends Fragment {
     String membername,membercode,membermobile;
     MilkDBHelpers milkDBHelpers;
     String date;
+
+
+    ListView memberList;
+    ShowmemberAdapter dataAdapter;
+    ArrayList<ShowMember> arraymemberList;
+
     public Fragment_Addmember() {}
 
     @Override
@@ -37,14 +50,24 @@ public class Fragment_Addmember extends Fragment {
         btn_member_update =(Button)rootView.findViewById(R.id.btn_member_update);
 
 
+        memberList = (ListView)rootView.findViewById(R.id.member_list);
+        memberList.setEmptyView(rootView.findViewById(R.id.empty_saved_list));
+        memberList.setOnCreateContextMenuListener(this);
+
+
+
 
         btn_member_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+
+
                 membername = addname.getText().toString();
                 membercode = addcode.getText().toString();
                 membermobile = addmoible.getText().toString();
+
+                makeCorrectCode();
 
                 if (addname.getText().toString().length() == 0)
                     addname.setError("Registered Name is required!");
@@ -73,18 +96,12 @@ public class Fragment_Addmember extends Fragment {
             public void onClick(View v) {
 
                 membername = addname.getText().toString();
+
+
+
                 membercode = addcode.getText().toString();
-                if (addcode.getText().toString().length() > 0)
-                {  if( membercode.length() == 1 )
-                {
-                    membercode = "00"+membercode;
+                makeCorrectCode();
 
-                }
-                else if( membercode.length() == 2 )
-                {
-                    membercode = "0"+membercode;
-
-                }}
 
 
                 if (addmoible.getText().toString().length() == 0)
@@ -97,11 +114,11 @@ public class Fragment_Addmember extends Fragment {
                 }
 
                 if (addname.getText().toString().length() == 0)
-                    addname.setError("Registered Name is required!");
-                else if (addcode.getText().toString().length() == 0)
-                    addcode.setError("Code is required!");
-             //   else if (addmoible.getText().toString().length() == 0)
-               //     addmoible.setError("Mobile is required!");
+                    addname.setError("Name required!");
+                else if (addcode.getText().toString().length() == 0){
+                    addcode.setError("Required!");
+                }
+
                 else if (addmoible.getText().toString().length() < 10 && addmoible.getText().toString().length() > 0)
                     addmoible.setError("Mobile no is Incorrect!");
                 else if (Long.valueOf(membermobile) < 5999999999L && addmoible.getText().toString().length() > 0 )
@@ -109,6 +126,7 @@ public class Fragment_Addmember extends Fragment {
                 else {
                     addMember();
 
+                    showListData();
 //                    if (addcode.getText().toString().length() < 1) {
 //                        addcode.setError("Code is Incorrect!");
 //                    } else {
@@ -117,8 +135,57 @@ public class Fragment_Addmember extends Fragment {
                 }
             }
         });
+
+
+        showListData();
+
         return rootView;
     }
+
+
+    private void showListData(){
+
+        arraymemberList = new ArrayList<>();
+        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+        arraymemberList = milkDBHelpers.getMembers();
+
+
+        Collections.reverse(arraymemberList);
+
+        Log.e(" arraymemberList ",arraymemberList + "");
+
+        dataAdapter = new ShowmemberAdapter(getActivity(),arraymemberList )
+        {
+            public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
+
+                TextView v = (TextView) super.getView(position, convertView, parent);
+                v.setBackground(getResources().getDrawable(R.drawable.text_underline_spinner));
+                return v;
+            }
+        };
+
+        memberList.setAdapter(dataAdapter);
+
+//        membercode =  String.valueOf(arraymemberList.size() + 1);
+//        makeCorrectCode();
+//        addcode.setHint("Code - " + membercode );
+    }
+
+    private void makeCorrectCode(){
+
+        if (membercode.length() > 0)
+        {
+            if( membercode.length() == 1 )
+            {
+                membercode = "00"+membercode;
+            }
+            else if( membercode.length() == 2 )
+            {
+                membercode = "0"+membercode;
+            }
+        }
+    }
+
 
     private void updateMember(){
         getCalendarDate();

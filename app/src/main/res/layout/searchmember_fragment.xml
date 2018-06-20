@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="10"
+    >
+
+
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:background="@drawable/rectangle"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
 
         <LinearLayout
@@ -71,31 +77,42 @@
 
         </LinearLayout>
 
+
+
     </LinearLayout>
-    <ListView
-        android:id="@+id/saved_listview"
 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </ListView>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_weight="9"
         >
-        <TextView
-            android:id="@+id/empty_saved_list"
-            android:layout_width="wrap_content"
-            android:layout_height="120dp"
-            android:textSize="23sp"
-            android:paddingTop="40dp"
-            android:visibility="gone"
-            android:textColor="@color/colorPrimaryDark"
-            android:gravity="center_horizontal"
-            android:text="No Information are saved yet
-                             Please create your information"
-            />
+
+        <ListView
+            android:id="@+id/saved_listview"
+            android:layout_width="match_parent"
+
+
+            android:layout_height="match_parent">
+        </ListView>
+
+
+        <ImageView
+            android:layout_marginBottom="20dp"
+            android:id="@+id/imgShare"
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:foregroundGravity="bottom"
+            android:background="@drawable/images"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"/>
+
     </RelativeLayout>
+
+
+
+
 
 </LinearLayout>

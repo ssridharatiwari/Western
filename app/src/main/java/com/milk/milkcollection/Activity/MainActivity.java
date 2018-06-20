@@ -14,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -95,8 +96,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static ProgressDialog progress;
     public static MainActivity instace;
+    public String demoDate = "";
 
-     SharedPreferencesUtils sharedPreferencesUtils;
+    SharedPreferencesUtils sharedPreferencesUtils;
 
 
 
@@ -197,14 +199,8 @@ public class MainActivity extends AppCompatActivity {
 
        if (savedInstanceState == null) {
             selectItem(0);
-        }
+       }
 
-
-        sharedPreferencesUtils.setDmeoCount(100);
-
-       //importDB();
-
-      runConnection();
 
     }
 
@@ -387,56 +383,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void changePrinter(Activity activity) {
-
-
-        String printBefore = sharedPreferencesUtils.getprintBy();
-
-
-        String messge = "";
-
-        if (printBefore.equals("wifi"))
-            messge = "Derect Wifi Printer";
-        if (printBefore.equals("blutooth"))
-            messge = "Blutooth Printer App";
-        if (printBefore.equals("pos"))
-            messge = "Pos App";
-
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
-        builder.setTitle(messge + " Activeted" );
-        // builder.setMessage(messge);
-        // builder.setMessage("Now working with " + messge);
-        builder.setItems(new CharSequence[]
-                        {"Direct Wift", "Blutooth Printer App", "Pos App", "Cancel"},
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // The 'which' argument contains the index position
-                        // of the selected item
-                        switch (which) {
-                            case 0:
-
-                                sharedPreferencesUtils.printBy("wifi");
-
-
-                                break;
-                            case 1:
-
-                                sharedPreferencesUtils.printBy("blutooth");
-
-                                break;
-                            case 2:
-
-                                sharedPreferencesUtils.printBy("pos");
-
-                                break;
-
-                        }
-                    }
-                });
-        builder.create().show();
-
-    }
-
 
 
     public void setLocale(String lang) {
@@ -458,6 +404,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void stopSocket()  {
+        try {
+            if (nsocket.isConnected()) {
+
+                nis.close();
+                nos.close();
+                nsocket.close();
+
+            } else {
+                // Log.e(" is ", "No Connected");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public void runConnection() {
 
@@ -697,6 +660,9 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     PackageManager pm = instace.getPackageManager();
                     try {
+
+
+                        printSTRING = printSTRING + "\n\n\n";
                         Intent waIntent = new Intent(Intent.ACTION_SEND);
                         waIntent.setType("text/plain");
                         PackageInfo info = pm.getPackageInfo("com.fidelier.posprinterdriver", PackageManager.GET_META_DATA);
@@ -817,28 +783,29 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
 
-                    SmsManager sms = SmsManager.getDefault();
-                    PendingIntent sentPI;
-                    String SENT = "SMS_SENT";
+                    if (number.length() == 10) {
 
-                    sentPI = PendingIntent.getBroadcast(instace, 0,new Intent(SENT), 0);
+                        SmsManager sms = SmsManager.getDefault();
+                        PendingIntent sentPI;
+                        String SENT = "SMS_SENT";
 
-                    ArrayList<String> msgArray = sms.divideMessage(message);
+                        sentPI = PendingIntent.getBroadcast(instace, 0,new Intent(SENT), 0);
 
-                    sms.sendMultipartTextMessage(number, null,msgArray, null, null);
-                    Toast.makeText(instace, "SMS Sent", Toast.LENGTH_LONG).show();
+                        ArrayList<String> msgArray = sms.divideMessage(message);
+
+                        sms.sendMultipartTextMessage(number, null,msgArray, null, null);
+                        Toast.makeText(instace, "SMS Sent", Toast.LENGTH_LONG).show();
+                    }
 
                 } catch (Exception e) {
-                    Toast.makeText(instace, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(instace,"SMS failed, please try again.", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }
-
     }
 
     static public void shareText(String shareText ) {
         try {
-
             Intent sentIntent = new Intent(Intent.ACTION_SEND);
             sentIntent.putExtra(Intent.EXTRA_TEXT, shareText);
             sentIntent.setType("text/plain");
@@ -860,8 +827,19 @@ public class MainActivity extends AppCompatActivity {
 
     public static void dismiss(){
 
-        if (progress.isShowing())
-                progress.dismiss();
+        try {
+
+                if (progress.isShowing()) {
+                    progress.dismiss();
+                }
+
+
+        } catch (Exception e) {
+
+        }
+
+
+
 
     }
 
@@ -921,12 +899,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isDemoNotAccess() throws IOException {
+    public boolean isDemoNotAccess(String date)  {
 
         if (isDemo()){
 
-            if (sharedPreferencesUtils.getDemoCount() < 1){
-                instace.showToast("Your Demo Entries are Finished");
+            if (MainActivity.getInstace().demoDate.length() < 1) {
+                MainActivity.getInstace().demoDate = sharedPreferencesUtils.getDemoDate();
+            }
+
+            String ddate =  MainActivity.getInstace().demoDate.replace("-","");
+
+            if (Integer.parseInt(ddate) < Integer.parseInt(date)){
+                try {
+                    showToast("Your Demo Entries are Finished");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 return true;
             }
 
@@ -945,7 +934,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-                 Toast.makeText(instace, message, Toast.LENGTH_LONG).show();
+            Toast.makeText(instace, message, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
 
         }
@@ -986,6 +975,71 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
+
+
+
+
+    public void shareDialog(final String printString , String title) {
+
+        final CharSequence[] options = { "WhatsApp", "Mail","Other Share","Print" };
+        android.app.AlertDialog.Builder adb = new android.app.AlertDialog.Builder(MainActivity.getInstace())
+                .setTitle(title);
+        adb.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("WhatsApp")) {
+                    PackageManager pm = MainActivity.getInstace().getPackageManager();
+                    try {
+//pe.diegoveloper.printerserverapp
+                        Intent waIntent = new Intent(Intent.ACTION_SEND);
+                        waIntent.setType("text/plain");
+                        //   String text = "YOUR TEXT HERE";
+
+                        PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+                        //Check if package exists or not. If not then code
+                        //in catch block will be called
+                        waIntent.setPackage("com.whatsapp");
+
+                        waIntent.putExtra(Intent.EXTRA_TEXT, printString);
+                        startActivity(Intent.createChooser(waIntent, "Share with"));
+
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                } else if (options[item].equals("Mail")) {
+                    String to = "";
+                    String subject = "Milk Collection Report";
+                    Intent email = new Intent(Intent.ACTION_SEND);
+                    email.putExtra(Intent.EXTRA_EMAIL, new String[]{to});
+                    email.putExtra(Intent.EXTRA_SUBJECT, subject);
+                    email.putExtra(Intent.EXTRA_TEXT, printString);
+                    // need this to prompts email client only
+                    email.setType("message/rfc822");
+
+                    startActivity(Intent.createChooser(email, "Choose an Email client"));
+
+
+                } else if (options[item].equals("Other Share"))
+                {
+
+                    Intent sentIntent = new Intent(Intent.ACTION_SEND);
+                    sentIntent.putExtra(Intent.EXTRA_TEXT, printString);
+                    sentIntent.setType("text/plain");
+                    startActivity(sentIntent);
+
+                }
+                else if (options[item].equals("Print")) {
+                    try {
+                        print(printString);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        adb.show();
+    }
+
 
 }
 

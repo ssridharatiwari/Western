@@ -464,6 +464,8 @@ public class PinActivity extends AppCompatActivity {
 
                                         sharedPreferencesUtils.setIsDemoTrue();
 
+                                        String demo_date = jsonObject.getString("demo_date").toString();
+                                        sharedPreferencesUtils.setDemoDate(demo_date);
                                         makeToast("Demo App");
                                         settitle = "DEMO";
                                         mobile_string = "DEMO";
@@ -706,37 +708,16 @@ public class PinActivity extends AppCompatActivity {
                                         sharedPreferencesUtils.setUserId(userID);
                                     }
                                     if (!userStatus.equals("")){
-                                        setStatus(userStatus);
+                                        setStatus("1");
                                     }
 
-                                    if (userStatus.equals("1")){
-                                        makeToast("Thank you : registration successful");
-                                        settitle = jsonObject.getString("name").toString();
-                                        mobile_string = jsonObject.getString("mobile").toString();
+                                    makeToast("Welcome Back");
+                                    settitle = jsonObject.getString("name").toString();
+                                    mobile_string = jsonObject.getString("mobile").toString();
 
-
-                                        startNewActivity();
-
-
-                                    }else if (userStatus.equals("2")){
-
-                                        sharedPreferencesUtils.setIsDemoTrue();
-
-                                        makeToast("Demo App");
-                                        settitle = "DEMO";
-                                        mobile_string = "DEMO";
-                                        startNewActivity();
-
-                                    }else if (userStatus.equals("3")){
-                                        makeToast("You are not verified");
-                                    }
-
-
-                                    else
-                                        makeToast("You are not verified");
+                                    startNewActivity();
 
                                 }else{
-
 
                                     makeToast(jsonObject.getString("message").toString());
 
