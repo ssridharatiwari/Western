@@ -407,6 +407,7 @@ public class PinActivity extends AppCompatActivity {
 
         if (!isNetworkConnected()){
             makeToast("Internet Required");
+            progress.dismiss();
             return;
         }
 

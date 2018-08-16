@@ -311,7 +311,7 @@ public class Fragment_Setting extends Fragment {
 
 
 
-    public void updateSNF(){
+    public void updateSNF() {
 //        if (sharedPreferencesUtils.getDefaultSNF() > 0){
 //
 //            btn_defaultSnf.setText("Default SNF - " + String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
@@ -545,8 +545,6 @@ public class Fragment_Setting extends Fragment {
                         e.printStackTrace();
                     }
                 }
-
-
             }
         });
 
@@ -577,8 +575,6 @@ MainActivity.instace.showLoading("");
                         @Override
                         public void onResponse(String response) {
                             MainActivity.dismiss();
-
-
                             try {
                                 Log.e("resonce", response);
 
@@ -589,7 +585,6 @@ MainActivity.instace.showLoading("");
                                     String status = jsonObject.getString("status").toString();
 
                                     String userID = jsonObject.getString("id").toString();
-
 
                                     if (!status.equals("")){
                                        MainActivity.instace.setStatus(status);
@@ -633,12 +628,10 @@ MainActivity.instace.showLoading("");
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     MainActivity.dismiss();
-                    // makeToast("Detail sending failed : network or server error");
-                    Log.e("Not working ", error.getMessage());
+                    // Log.e("Not working ", error.getMessage());
                 }
             });
             queue.add(stringRequest);
-
         }
 
 
@@ -672,15 +665,11 @@ MainActivity.instace.showLoading("");
                                 Log.e("responce ",response);
                                 JSONObject jsonObject = new JSONObject(response);
 
-
                                 String status = jsonObject.getString("status").toString();
 
-                                if (status.equals("200")){
-
+                                if (status.equals("200")) {
                                     MainActivity.showToast("Name changed successfully , app restart see change");
-
                                     sharedPreferencesUtils.setTitle(uName);
-
                                 }else{
                                     MainActivity.showToast("Name still not changed");
                                 }
@@ -718,29 +707,20 @@ MainActivity.instace.showLoading("");
         String endDate = sharedPreferencesUtils.getLastDate();
 
         if (preDate.length() > 1){
-
             String yy = preDate.substring(0, 4);
             String mm = preDate.substring(4, 6);
             String dd = preDate.substring(6, 8);
-
             preDate = dd + "/" + mm + "/" + yy;
-
-
         }
 
-        if (endDate.length() > 1){
-
+        if (endDate.length() > 1) {
             String yy = endDate.substring(0, 4);
             String mm = endDate.substring(4, 6);
             String dd = endDate.substring(6, 8);
-
             endDate = dd + "/" + mm + "/" + yy;
             txtCommulative.setText("Cltv Selected: " + preDate + "  to " + endDate);
-
         }else {
-
             txtCommulative.setText("No Commulative");
-
         }
 
         Log.e("date saved" , preDate);
@@ -752,9 +732,7 @@ MainActivity.instace.showLoading("");
         }else{
             lblStatus.setText("Verified Customer");
         }
-
     }
-
 
 }
 

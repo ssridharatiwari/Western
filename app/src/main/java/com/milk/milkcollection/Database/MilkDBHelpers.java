@@ -92,8 +92,56 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("dateSave",dateSave);
 
         db.insert("milk_amount", null, values);
+
+
 		db.close(); // Closing database connection
     }
+
+
+
+	public void update(String memberCode, String weight, float rateliter, float amount, String mydate,
+						String number, String sift, String fat, Float fat_wt, String snf, Float snt_wt,
+						String message, String printString, String dateSave,String id) {
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("memberCode",memberCode);
+		values.put("milkweight",weight);
+		values.put("rateperliter",rateliter);
+		values.put("totalamount",amount);
+		values.put("date",mydate);
+		values.put("milkinformation",number);
+		values.put("sift",sift);
+		values.put("fat",fat);
+		values.put("fat_wt",fat_wt);
+		values.put("snf",snf);
+		values.put("snf_wt",snt_wt);
+		values.put("allInformation",message);
+		values.put("dailyInformation",printString);
+		values.put("dateSave",dateSave);
+
+		db.update("milk_amount", values, "id="+id, null);
+		///myDB.update(TableName, cv, "_id="+id, null);
+
+
+		db.close(); // Closing database connection
+	}
+
+
+	public Boolean isAlredy(String date,String code) {
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		String query = "select * from milk_amount where memberCode=" + "'"+ code +"' AND date=" + "'"+ date +"'";;
+		Cursor mCount = db.rawQuery(query, null);
+		mCount.moveToFirst();
+
+
+		if (mCount != null && mCount.moveToFirst()) {
+			return true;
+		}else{
+			return  false;
+		}
+	}
 
 	public void addRate(String fat, String snf, String rate) {
 
@@ -107,6 +155,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
         db.insert("ratechart", null, values);
 		db.close();
 	}
+
 	public void addRateClr(String fat, String snf, String rate) {
 
 		SQLiteDatabase db = this.getWritableDatabase();

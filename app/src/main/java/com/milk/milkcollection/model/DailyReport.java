@@ -5,17 +5,18 @@ package com.milk.milkcollection.model;
  */
 public class DailyReport {
 
-    String code,weight,fat,snf,rate,amount;
+    String code,weight,fat,snf,rate,amount,id,date,shift;
 
     public DailyReport(){}
-    public DailyReport(String code, String weight, String fat, String snf, String rate, String amount) {
-        this.code = code;
-        this.weight = weight;
-        this.fat = fat;
-        this.snf = snf;
-        this.rate = rate;
-        this.amount = amount;
-    }
+//    public DailyReport(String code, String weight, String fat, String snf, String rate, String amount,String id) {
+//        this.code = code;
+//        this.weight = weight;
+//        this.fat = fat;
+//        this.snf = snf;
+//        this.rate = rate;
+//        this.amount = amount;
+//        this.id = amount;
+//    }
 
     public String getCode() {
         return code;
@@ -60,8 +61,26 @@ public class DailyReport {
     public String getAmount() {
         return amount;
     }
+    public void setAmount(String amount) { this.amount = amount;}
 
-    public void setAmount(String amount) {
-        this.amount = amount;
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getShift() {
+        return shift;
+    }
+    public void setShift(String shift) {
+        this.shift = shift;
     }
 }

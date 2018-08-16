@@ -12,6 +12,7 @@
     <string name="master">Master</string>
     <string name="report">Report</string>
     <string name="setting">Setting</string>
+    <string name="sales">Sales</string>
     <string name="planguage">Language</string>
 
 
@@ -87,7 +88,6 @@
     <string name="rt_comition">Comition</string>
     <string name="rt_comition_type">Comition Type:</string>
     <string name="posrtIP">192.168.4.1</string>
-
 
 
     <string name="change_rate_method">Change Rate Method</string>

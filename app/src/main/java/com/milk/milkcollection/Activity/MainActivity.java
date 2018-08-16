@@ -126,7 +126,8 @@ public class MainActivity extends AppCompatActivity {
         categories.add(getResources().getString(R.string.home));
         categories.add(getResources().getString(R.string.master));
         categories.add(getResources().getString(R.string.report));
-        categories.add("Setting");
+        categories.add(getResources().getString(R.string.setting));
+        categories.add(getResources().getString(R.string.sales));
         categories.add(getResources().getString(R.string.planguage));
 
         mTitle = mDrawerTitle = getTitle();
@@ -225,9 +226,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectItem(int position) {
 
-        // Load your conten here
-
-        // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
         setTitle(categories.get(position));
         mDrawerLayout.closeDrawer(mDrawerList);
@@ -243,10 +241,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (position == 0 && !backStateName.equals("com.milk.milkcollection.Fragment.Fragment_home")) {
-
             toolbartitle.setText(getResources().getString(R.string.home));
             replaceFragment(new Fragment_home());
-
         } else if (position == 1 && !backStateName.equals("com.milk.milkcollection.Fragment.Fragment_Master")) {
             toolbartitle.setText(getResources().getString(R.string.master));
             replaceFragment(new Fragment_Master());
@@ -254,35 +250,20 @@ public class MainActivity extends AppCompatActivity {
         } else if (position == 2 && !backStateName.equals("com.milk.milkcollection.Fragment.Fragment_Report")) {
             toolbartitle.setText(getResources().getString(R.string.report));
             replaceFragment(new Fragment_Report());
-
-        } else if (position == 3 && !backStateName.equals("Print by")) {
-
-            toolbartitle.setText(getResources().getString(R.string.setting));
+        } else if (position == 3 ) {
             toolbartitle.setText(getResources().getString(R.string.setting));
             replaceFragment(new Fragment_Setting());
-
-        }
-        else if (position == 4) {
+        } else if (position == 4 ) {
+            toolbartitle.setText(getResources().getString(R.string.sales));
+            replaceFragment(new Fragment_Setting());
+        } else if (position == 5) {
                 changeLanguage(MainActivity.this);
         }
-
-
-
-        /*   else if (position == 3) {
-            toolbartitle.setText("Add Member");
-            Fragment fragment = new Fragment_Addmember();
-            android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment,"Add member");
-            ft.addToBackStack("home");
-            ft.commit();
-        }*/
-
     }
 
 
     private void replaceFragment(Fragment fragment) {
 
-        Log.e(" new Fragment ", fragment + "");
         String backStateName = fragment.getClass().getName();
         android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, fragment);
@@ -294,14 +275,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        //getSupportActionBar().setTitle(mTitle);
-        //toolbartitle.setText(mTitle);
     }
 
-     /*
-     * When using the ActionBarDrawerToggle, you must call it during
-     * onPostCreate() and onConfigurationChanged()...
-     */
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -478,13 +453,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e3) {
                 }
             }
-
-
-
-           // Socket socket = null;
-          //  InetSocketAddress sockaddr = null;
-
-
         }
 
     }
@@ -828,19 +796,12 @@ public class MainActivity extends AppCompatActivity {
     public static void dismiss(){
 
         try {
-
                 if (progress.isShowing()) {
                     progress.dismiss();
                 }
-
-
         } catch (Exception e) {
 
         }
-
-
-
-
     }
 
     static public void showToast(String message) throws IOException  {
@@ -890,14 +851,6 @@ public class MainActivity extends AppCompatActivity {
         return userID;
     }
 
-    public void decDemoCount() {
-
-        if (isDemo()){
-            int count = sharedPreferencesUtils.getDemoCount();
-            count--;
-            sharedPreferencesUtils.setDmeoCount(count);
-        }
-    }
 
     public boolean isDemoNotAccess(String date)  {
 
@@ -941,10 +894,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void importDB() {
-
-        // preExportDB();
-
-
 
         String current_db_name = "Data.db";
         String pre_db_name = "MyDBName";

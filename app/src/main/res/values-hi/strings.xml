@@ -1,5 +1,7 @@
 
 <resources>
+    
+
     <string name="app_name">Milk Collection</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -9,12 +11,12 @@
     <string name="payment_report_text">भुगतान रिपोर्ट</string>
 
 
-
     <string name="home">होम</string>
     <string name="master">मास्टर</string>
     <string name="report">रिपोर्ट</string>
     <string name="planguage">भाषा</string>
     <string name="setting">सेटिंग</string>
+    <string name="sales">सैल</string>
 
 
     <string name="morning">सुबह</string>
@@ -30,9 +32,7 @@
     <string name="date">तारीख</string>
     <string name="amount">रुपए</string>
     <string name="serial_no">अनु क्र.</string>
-
     <string name="save_print_sms">सेव प्रिन्ट मेसज</string>
-
 
 
     <string name="no_entry_text">आज की कोई जमा नहीं है</string>
@@ -69,7 +69,6 @@
     <string name="mem_enter_phone">मोबाइल लिखें</string>
 
 
-
     <string name="lw_weight">वेट</string>
     <string name="lw_rate"> रेट</string>
     <string name="lw_amout">रुपए</string>
@@ -88,7 +87,6 @@
     <string name="rt_kg_snf_rt">KG सनफ रेट</string>
     <string name="rt_comition">कमीशन</string>
     <string name="rt_comition_type">कमीशन टाइप :</string>
-
 
 
     <string name="change_rate_method">रेट विधि बदलें</string>

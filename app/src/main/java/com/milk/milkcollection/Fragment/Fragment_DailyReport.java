@@ -176,7 +176,7 @@ public class Fragment_DailyReport extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Daily Report .... ");
                 builder.setItems(new CharSequence[]
-                                {"Whats App","SMS", "Other Share", "Print", "Delete"},
+                                {"Whats App","SMS", "Other Share", "Print", "Delete","Edit"},
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // The 'which' argument contains the index position
@@ -212,6 +212,10 @@ public class Fragment_DailyReport extends Fragment {
                                     case 4:
                                         deleteReport(position);
                                         break;
+
+                                    case 5:
+                                        updateEntry(position);
+                                        break;
                                 }
                             }
                         });
@@ -226,10 +230,22 @@ public class Fragment_DailyReport extends Fragment {
         return rootView;
     }
 
+    void updateEntry(int position){
+
+
+        Fragment_update fragment = new Fragment_update();
+        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        fragment.entry = DailyReportList.get(position);
+
+        ft.replace(R.id.content_frame, fragment);
+        ft.addToBackStack("home");
+        ft.commit();
+    }
+
     public void setTextsAccordingRate()  {
         try {
             lbl_snf_dr.setText(MainActivity.instace.rateString());
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -274,19 +290,14 @@ public class Fragment_DailyReport extends Fragment {
         dailyReportAdapter = new DailyReportAdapter(getActivity(), R.layout.listviewmember, DailyReportList) {
             public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
                 TextView v = (TextView) super.getView(position, convertView, parent);
-                // v.setTypeface(typeface);
-                //  v.setTextColor(Color.RED);
+
                 v.setBackground(getResources().getDrawable(R.drawable.text_underline_spinner));
-                //v.setTextSize(17);
 
                 return v;
             }
         };
         savedmilk_listview.setAdapter(dailyReportAdapter);
         dailyReportAdapter.notifyDataSetChanged();
-//                DailyReportAdapter babyResultAdapter = new DailyReportAdapter(getActivity(),R.layout.blacktext,DailyReportList );
-//                savedmilk_listview.setAdapter(babyResultAdapter);
-//              nnnnn   babyResultAdapter.notifyDataSetChanged();
 
     }
 
@@ -335,11 +346,15 @@ public class Fragment_DailyReport extends Fragment {
                     snf_arrayList.add(cursor.getFloat(cursor.getColumnIndex("snf")));
                     snfwt_arrayList.add(cursor.getFloat(cursor.getColumnIndex("snf_wt")));
                     totalamount_arrayList.add(cursor.getFloat(cursor.getColumnIndex("totalamount")));
-                    date_arrayList.add(cursor.getString(cursor.getColumnIndex("date")));
-                    GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("allInformation")));
+                    date_arrayList.add(cursor.getString(cursor.getColumnIndex("dateSave")));
+                    GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("sift")));
                     dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
                     numberList.add(cursor.getString(cursor.getColumnIndex("milkinformation")));
                     cursor.moveToNext();
+
+
+
+
                 }
             } else {
                 // Toast.makeText(getApplication(), "Not Found", Toast.LENGTH_LONG).show();
@@ -360,12 +375,17 @@ public class Fragment_DailyReport extends Fragment {
                 dailyReport.setSnf(String.valueOf(snf_arrayList.get(i)));
                 dailyReport.setRate(String.valueOf(rate_arrayList.get(i)));
                 dailyReport.setAmount(String.valueOf(totalamount_arrayList.get(i)));
+                dailyReport.setId(String.valueOf(id_arrayList.get(i)));
+                dailyReport.setDate(String.valueOf(date_arrayList.get(i)));
+                dailyReport.setShift(String.valueOf(GetAllData_arrayList.get(i)));
+
                 weightTotal = weightTotal + weight_arrayList.get(i);
                 amountTotal = amountTotal + totalamount_arrayList.get(i);
                 fat_wt = fat_wt + fatwt_arrayList.get(i);
                 snf_wt = snf_wt + snfwt_arrayList.get(i);
                 DailyReportList.add(dailyReport);
-                SetAllData_arrayList.add(GetAllData_arrayList.get(i));
+
+                //SetAllData_arrayList.add(GetAllData_arrayList.get(i));
                 alldata = alldata + GetAllData_arrayList.get(i);
 
                 String nwt =  weight_arrayList.get(i).toString();
@@ -446,30 +466,6 @@ public class Fragment_DailyReport extends Fragment {
         for (int i = 0; i < DailyReportList.size(); i++) {
             Log.e("getCorde", DailyReportList.get(i).getCode() + "");
         }
-
-
-     /*   DailyReport arr[] = new DailyReport[dailyReportList.size()];
-        dailyReportList.toArray(arr);
-        Arrays.sort(arr, new Comparator<DailyReport>() {
-            public int compare(DailyReport o1, DailyReport o2) {
-                try {
-                    String t1 = (String) o1.getRate();
-                    String t2 = (String) o2.getRate();
-
-                    if (isAsc)
-                        return t1.compareTo(t2);
-                    else
-                        return t2.compareTo(t1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return 0;
-            }
-        });
-*/
-       /* ArrayList<DailyReport> newList = new ArrayList<DailyReport>();
-        newList.addAll(Arrays.asList(arr));
-        Log.e("=-SSSSSS--=", " " + newList);*/
 
     }
 

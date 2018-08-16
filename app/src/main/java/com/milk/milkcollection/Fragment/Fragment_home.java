@@ -389,18 +389,40 @@ public class Fragment_home extends Fragment {
     private void SaveAllData() {
 
 
+        String replaceDate = reverceDate();
+
+        if (MainActivity.getInstace().isDemoNotAccess(replaceDate)){
+            return;
+        }
+
+        if (milkDBHelpers.isAlredy(replaceDate,code)){
+
+            new android.support.v7.app.AlertDialog.Builder(getActivity()).setTitle("Re Entry")
+                    .setMessage("आज इस सदस्य प्रविष्टि पहले से मौजूद है।\n" +
+                            "फिर से जोड़ने के लिए YES दबाएं")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveData();
+                        }
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).show();
+
+        }else{
+            saveData();
+        }
+    }
+
+
+    private void saveData(){
+
 
         String date = tv_datepicker.getText().toString();
-
-        String replaceDate = date.replace("/", "");
-
-        String dd = replaceDate.substring(0, 2);
-        String mm = replaceDate.substring(2, 4);
-        String yy = replaceDate.substring(4, 8);
-
-        String printDate = dd + "." + mm;
-
-        replaceDate = yy + mm + dd;
+        String replaceDate = reverceDate();
 
 
         if (MainActivity.getInstace().isDemoNotAccess(replaceDate)){
@@ -456,8 +478,6 @@ public class Fragment_home extends Fragment {
 
 
 
-
-
                         String strShipt = "Eve";
                         if (sift.equals("M")){
                             strShipt = "Mor";
@@ -468,13 +488,13 @@ public class Fragment_home extends Fragment {
 
                         printString = "";
                         printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
-                                      "Name: " + member_name + "(" + code + ")" +
-                                      "\nDate: " + date +
-                                      "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
-                                      "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
-                                      "\nFat: " + fat + "  "+MainActivity.instace.rateString()+": " + snf +
-                                      "\nRate/Ltr: " + rateliter +
-                                      "\nAmount:  Rs " + totalamount + "\n";
+                                "Name: " + member_name + "(" + code + ")" +
+                                "\nDate: " + date +
+                                "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
+                                "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
+                                "\nFat: " + fat + "  "+MainActivity.instace.rateString()+": " + snf +
+                                "\nRate/Ltr: " + rateliter +
+                                "\nAmount:  Rs " + totalamount + "\n";
 
 
                         printString = printString + MainActivity.lineBreak();
@@ -510,6 +530,18 @@ public class Fragment_home extends Fragment {
         }
     }
 
+    private String reverceDate (){
+
+        String date = tv_datepicker.getText().toString();
+        String replaceDate = date.replace("/", "");
+
+        String dd = replaceDate.substring(0, 2);
+        String mm = replaceDate.substring(2, 4);
+        String yy = replaceDate.substring(4, 8);
+
+        return yy + mm + dd;
+
+    }
 
     private void commulativeMethod(){
 
@@ -536,11 +568,6 @@ public class Fragment_home extends Fragment {
                             ///  totalWeight = (cursor.getString(cursor.getColumnIndex("total")));
                         }
                     }
-
-                    Log.e("total", String.valueOf(totalAmount));
-                    Log.e("total", String.valueOf(totalWeight));
-
-
 
                     String preDate = sharedPreferencesUtils.getfromDate();
                     String endDate = sharedPreferencesUtils.getLastDate();
@@ -595,7 +622,6 @@ public class Fragment_home extends Fragment {
             isPrint = false;
             printMethod();
         }
-
     }
 
 
@@ -712,6 +738,7 @@ public class Fragment_home extends Fragment {
             code = "0" + code;
         }
 
+
         try {
             milkDBHelpers = new MilkDBHelpers(getActivity());
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
@@ -735,18 +762,7 @@ public class Fragment_home extends Fragment {
         }
     }
 
-    private String getDateTimeOne() {
-        Calendar ccc = Calendar.getInstance();
-        System.out.println("Current time => " + ccc.getTime());
 
-        int year = ccc.get(Calendar.YEAR);
-        int month = ccc.get(Calendar.MONTH);
-        int day = ccc.get(Calendar.DAY_OF_MONTH);
-        int mm = ccc.get(Calendar.MINUTE);
-        int hh = ccc.get(Calendar.HOUR);
-        String ttmm = day + "/" + month + "/" + year + " " + hh + ":" + mm;
-        return ttmm;
-    }
 
     private String getTimeOne() {
         Calendar ccc = Calendar.getInstance();
@@ -770,8 +786,6 @@ public class Fragment_home extends Fragment {
             e.printStackTrace();
         }
     }
-
-
 
 
 
@@ -854,12 +868,6 @@ public class Fragment_home extends Fragment {
 
 
 
-
-
-
-
-
-
     private void verifyDetailApi(){
 
         if (!MainActivity.instace.isNetworkConnected()){
@@ -876,7 +884,6 @@ public class Fragment_home extends Fragment {
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
 
                         try {
                             Log.e("resonce", response);
@@ -944,7 +951,7 @@ public class Fragment_home extends Fragment {
             return;
         }
 
-        if (sharedPreferencesUtils.isDownloaded().equals("0")){
+        if (sharedPreferencesUtils.isDownloaded().equals("0")) {
 
             sharedPreferencesUtils.setIsDownloaded();
             MainActivity.instace.showLoading("Data Downloading...");
@@ -952,13 +959,11 @@ public class Fragment_home extends Fragment {
             String url =   "http://wokosoftware.com/western/uploads/" + unit.getUserID() + "/MyDBName";
             Log.e("url",url);
             new DownloadFile().execute(url);
-
         }
-
     }
 
 
-        public static double roundToHalf(double d) {
+    public static double roundToHalf(double d) {
         return Math.round(d * 2) / 2.0;
     }
 }
