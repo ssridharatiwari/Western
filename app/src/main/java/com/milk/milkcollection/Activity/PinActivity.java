@@ -44,6 +44,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.milk.milkcollection.R;
+import com.milk.milkcollection.helper.AppString;
+import com.milk.milkcollection.helper.AppUrl;
 import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
@@ -393,9 +395,9 @@ public class PinActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
 
                 progress.dismiss();
-                makeToast("Detail sending failed : network or server error");
+                makeToast("Network Error");
 
-                Log.e("Not working ",error.getMessage());
+                // Log.e("Not working ",error.getMessage());
             }
         });
         queue.add(stringRequest);
@@ -415,7 +417,7 @@ public class PinActivity extends AppCompatActivity {
         if (AndroidID.length() > 0) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://wokosoftware.com/western/index.php?android_id=" + AndroidID + "&action=2";
+        String url = AppUrl.mainUrl + "android_id=" + AndroidID + "&action=2";
 
         Log.e("final ulr", url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -472,19 +474,13 @@ public class PinActivity extends AppCompatActivity {
                                         mobile_string = "DEMO";
                                         startNewActivity();
 
-                                    }else if (userStatus.equals("3")){
+                                    }else {
                                         makeToast("You are not verified");
                                     }
-
-
-                                    else
-                                        makeToast("You are not verified");
 
                                 }else{
 
                                 }
-
-
                             } else {
                                 makeToast("Network Error");
                             }
@@ -498,7 +494,7 @@ public class PinActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 progress.dismiss();
                 makeToast("Detail sending failed : network or server error");
-                Log.e("Not working ", error.getMessage());
+               // Log.e("Not working ", error.getMessage());
             }
         });
         queue.add(stringRequest);

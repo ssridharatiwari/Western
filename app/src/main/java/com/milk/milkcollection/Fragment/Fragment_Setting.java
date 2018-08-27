@@ -110,7 +110,8 @@ public class Fragment_Setting extends Fragment {
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
                     builder.setTitle(messge + " Activeted" );
                     builder.setItems(new CharSequence[]
-                                    {"Direct Wift", "Blutooth Printer App", "Pos App", "Cancel"},
+                                    {"Wift Printer", "WEG_Mobile BT Printer", "Pos Printer", "Cancel"},
+
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // The 'which' argument contains the index position
@@ -155,7 +156,7 @@ public class Fragment_Setting extends Fragment {
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
                 builder.setTitle(messge );
                 builder.setItems(new CharSequence[]
-                                {"Manual Fat and SNF Rate", "Fat Snf Rate Chart", "Fat Clr Rate Chart", "Cancel"},
+                                {"KG FAT KG SNF(SRS)", "Fat Snf Rate Chart", "Fat Clr Rate Chart", "Cancel"},
                         new DialogInterface.OnClickListener() {
                             @RequiresApi(api = Build.VERSION_CODES.M)
                             public void onClick(DialogInterface dialog, int which) {
@@ -334,8 +335,9 @@ public class Fragment_Setting extends Fragment {
 
 
     public void updateData(){
-        lblRate.setText("Selected : " + sharedPreferencesUtils.getRateMethodText());
-        lblPrint.setText("Selected : " + sharedPreferencesUtils.getprintByText());
+
+        lblRate.setText( sharedPreferencesUtils.getRateMethodText());
+        lblPrint.setText( sharedPreferencesUtils.getprintByText());
     }
 
 
@@ -465,11 +467,10 @@ public class Fragment_Setting extends Fragment {
 
         final EditText edittext = new EditText(getActivity());
 
-        alert.setMessage("Change Name");
-        alert.setTitle("Enter name");
-
+        alert.setMessage(null);
+        alert.setTitle("Change Socity Name");
+        edittext.setHint("Enter name");
         alert.setView(edittext);
-
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //What ever you want to do with the value

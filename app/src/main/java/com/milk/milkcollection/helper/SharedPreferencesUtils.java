@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.milk.milkcollection.Activity.MainActivity;
+import com.milk.milkcollection.R;
 
 import java.io.IOException;
 
@@ -62,7 +63,7 @@ SharedPreferences prefs;
             String printBefore =  prefs.getString("printBy", "");
 
             if (printBefore.equals("wifi"))
-                return "Derect Wifi Printer";
+                return "Wifi Printer";
         else if (printBefore.equals("blutooth"))
             return "Blutooth Printer App";
         else if (printBefore.equals("pos"))
@@ -93,7 +94,7 @@ SharedPreferences prefs;
             String dat = prefs.getString("rateby", "");
 
             if (dat.equals("1")) {
-                dat = "Manual Fat Snf Rate";
+                dat = MainActivity.instace.getResources().getString(R.string.kgfat_rate);
             }
 
             else if (dat.equals("2")) {

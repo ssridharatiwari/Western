@@ -359,16 +359,14 @@ if (position == 0)
 
                         numberList.add(cursor.getString(cursor.getColumnIndex("milkinformation")));
 
-
                         String date =  cursor.getString(cursor.getColumnIndex("dateSave"));
 
-                        try
-                        {
+                        try {
                                     String line = String.format("%5s%1s %-4s %-4s %-4s %-6s", date.substring(0,5),
                                     cursor.getString(cursor.getColumnIndex("sift")),
+                                    MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("milkweight"))),
                                     MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("fat"))),
                                     MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("snf"))),
-                                    MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("milkweight"))),
                                     MainActivity.twoDecimalString(cursor.getString(cursor.getColumnIndex("totalamount"))));
 
                             alldata = alldata + "\n" + line;

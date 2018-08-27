@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +20,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -51,12 +54,17 @@ import com.milk.milkcollection.Fragment.Fragment_Report;
 import com.milk.milkcollection.Fragment.Fragment_Setting;
 import com.milk.milkcollection.Fragment.Fragment_home;
 import com.milk.milkcollection.R;
+import com.milk.milkcollection.helper.AppString;
+import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -95,12 +103,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     public static ProgressDialog progress;
-    public static MainActivity instace;
+
     public String demoDate = "";
+
+    public static BluetoothPrinter myprinter;
+
 
     SharedPreferencesUtils sharedPreferencesUtils;
 
 
+    public static MainActivity instace;
 
     public static MainActivity getInstace(){
         if(instace == null){
@@ -109,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         return instace;
     }
     int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
         } else if (position == 1 && !backStateName.equals("com.milk.milkcollection.Fragment.Fragment_Master")) {
             toolbartitle.setText(getResources().getString(R.string.master));
             replaceFragment(new Fragment_Master());
-
         } else if (position == 2 && !backStateName.equals("com.milk.milkcollection.Fragment.Fragment_Report")) {
             toolbartitle.setText(getResources().getString(R.string.report));
             replaceFragment(new Fragment_Report());
@@ -273,9 +285,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-    }
+    public void setTitle(CharSequence title) {mTitle = title;}
 
 
     @Override
@@ -575,6 +585,9 @@ public class MainActivity extends AppCompatActivity {
 
     static public void print(String  printSTRING) throws IOException {
 
+
+        printSTRING = printSTRING + " _WESTERN_JAIPUR_";
+
         if (printSTRING.length() > 0) {
 
             SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(instace.getInstace());
@@ -590,7 +603,8 @@ public class MainActivity extends AppCompatActivity {
                         nos.write(printSTRING.getBytes("UTF-8"));
                         nos.write("\n\n\n".getBytes("UTF-8"));
                     } catch (Exception e) {
-                        MainActivity.instace.runConnection();
+
+                        // MainActivity.instace.runConnection();
 
                         nos = nsocket.getOutputStream();
                         nos.write(printSTRING.getBytes("UTF-8"));
@@ -601,29 +615,9 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } else if (printBy.equals("blutooth")) {
-                    {
-                        PackageManager pm = instace.getPackageManager();
-                        try {
 
-                            Intent waIntent = new Intent(Intent.ACTION_SEND);
-                            waIntent.setType("text/plain");
-                            //   String text = "YOUR TEXT HERE";
 
-                            PackageInfo info = pm.getPackageInfo("pe.diegoveloper.printerserverapp", PackageManager.GET_META_DATA);
-                            //Check if package exists or not. If not then code
-                            //in catch block will be called
-                            waIntent.setPackage("pe.diegoveloper.printerserverapp");
-
-                            waIntent.putExtra(Intent.EXTRA_TEXT, printSTRING );
-                            //waIntent.putExtra(Intent.EXTRA_TEXT, "1234567890123456780912345678901234567890");
-                            instace.getInstace().startActivity(Intent.createChooser(waIntent, "Share with"));
-
-                        } catch (PackageManager.NameNotFoundException e) {
-                            e.printStackTrace();
-
-                            Toast.makeText(instace.getInstace(), "Please Install Printer Application", Toast.LENGTH_LONG).show();
-                        }
-                    }
+                        instace.printFromBluthooth(printSTRING+"\n\n");
 
                 } else {
                     PackageManager pm = instace.getPackageManager();
@@ -649,6 +643,108 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+
+
+
+    BluetoothAdapter btAdapter;
+    BluetoothDevice mBtDevice;
+    public void printFromBluthooth(final String printStiring){
+
+        showLoading("Printing");
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+
+                dismiss();
+                try {
+                    btAdapter = BluetoothAdapter.getDefaultAdapter();
+                    mBtDevice = btAdapter.getBondedDevices().iterator().next();
+
+
+                    // Get first paired device
+                } catch (Exception e) {
+                    instace.showAlert("Printer not conneted, \nEntry saved");
+                    return;
+                }
+
+                Log.e("new connection stiring",printStiring);
+
+                if (!mBtDevice.getName().equals(AppString.printername)) {
+                    instace.showAlert("WEG_Mobile Printer Not Availble");
+                    return;
+                }
+
+                if (myprinter == null) {
+                    myprinter = new BluetoothPrinter(mBtDevice);
+                }
+
+                if (myprinter.isConnected()){
+                    myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
+                    myprinter.printText(printStiring);
+                    myprinter.addNewLine();
+                    myprinter.addNewLine();
+                    myprinter.finish();
+                }
+                else{
+                    Log.e("new connection stiring",printStiring);
+                    myprinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
+
+                        @Override
+                        public void onConnected() {
+                            myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
+                            myprinter.printText(printStiring);
+                            myprinter.addNewLine();
+                            myprinter.addNewLine();
+                            myprinter.finish();
+                        }
+
+                        public void onFailed() {
+                            Log.d("BluetoothPrinter", "Conection failed");
+                        }
+                    });
+                }
+            }
+
+        }, 100);
+
+
+
+
+
+
+    }
+
+
+
+    public void printFromOtherApp(String string){
+
+        PackageManager pm = instace.getPackageManager();
+        try {
+
+            Intent waIntent = new Intent(Intent.ACTION_SEND);
+            waIntent.setType("text/plain");
+            //   String text = "YOUR TEXT HERE";
+
+            PackageInfo info = pm.getPackageInfo("pe.diegoveloper.printerserverapp", PackageManager.GET_META_DATA);
+            // Check if package exists or not. If not then code
+            // in catch block will be called
+            waIntent.setPackage("pe.diegoveloper.printerserverapp");
+
+            waIntent.putExtra(Intent.EXTRA_TEXT, string );
+            //waIntent.putExtra(Intent.EXTRA_TEXT, "1234567890123456780912345678901234567890");
+            instace.getInstace().startActivity(Intent.createChooser(waIntent, "Share with"));
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+
+            Toast.makeText(instace.getInstace(), "Please Install Printer Application", Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     static public String oneDecimalString(String  value) throws IOException {
         try {
@@ -990,5 +1086,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void focusOnTextField(EditText editText){
+        editText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    public void showAlert(String message) {
+
+        new android.support.v7.app.AlertDialog.Builder(instace).setTitle("Message")
+                .setMessage(message)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).setNegativeButton(null, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).show();
+    }
 }
 

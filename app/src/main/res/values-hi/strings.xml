@@ -11,11 +11,11 @@
     <string name="payment_report_text">भुगतान रिपोर्ट</string>
 
 
-    <string name="home">होम</string>
+    <string name="home">दूध संग्रह</string>
     <string name="master">मास्टर</string>
     <string name="report">रिपोर्ट</string>
     <string name="planguage">भाषा</string>
-    <string name="setting">सेटिंग</string>
+    <string name="setting">मुख्य सेटिंग</string>
     <string name="sales">सैल</string>
 
 
@@ -54,15 +54,17 @@
     <string name="mas_add_rate">दर जोड़ें</string>
     <string name="mas_show_rt">दर दिखाएं</string>
     <string name="mas_export">बैकअप</string>
+    <string name="mas_backup">बैकअप</string>
     <string name="mas_import">सूची</string>
     <string name="mas_mail">मेल भेजे</string>
     <string name="mas_rate_chart">रेट चार्ट</string>
 
 
-    <string name="rep_mem_lzr">मेंबर रिपोर्ट </string>
-    <string name="rep_daily_report">रोज का रिपोर्ट</string>
-    <string name="rep_pay_report">भुगतान रिपोर्ट</string>
-
+    <string name="rep_mem_lzr">सदस्य पासबूक</string>
+    <string name="rep_daily_report">खरीद रिपोर्ट</string>
+    <string name="rep_pay_rceport">भुगतान रिपोर्ट</string>
+    <string name="rep_socity_report">समिति रिपोर्ट</string>
+    <string name="rep_lossprofit_report">लाभ-हानि रिपोर्ट</string>
 
     <string name="mem_enter_code">कोड लिखें</string>
     <string name="mem_enter_name">नाम लिखें</string>
@@ -79,7 +81,7 @@
     <string name="lw_rate_detail">रेट सूची</string>
 
 
-    <string name="rt_from_fat">फैट से </string>
+    <string name="rt_from_fat">फैट से</string>
     <string name="rt_to_fat">फैट तक</string>
     <string name="rt_from_snf">सनफ से</string>
     <string name="rt_to_snf">सनफ तक</string>
@@ -89,10 +91,16 @@
     <string name="rt_comition_type">कमीशन टाइप :</string>
 
 
-    <string name="change_rate_method">रेट विधि बदलें</string>
+    <string name="change_rate_method">दूध दर प्रकार</string>
     <string name="change_print_method">प्रिन्ट विधि बदलें</string>
     <string name="change_society_name">सोसाइटी नाम बदलें</string>
-    <string name="change_comultive">Change Society Name</string>
+    <string name="change_comultive">कूल योग तारीख से तारीख</string>
+    <string name="change_default">फ़िक्स SNF</string>
+
+
+
+    <string name="kgfat_rate">किलो फैट किलो सनफ</string>
+
 
 
 </resources>

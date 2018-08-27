@@ -147,7 +147,7 @@
             android:layout_marginLeft="5dp"
             android:background="@drawable/button_blue"
             android:gravity="center"
-            android:text="Commulative"
+            android:text="@string/change_comultive"
             android:textAllCaps="false"
             android:textColor="#ffffff"
 
@@ -164,7 +164,7 @@
             android:foregroundGravity="center"
             android:gravity="center"
             android:textColor="@color/black"
-            android:text="coomulative"
+            android:text="@string/change_default"
             android:textSize="17dp"/>
 
     </LinearLayout>

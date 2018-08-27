@@ -48,6 +48,7 @@ import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.SClient;
 import com.milk.milkcollection.application.AppApplication;
+import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
@@ -191,12 +192,17 @@ public class Fragment_home extends Fragment {
         });
 
 
-
         et_code.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
 
-                getUserName();
+                if (et_code.getText().length() > 0) {
+                    getUserName();
+                }else{
+
+                    tv_code_holder.setText("Code");
+                    et_code.setError(null);
+                }
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -204,6 +210,25 @@ public class Fragment_home extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
+
+
+        et_weight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    if (et_code.getText().length() > 0) {
+                        rentryMethod();
+                    }else{
+                        et_code.setError(null);
+                    }
+                } else {
+
+                }
+            }
+        });
+
+
+
 
         String[] morning_evening = new String[]{"Morning", "Evening"};
         ArrayAdapter<String> SpinnerAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinnertext, morning_evening);
@@ -341,6 +366,30 @@ public class Fragment_home extends Fragment {
         return rootView;
     }
 
+
+    private void rentryMethod(){
+
+        if (milkDBHelpers.isAlredy(reverceDate(),sift,code)){
+            
+            new android.support.v7.app.AlertDialog.Builder(instace).setTitle("Message")
+                    .setMessage(AppString.reentryTitle)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    MainActivity.instace.focusOnTextField(et_code);
+                }
+            }).show();
+
+        }else{
+            et_code.setError(null);
+        }
+    }
+
     private void messageAlertDialog() {
 
         Log.e("meessage",message);
@@ -386,6 +435,8 @@ public class Fragment_home extends Fragment {
         }
     }
 
+    /////  save data method
+
     private void SaveAllData() {
 
 
@@ -395,27 +446,9 @@ public class Fragment_home extends Fragment {
             return;
         }
 
-        if (milkDBHelpers.isAlredy(replaceDate,code)){
-
-            new android.support.v7.app.AlertDialog.Builder(getActivity()).setTitle("Re Entry")
-                    .setMessage("आज इस सदस्य प्रविष्टि पहले से मौजूद है।\n" +
-                            "फिर से जोड़ने के लिए YES दबाएं")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            saveData();
-                        }
-                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            }).show();
-
-        }else{
-            saveData();
-        }
+        saveData();
     }
+
 
 
     private void saveData(){
@@ -530,6 +563,10 @@ public class Fragment_home extends Fragment {
         }
     }
 
+
+
+
+
     private String reverceDate (){
 
         String date = tv_datepicker.getText().toString();
@@ -543,75 +580,77 @@ public class Fragment_home extends Fragment {
 
     }
 
+
+
+
+
+
+
     private void commulativeMethod(){
 
 
-                if (sharedPreferencesUtils.getLastDate().length() > 1) {
+        if (sharedPreferencesUtils.getLastDate().length() > 1) {
 
-                    float totalAmount = 0;
-                    float totalWeight = 0;
+            float totalAmount = 0;
+            float totalWeight = 0;
 
-                    MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-                    SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
+            MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+            SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
 
-                    Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM 'milk_amount' WHERE memberCode = '" + myCode + "' and date >= '" + sharedPreferencesUtils.getfromDate() + "' and date <= '" + sharedPreferencesUtils.getLastDate() + "'", null);
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM 'milk_amount' WHERE memberCode = '" + myCode + "' and date >= '" + sharedPreferencesUtils.getfromDate() + "' and date <= '" + sharedPreferencesUtils.getLastDate() + "'", null);
 
-                    if (cursor != null && cursor.moveToFirst()) {
-                        while (cursor.isAfterLast() == false) {
+            if (cursor != null && cursor.moveToFirst()) {
+                while (cursor.isAfterLast() == false) {
 
-
-                            totalAmount += cursor.getFloat(cursor.getColumnIndex("totalamount"));
-                            totalWeight += cursor.getFloat(cursor.getColumnIndex("milkweight"));
-
-                            cursor.moveToNext();
-
-                            ///  totalWeight = (cursor.getString(cursor.getColumnIndex("total")));
-                        }
-                    }
-
-                    String preDate = sharedPreferencesUtils.getfromDate();
-                    String endDate = sharedPreferencesUtils.getLastDate();
-
-                    if (preDate.length() > 1){
-
-                        String yy = preDate.substring(0, 4);
-                        String mm = preDate.substring(4, 6);
-                        String dd = preDate.substring(6, 8);
-
-                        preDate = dd + "/" + mm + "/" + yy;
-
-
-                    }
-                    if (endDate.length() > 1){
-
-                        String yy = endDate.substring(0, 4);
-                        String mm = endDate.substring(4, 6);
-                        String dd = endDate.substring(6, 8);
-
-                        endDate = dd + "/" + mm + "/" + yy;
-
-                    }
-
-
-                    printString = printString + "\n" + "Commilative Total :" +
-                            "\nFrom : " + preDate +
-                            "To : " + endDate + "\n" +
-                            "Weight : " + totalWeight + "\nAmount : " + totalAmount ;
-
-                    try {
-                        printString = printString + "\n" + MainActivity.lineBreak() ;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    message = message + "\n" + "Com. Ttl(" + preDate +
-                            " - " + endDate + ") :\n" +
-                            "QTY=" + totalWeight + "\nAMT= ₹ " + totalAmount;
+                    totalAmount += cursor.getFloat(cursor.getColumnIndex("totalamount"));
+                    totalWeight += cursor.getFloat(cursor.getColumnIndex("milkweight"));
+                    cursor.moveToNext();
+                    //  totalWeight = (cursor.getString(cursor.getColumnIndex("total")));
                 }
+            }
 
-        printString = printString + "\n   _western_ \n";
-        Log.e("printing string",printString);
+            String preDate = sharedPreferencesUtils.getfromDate();
+            String endDate = sharedPreferencesUtils.getLastDate();
+
+            if (preDate.length() > 1){
+
+                String yy = preDate.substring(0, 4);
+                String mm = preDate.substring(4, 6);
+                String dd = preDate.substring(6, 8);
+
+                preDate = dd + "/" + mm + "/" + yy;
+
+
+            }
+            if (endDate.length() > 1){
+
+                String yy = endDate.substring(0, 4);
+                String mm = endDate.substring(4, 6);
+                String dd = endDate.substring(6, 8);
+
+                endDate = dd + "/" + mm + "/" + yy;
+
+            }
+
+
+            printString = printString + "\n" + "Commilative Total :" +
+                    "\nFrom : " + preDate +
+                    "To : " + endDate + "\n" +
+                    "Weight : " + totalWeight + "\nAmount : " + totalAmount;
+            try {
+                printString = printString + "\n" + MainActivity.lineBreak();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            message = message + "\n" + "Com. Ttl(" + preDate +
+                    " - " + endDate + ") :\n" +
+                    "QTY=" + totalWeight + "\nAMT= ₹ " + totalAmount;
+        }
+
+
+
+        //        Log.e("printing string",printString);
 
         if (isSMSSemd){
             isSMSSemd = false;
@@ -622,6 +661,8 @@ public class Fragment_home extends Fragment {
             isPrint = false;
             printMethod();
         }
+
+        MainActivity.instace.focusOnTextField(et_code);
     }
 
 
@@ -813,6 +854,7 @@ public class Fragment_home extends Fragment {
     }
 
 
+
     public void getCurrentCollection() {
 
         final Handler handler = new Handler();
@@ -966,7 +1008,10 @@ public class Fragment_home extends Fragment {
     public static double roundToHalf(double d) {
         return Math.round(d * 2) / 2.0;
     }
-}
 
+
+
+
+}
 
 

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.ShowMember;
+import com.milk.milkcollection.model.SingleEntry;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +47,8 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		a.execSQL("create table member_pay(Id Integer primary Key Autoincrement,membername text,membercode text,pay_amount text,date text)");
 		a.execSQL("create table updatebhav(Id Integer primary Key Autoincrement,fromfat text,tofat text,fromsnf text,tosnf text,kgfatrat text,kgsnfrat text,comitionliter text,allfatsaf text,commissionType text)");
 		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,milkinformation text," + "sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
+		a.execSQL("create table sell_data(Id Integer primary Key Autoincrement,weight text,rate text ,total text,date text,sift text,fat text,snf text,dateSave text)");
+
 	}
 
 	@Override
@@ -99,6 +102,27 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
 
 
+	public void AddSellData(SingleEntry entry) {
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put("weight",entry.getWeight());
+		values.put("rate",entry.getWeight());
+		values.put("totalamount",entry.getAmount());
+		values.put("date",entry.getDate());
+		values.put("sift",entry.getSift());
+		values.put("fat",entry.getfat());
+		values.put("snf",entry.getSnf());
+		values.put("dateSave",entry.getDatesave());
+
+		db.insert("milk_amount", null, values);
+
+
+		db.close(); // Closing database connection
+	}
+
+
+
 	public void update(String memberCode, String weight, float rateliter, float amount, String mydate,
 						String number, String sift, String fat, Float fat_wt, String snf, Float snt_wt,
 						String message, String printString, String dateSave,String id) {
@@ -128,10 +152,10 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 	}
 
 
-	public Boolean isAlredy(String date,String code) {
+	public Boolean isAlredy(String date,String sift,String code) {
 
 		SQLiteDatabase db = this.getWritableDatabase();
-		String query = "select * from milk_amount where memberCode=" + "'"+ code +"' AND date=" + "'"+ date +"'";;
+		String query = "select * from milk_amount where memberCode=" + "'"+ code +"' AND date=" + "'"+ date +"'  AND sift=" + "'"+ sift +"'  ";;
 		Cursor mCount = db.rawQuery(query, null);
 		mCount.moveToFirst();
 
