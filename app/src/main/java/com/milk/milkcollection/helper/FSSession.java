@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 import com.milk.milkcollection.Activity.MainActivity;
+import com.milk.milkcollection.model.SingleEntry;
 
 import java.io.IOException;
 

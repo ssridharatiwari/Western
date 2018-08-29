@@ -15,8 +15,9 @@ import com.milk.milkcollection.R;
  */
 public class Fragment_Report extends Fragment {
 
-    private Button btn_singlememberreport,btn_dailymemberreport,btn_pay_report;
+    private Button btn_singlememberreport,btn_dailymemberreport,btn_pay_report,btn_sell_report;
     public TextView toolbartitle;
+
 
     public Fragment_Report() {}
 
@@ -41,6 +42,9 @@ public class Fragment_Report extends Fragment {
             }
         });
         btn_pay_report=(Button)rootView.findViewById(R.id.btn_pay_report);
+        btn_sell_report=(Button)rootView.findViewById(R.id.btn_sell_report);
+
+
         btn_pay_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +73,22 @@ public class Fragment_Report extends Fragment {
 
             }
         });
+
+
+        btn_sell_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // startActivity(new Intent(getActivity(), SearchActivity.class));
+                toolbartitle.setText(getResources().getString(R.string.payment_report_text));
+                Fragment fragment = new Fragment_CellReport();
+                android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.addToBackStack("home");
+                ft.commit();
+            }
+        });
+
 
         toolbartitle.setText(getResources().getString(R.string.report));
 

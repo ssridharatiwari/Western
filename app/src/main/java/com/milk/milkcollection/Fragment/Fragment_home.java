@@ -305,7 +305,6 @@ public class Fragment_home extends Fragment {
 
         getCurrentDate();
 
-        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
         int memberlength = milkDBHelpers.getMember();
         String memberrecord = String.valueOf(memberlength);
         if (memberrecord != null) {
@@ -485,7 +484,6 @@ public class Fragment_home extends Fragment {
             try {
 
 
-                milkDBHelpers = new MilkDBHelpers(getActivity());
                 SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
 
                 Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where membercode='" + code + "'", null);
@@ -494,7 +492,6 @@ public class Fragment_home extends Fragment {
 
                     while (cursor.isAfterLast() == false) {
 
-                        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
                         Float rateperliter = Float.valueOf(rateliter);
                         Float currentweight = Float.parseFloat(weight);
                         Float currentfat = Float.parseFloat(fat);
@@ -594,7 +591,6 @@ public class Fragment_home extends Fragment {
             float totalAmount = 0;
             float totalWeight = 0;
 
-            MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
 
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM 'milk_amount' WHERE memberCode = '" + myCode + "' and date >= '" + sharedPreferencesUtils.getfromDate() + "' and date <= '" + sharedPreferencesUtils.getLastDate() + "'", null);
@@ -637,11 +633,9 @@ public class Fragment_home extends Fragment {
                     "\nFrom : " + preDate +
                     "To : " + endDate + "\n" +
                     "Weight : " + totalWeight + "\nAmount : " + totalAmount;
-            try {
-                printString = printString + "\n" + MainActivity.lineBreak();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+            printString = printString + "\n" + MainActivity.lineBreak();
+
 
             message = message + "\n" + "Com. Ttl(" + preDate +
                     " - " + endDate + ") :\n" +
@@ -678,8 +672,6 @@ public class Fragment_home extends Fragment {
             sp_shift.setSelection(1);
             sift = "E";
         }
-
-        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
         tv_datepicker.setText(milkDBHelpers.getCurrentDateFromPublic());
     }
 
@@ -781,7 +773,8 @@ public class Fragment_home extends Fragment {
 
 
         try {
-            milkDBHelpers = new MilkDBHelpers(getActivity());
+
+
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
             Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where membercode='" + code + "'", null);
             if (cursor != null && cursor.moveToFirst()) {
@@ -864,7 +857,7 @@ public class Fragment_home extends Fragment {
 
 
                 try {
-                    MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+
                     SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
 
                     String date = milkDBHelpers.getCurrentDateFromPublic();
@@ -994,11 +987,9 @@ public class Fragment_home extends Fragment {
         }
 
         if (sharedPreferencesUtils.isDownloaded().equals("0")) {
-
             sharedPreferencesUtils.setIsDownloaded();
             MainActivity.instace.showLoading("Data Downloading...");
-            SharedPreferencesUtils unit = new SharedPreferencesUtils(getActivity());
-            String url =   "http://wokosoftware.com/western/uploads/" + unit.getUserID() + "/MyDBName";
+            String url =   "http://wokosoftware.com/western/uploads/" + sharedPreferencesUtils.getUserID() + "/MyDBName";
             Log.e("url",url);
             new DownloadFile().execute(url);
         }

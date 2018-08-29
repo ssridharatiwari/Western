@@ -53,6 +53,7 @@ import com.milk.milkcollection.Fragment.Fragment_Master;
 import com.milk.milkcollection.Fragment.Fragment_Report;
 import com.milk.milkcollection.Fragment.Fragment_Setting;
 import com.milk.milkcollection.Fragment.Fragment_home;
+import com.milk.milkcollection.Fragment.Fragment_sell;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.BluetoothPrinter;
@@ -267,9 +268,9 @@ public class MainActivity extends AppCompatActivity {
             replaceFragment(new Fragment_Setting());
         } else if (position == 4 ) {
             toolbartitle.setText(getResources().getString(R.string.sales));
-            replaceFragment(new Fragment_Setting());
+            replaceFragment(new Fragment_sell());
         } else if (position == 5) {
-                changeLanguage(MainActivity.this);
+            changeLanguage(MainActivity.this);
         }
     }
 
@@ -406,6 +407,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void runConnection() {
 
@@ -582,6 +603,23 @@ public class MainActivity extends AppCompatActivity {
         protected void onCancelled() {
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     static public void print(String  printSTRING) throws IOException {
 
@@ -775,7 +813,7 @@ public class MainActivity extends AppCompatActivity {
         return  String.format("%.2f", value);
     }
 
-    static public String lineBreak() throws IOException {
+    static public String lineBreak()  {
         return "===========================\n";
     }
 

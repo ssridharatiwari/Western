@@ -31,10 +31,12 @@ import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.DailyReport;
+import com.milk.milkcollection.model.SingleEntry;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
 
@@ -44,10 +46,9 @@ public class Fragment_sell extends Fragment {
     ArrayAdapter<String> adapter;
     Button btn_ratesave, btn_message, btn_print, btn_pss;
     LinearLayout createrate,todayDetailLL;
-    EditText et_weight, et_fat, et_snf, et_code,et_rate;
-    TextView rate, total, btnrate, btntotal, tv_datepicker, tv_code_holder,lbl_avgFat,
-            lbl_avgSnf,lbl_wgt,lbl_amt,lbl_SeriolNo,lbl_snf_home,lbl_snf_avg,toolbartitle;
-    String weight, fat, snf, code , myCode;
+    EditText et_weight, et_fat, et_snf,et_rate;
+    TextView  total, btntotal, tv_datepicker, tv_code_holder,lbl_snf_home,lbl_snf_avg,toolbartitle;
+    String weight, fat, snf, code , myCode,rateliter;
     String phone_number, message, sift, printString, titlename, mobile_self,comission;
     float rateperltr;
     Spinner sp_shift;
@@ -59,8 +60,6 @@ public class Fragment_sell extends Fragment {
     Boolean isSMSSemd = false,isPrint;
 
 
-    public DailyReport entry = new DailyReport();
-
 
     public Fragment_sell() {
     }
@@ -71,7 +70,7 @@ public class Fragment_sell extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.update_entry, container, false);
+        View rootView = inflater.inflate(R.layout.sell_entry, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         comission = "+";
 
@@ -82,64 +81,30 @@ public class Fragment_sell extends Fragment {
         et_weight = (EditText) rootView.findViewById(R.id.s_weight);
         et_fat = (EditText) rootView.findViewById(R.id.s_fat);
         et_snf = (EditText) rootView.findViewById(R.id.s_snf);
-        et_rate = (EditText) rootView.findViewById(R.id.s_snf);
+        et_rate = (EditText) rootView.findViewById(R.id.s_rate);
 
         total = (TextView) rootView.findViewById(R.id.s_total);
-
         btntotal = (TextView) rootView.findViewById(R.id.s_click_total);
         tv_datepicker = (TextView) rootView.findViewById(R.id.s_date);
-
         sp_shift = (Spinner) rootView.findViewById(R.id.s_sp_shift);
-
         sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
         milkDBHelpers=  new MilkDBHelpers(getActivity());
 
         titlename = sharedPreferencesUtils.getTitle();
         mobile_self = sharedPreferencesUtils.getMobile();
-        // toolbartitle.setText(titlename);
 
-        et_code.setText(entry.getCode());
-        et_fat.setText(entry.getFat());
-        et_snf.setText(entry.getSnf());
-        et_weight.setText(entry.getWeight());
-        sift = entry.getShift();
-
-        tv_datepicker.setText(entry.getDate());
+        btn_ratesave = (Button) rootView.findViewById(R.id.s_btn_update);
 
 
+        setClickEvents();
 
-        et_snf.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == event.KEYCODE_ENTER) {
-                    createmilkvalue();
-                    hideKeyboard(getActivity());
-                }
-                return false;
-            }
-        });
-
-        et_fat.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-                if (keyCode == event.KEYCODE_ENTER) {
-
-                    if (sharedPreferencesUtils.getDefaultSNF()>0) {
-                        createmilkvalue();
-                        hideKeyboard(getActivity());
-                    }
-                }
-
-                return false;
-            }
-        });
+        return rootView;
+    }
 
 
+    void setClickEvents(){
 
-
-
-
+        tv_datepicker.setText(milkDBHelpers.getCurrentDateFromPublic());
 
         String[] morning_evening = new String[]{"Morning", "Evening"};
         ArrayAdapter<String> SpinnerAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinnertext, morning_evening);
@@ -165,14 +130,6 @@ public class Fragment_sell extends Fragment {
         });
 
 
-        if(entry.getShift().equals("M")) {
-            sp_shift.setSelection(0);
-        } else {
-            sp_shift.setSelection(1);
-        }
-
-
-
         tv_datepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,8 +139,17 @@ public class Fragment_sell extends Fragment {
         });
 
 
+        et_snf.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == event.KEYCODE_ENTER) {
+                    createmilkvalue();
+                    hideKeyboard(getActivity());
+                }
+                return false;
+            }
+        });
 
-        btn_ratesave = (Button) rootView.findViewById(R.id.u_btn_update);
 
         btn_ratesave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,96 +158,20 @@ public class Fragment_sell extends Fragment {
                 if (funSaveEntry() == true) {
 
                 }
-
             }
         });
 
-        createrate = (LinearLayout) rootView.findViewById(R.id.u_createrate);
-        createrate.setOnClickListener(new View.OnClickListener() {
+        btntotal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                     createmilkvalue();
             }
         });
 
-        ontextUpdate();
-        createmilkvalue();
-        getUserName();
-
-
-        return rootView;
-    }
-
-    void ontextUpdate(){
-
-
-
-        et_code.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-
-                getUserName();
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-
-
-        et_fat.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-
-                createmilkvalue();
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-
-
-        et_snf.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-
-                createmilkvalue();
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-
-
-        et_weight.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-
-                createmilkvalue();
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
 
     }
 
 
-
-
-    private void messageAlertDialog() {
-
-        Log.e("meessage",message);
-        isSMSSemd = false;
-        MainActivity.sendTextSms(message,phone_number);
-    }
 
     private void printMethod() {
 
@@ -301,24 +191,8 @@ public class Fragment_sell extends Fragment {
 
     public boolean funSaveEntry() {
 
-        code = et_code.getText().toString();
-        if (code.length() == 0) {
-            et_code.setError("Code is required!");
-            return  false;
-        } else {
-            if (code.length() == 1) {
-                code = "00" + code;
-                SaveAllData();
-                return  true;
-            } else if (code.length() == 2) {
-                code = "0" + code;
-                SaveAllData();
-                return  true;
-            } else {
-                SaveAllData();
-                return  true;
-            }
-        }
+        SaveAllData();
+        return true;
     }
 
     private void SaveAllData() {
@@ -342,6 +216,7 @@ public class Fragment_sell extends Fragment {
         String date = tv_datepicker.getText().toString();
         String replaceDate = reverceDate();
 
+        rateliter = "1";
 
         if (MainActivity.getInstace().isDemoNotAccess(replaceDate)){
             return;
@@ -352,11 +227,8 @@ public class Fragment_sell extends Fragment {
         snf = et_snf.getText().toString();
 
         String totalrupees = total.getText().toString();
-        String rateliter = rate.getText().toString();
 
-        if (rateliter.equals("00.00")) {
-            Toast.makeText(getActivity(), "Amount Not Found", Toast.LENGTH_LONG).show();
-        } else if (weight.length() == 0)
+        if (weight.length() == 0)
             et_weight.setError("Weight is required!");
         else if (Float.parseFloat(weight) >= 1000)
             et_weight.setError("Weight limit 1 - 999");
@@ -370,79 +242,27 @@ public class Fragment_sell extends Fragment {
             try {
 
 
-                milkDBHelpers = new MilkDBHelpers(getActivity());
-                SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
+                SingleEntry entry = new SingleEntry();
 
-                Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where membercode='" + code + "'", null);
+                entry.setAmount(String.valueOf(totalrupees));
+                entry.setFat( fat);
+                entry.setSnf(snf);
+                entry.setSift(sift);
+                entry.setDate(date);
+                entry.setRate(rateliter);
+                entry.setDatesave(date);
+                entry.setWeight(weight);
 
-                if (cursor != null && cursor.moveToFirst()) {
 
-                    while (cursor.isAfterLast() == false) {
+                milkDBHelpers.AddSellData(entry);
+                total.setText("Total Amount");
 
-                        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-                        Float rateperliter = Float.valueOf(rateliter);
-                        Float currentweight = Float.parseFloat(weight);
-                        Float currentfat = Float.parseFloat(fat);
-                        Float currentsnf = Float.parseFloat(snf);
-                        Float fat_wt = currentfat * currentweight;
-                        Float snf_wt = currentsnf * currentweight;
-                        phone_number = cursor.getString(3);
-                        String member_name = (String)tv_code_holder.getText();
-                        Float totalamount = Float.parseFloat(totalrupees);
-                        DecimalFormat df = new DecimalFormat("#.##");
-                        fat = String.valueOf(df.format(Float.parseFloat(fat)));
-                        snf = String.valueOf(df.format(Float.parseFloat(snf)));
-                        weight = String.valueOf(df.format(Float.parseFloat(weight)));
+                resetValue();
+
+                Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateliter + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
 
 
 
-                        String strShipt = "Eve";
-                        if (sift.equals("M")){
-                            strShipt = "Mor";
-                        }
-
-                        message = titlename + "\n" + "Date: " + date + "(" + strShipt + ")" + "\nCode: " + code + "-" + member_name +
-                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT= ₹ " + rateperliter + " AMT= ₹ " + totalrupees + "";
-
-                        printString = "";
-                        printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
-                                "Name: " + member_name + "(" + code + ")" +
-                                "\nDate: " + date +
-                                "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
-                                "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
-                                "\nFat: " + fat + "  "+MainActivity.instace.rateString()+": " + snf +
-                                "\nRate/Ltr: " + rateliter +
-                                "\nAmount:  Rs " + totalamount + "\n";
-
-
-                        printString = printString + MainActivity.lineBreak();
-
-                        myCode = code;
-
-                        milkDBHelpers.update(code, df.format(Float.parseFloat(weight)), rateperliter,
-                                totalamount, replaceDate,
-                                phone_number, sift, fat, fat_wt, snf, snf_wt, message, printString, date,entry.getId());
-
-                        total.setText("Total Amount");
-                        rate.setText("Rate/ltr");
-                        et_weight.setText("");
-                        et_fat.setText("");
-                        et_snf.setText("");
-                        resetValue();
-
-
-                        et_code.requestFocus();
-                        Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateperliter + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
-                        cursor.moveToNext();
-
-                        MainActivity.showToast("Value Updated");
-
-                        getFragmentManager().popBackStackImmediate();
-
-                    }
-                } else {
-                    et_code.setError("not found!");
-                }
             } catch (Exception e) {
             }
         }
@@ -451,13 +271,18 @@ public class Fragment_sell extends Fragment {
     private String reverceDate (){
 
         String date = tv_datepicker.getText().toString();
-        String replaceDate = date.replace("/", "");
 
-        String dd = replaceDate.substring(0, 2);
-        String mm = replaceDate.substring(2, 4);
-        String yy = replaceDate.substring(4, 8);
+        if (date.length() > 0){
+            String replaceDate = date.replace("/", "");
 
-        return yy + mm + dd;
+            String dd = replaceDate.substring(0, 2);
+            String mm = replaceDate.substring(2, 4);
+            String yy = replaceDate.substring(4, 8);
+
+            return yy + mm + dd;
+        }else{
+            return "";
+        }
 
     }
 
@@ -465,35 +290,24 @@ public class Fragment_sell extends Fragment {
     private void resetValue() {
 
         total.setText("Total Amount");
-        rate.setText("Rate/ltr");
         et_weight.setText("");
         et_fat.setText("");
-
-        et_code.setText("");
-
-        if (sharedPreferencesUtils.getDefaultSNF() > 0){
-            et_snf.setText(String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
-
-        }else{
-            et_snf.setText("");
-        }
+        et_snf.setText("");
+        et_snf.setText("");
+        et_weight.setText("");
+        et_fat.setText("");
     }
 
     private boolean createmilkvalue() {
 
         try {
 
-            code = et_code.getText().toString();
             weight = et_weight.getText().toString();
             fat = et_fat.getText().toString();
             snf = et_snf.getText().toString();
 
-            if (sharedPreferencesUtils.getDefaultSNF() > 0){
-                snf = String.valueOf(sharedPreferencesUtils.getDefaultSNF());
-            }else{
-                snf = et_snf.getText().toString();
-            }
 
+            Log.e("weight",weight);
 
             if (weight.length() == 0){
                 et_weight.setError("Weight is required!");
@@ -537,8 +351,8 @@ public class Fragment_sell extends Fragment {
                                 Toast.makeText(getActivity(), "rate not found", Toast.LENGTH_LONG).show();
                             } else {
 
-                                rate.setText(String.valueOf(rateperltr));
-                                float totalRate = Float.parseFloat(rate.getText().toString()) * Float.parseFloat(weight);
+                                et_rate.setText(String.valueOf(rateperltr));
+                                float totalRate = rateperltr * Float.parseFloat(weight);
                                 totalrs = (int) totalRate;
                                 total.setText( MainActivity.twoDecimalFloatToString(totalRate));
                             }
@@ -552,41 +366,6 @@ public class Fragment_sell extends Fragment {
         } catch (Exception e) {
             Log.wtf("DO THIS", " WHEN SAVE() FAILS");
             return false;
-        }
-    }
-
-    public void getUserName() {
-
-        Log.e("getUserName", "getUserName");
-        code = et_code.getText().toString();
-
-        if (code.length() == 1) {
-            code = "00" + code;
-        } else if (code.length() == 2) {
-            code = "0" + code;
-        }
-
-
-        try {
-            milkDBHelpers = new MilkDBHelpers(getActivity());
-            SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where membercode='" + code + "'", null);
-            if (cursor != null && cursor.moveToFirst()) {
-                while (cursor.isAfterLast() == false) {
-                    phone_number = cursor.getString(3);
-                    String member_name = cursor.getString(1);
-                    tv_code_holder.setText(cursor.getString(1));
-                    tv_code_holder.setTextColor(getResources().getColor(R.color.colorAccent));
-                    tagCode = 0;
-                    cursor.moveToNext();
-                }
-            } else {
-                tv_code_holder.setText("Code");
-                tv_code_holder.setTextColor(getResources().getColor(R.color.black));
-                tagCode = 1;
-            }
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), "Enter Another Code", Toast.LENGTH_LONG).show();
         }
     }
 

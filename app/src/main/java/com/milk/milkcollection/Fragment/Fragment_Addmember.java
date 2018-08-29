@@ -10,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.adapter.ShowmemberAdapter;
@@ -33,7 +36,7 @@ public class Fragment_Addmember extends Fragment {
     MilkDBHelpers milkDBHelpers;
     String date;
 
-
+    ImageView imgShare;
     ListView memberList;
     ShowmemberAdapter dataAdapter;
     ArrayList<ShowMember> arraymemberList;
@@ -54,6 +57,7 @@ public class Fragment_Addmember extends Fragment {
         memberList.setEmptyView(rootView.findViewById(R.id.empty_saved_list));
         memberList.setOnCreateContextMenuListener(this);
 
+        imgShare =(ImageView)rootView.findViewById(R.id.imgShareMember);
 
 
 
@@ -137,6 +141,23 @@ public class Fragment_Addmember extends Fragment {
         });
 
 
+
+        imgShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.e("Print String" , printString);
+
+                if(arraymemberList.size() > 0){
+
+                    MainActivity.getInstace().shareDialog(printString,"Member List");
+
+                } else {
+                    Toast.makeText(getActivity(), "Please Search Data First", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
         showListData();
 
         return rootView;
@@ -165,10 +186,7 @@ public class Fragment_Addmember extends Fragment {
         };
 
         memberList.setAdapter(dataAdapter);
-
-//        membercode =  String.valueOf(arraymemberList.size() + 1);
-//        makeCorrectCode();
-//        addcode.setHint("Code - " + membercode );
+getPrintStrng();
     }
 
     private void makeCorrectCode(){
@@ -270,6 +288,31 @@ public class Fragment_Addmember extends Fragment {
             return true;
         }
         return false;
+    }
+
+    String printString = "";
+
+    private void getPrintStrng() {
+
+        printString = String.format("%4s %-10s %10s " , "Code" , "Name" , "Mobile");
+
+        for (int i = 0; i< arraymemberList.size() ;i++) {
+            ShowMember member = arraymemberList.get(i);
+
+            String name =  member.getMember_name();
+            String mobile =  member.getMember_contact();
+
+            if (name.length() > 10){
+                name = name.substring(0,10);
+            }
+            if (mobile.length() < 10){
+                mobile = "--";
+            }
+
+            printString = printString + "\n" + String.format("%4s %-10s %-10s " , member.getMember_code() ,name, member.getMember_contact());
+
+        }
+
     }
 
 

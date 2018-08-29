@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.model.ShowMember;
+import com.milk.milkcollection.model.SingleEntry;
 import com.milk.milkcollection.model.SingleReport;
 
 import java.util.ArrayList;
@@ -17,13 +18,13 @@ import java.util.List;
 /**
  * Created by Er. Arjun on 06-03-2016.
  */
-public class SingleReportAdapter extends ArrayAdapter<SingleReport> {
+public class SingleReportAdapter extends ArrayAdapter<SingleEntry> {
     Activity context;
-    SingleReport singleReport;
+    SingleEntry singleReport;
 
 
     public SingleReportAdapter(Activity context, int resourceId,
-                               ArrayList<SingleReport> items) {
+                               ArrayList<SingleEntry> items) {
         super(context, resourceId, items);
         this.context = context;
     }
@@ -33,6 +34,7 @@ public class SingleReportAdapter extends ArrayAdapter<SingleReport> {
         TextView txtcode,txtdate,txtsift,txtweight,txtrate,txtamount;;
     }
     public View getView(final int position, View convertView, ViewGroup parent) {
+
         ViewHolder holder = null;
         singleReport = getItem(position);
         LayoutInflater mInflater = (LayoutInflater) context

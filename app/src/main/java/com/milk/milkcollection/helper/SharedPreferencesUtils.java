@@ -29,7 +29,7 @@ private Context _context;
         return shared;
     }
 
-SharedPreferences prefs;
+        SharedPreferences prefs;
         public SharedPreferencesUtils(Context _context) {
             this._context = _context;
             prefs = this._context.getSharedPreferences("FindFriends",Context.MODE_PRIVATE);

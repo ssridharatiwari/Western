@@ -1,5 +1,6 @@
 package com.milk.milkcollection.Database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -26,7 +27,7 @@ import java.util.Calendar;
 public class MilkDBHelpers extends SQLiteOpenHelper {
 
 
-	public static final String DATABASE_NAME = "MyDBName";
+	public static final String DATABASE_NAME = "NewDB";
 
 
 	public MilkDBHelpers(Context context) {
@@ -38,25 +39,27 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
 
 
+	@SuppressLint("LongLogTag")
 	@Override
 	public void onCreate(SQLiteDatabase a) {
 		// TODO Auto-generated method stub
+
+		Log.e("table created ----  ---- ",a.getPath());
+
 		a.execSQL("create table ratechart(Id Integer primary Key Autoincrement,fat text,snf text ,rate text)");
 		a.execSQL("create table ratechartclr(Id Integer primary Key Autoincrement,fat text,snf text ,rate text)");
 		a.execSQL("create table member(Id Integer primary Key Autoincrement,membername text,membercode text,membermobile text,alldetails text)");
 		a.execSQL("create table member_pay(Id Integer primary Key Autoincrement,membername text,membercode text,pay_amount text,date text)");
 		a.execSQL("create table updatebhav(Id Integer primary Key Autoincrement,fromfat text,tofat text,fromsnf text,tosnf text,kgfatrat text,kgsnfrat text,comitionliter text,allfatsaf text,commissionType text)");
-		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,milkinformation text," + "sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
-		a.execSQL("create table sell_data(Id Integer primary Key Autoincrement,weight text,rate text ,total text,date text,sift text,fat text,snf text,dateSave text)");
+		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,number text," + "sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
+		a.execSQL("create table sell_data(Id Integer primary Key Autoincrement,weight text,rate text,amount text,date text,sift text,fat text,snf text,dateSave text)");
 
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase a, int arg1, int arg2) {
 		// TODO Auto-generated method stub
-//		a.execSQL("drop table member");
-//		a.execSQL("drop table updatebhav");
-//		a.execSQL("drop table milk_amount");
+
 		onCreate(a);
 
 	}
@@ -84,7 +87,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("rateperliter",rateliter);
 		values.put("totalamount",amount);
 		values.put("date",mydate);
-		values.put("milkinformation",number);
+		values.put("number",number);
 		values.put("sift",sift);
 		values.put("fat",fat);
 		values.put("fat_wt",fat_wt);
@@ -104,23 +107,23 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
 	public void AddSellData(SingleEntry entry) {
 
+		Log.e("values" ,entry.getAmount());
+
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
+
 		values.put("weight",entry.getWeight());
-		values.put("rate",entry.getWeight());
-		values.put("totalamount",entry.getAmount());
+		values.put("rate",entry.getRate());
+		values.put("amount",entry.getAmount());
 		values.put("date",entry.getDate());
 		values.put("sift",entry.getSift());
 		values.put("fat",entry.getfat());
 		values.put("snf",entry.getSnf());
 		values.put("dateSave",entry.getDatesave());
 
-		db.insert("milk_amount", null, values);
-
-
-		db.close(); // Closing database connection
+		db.insert("sell_data",null,values);
+		db.close();
 	}
-
 
 
 	public void update(String memberCode, String weight, float rateliter, float amount, String mydate,
@@ -671,7 +674,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		//preExportDB();
 
 		String db_name = DATABASE_NAME;
-		File tempFile = new File("/data/" + MainActivity.instace.getPackageName() + "/databases/" + "MyDBName");
+		File tempFile = new File("/data/" + MainActivity.instace.getPackageName() + "/databases/" + DATABASE_NAME);
 
 		Log.e("ImportDb", String.valueOf(tempFile.getPath()));
 		Log.e("ImportDb", String.valueOf(tempFile));

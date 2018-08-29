@@ -8,7 +8,7 @@ public class SingleEntry {
 // a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,milkinformation text," + "sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
 
 
-    String id,code,date,sift,weight,rate,amount,fat,snf,datesave,fatWt,snfWt;
+    String id,code,date,sift,weight,rate,amount,fat,snf,datesave,fatWt,snfWt,mobie;
 
     public SingleEntry(){}
 
@@ -92,6 +92,14 @@ public class SingleEntry {
     }
     public void setAmount(String amount) {
         this.amount = amount;
+    }
+
+
+    public String mobile() {
+        return mobie;
+    }
+    public void setMobile(String mobie) {
+        this.mobie = mobie;
     }
 
 }
