@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.milk.milkcollection.Activity.MainActivity;
+import com.milk.milkcollection.Database.MilkDBHelpers;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -34,7 +35,7 @@ import static com.milk.milkcollection.Activity.MainActivity.makeToast;
                 FileChannel source = null;
                 FileChannel destination = null;
 
-                String currentDBPath = "/data/" + instace.getPackageName() + "/databases/" + "MyDBName";
+                String currentDBPath = "/data/" + instace.getPackageName() + "/databases/" + MilkDBHelpers.DATABASE_NAME;
 
                 File sourceFile = new File(data, currentDBPath);
                 Log.e("url file" , String.valueOf(sourceFile.getPath()));

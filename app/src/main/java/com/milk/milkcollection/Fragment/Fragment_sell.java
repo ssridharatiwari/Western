@@ -44,20 +44,19 @@ import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
 public class Fragment_sell extends Fragment {
 
     ArrayAdapter<String> adapter;
-    Button btn_ratesave, btn_message, btn_print, btn_pss;
-    LinearLayout createrate,todayDetailLL;
+    Button btn_ratesave;
+
     EditText et_weight, et_fat, et_snf,et_rate;
-    TextView  total, btntotal, tv_datepicker, tv_code_holder,lbl_snf_home,lbl_snf_avg,toolbartitle;
-    String weight, fat, snf, code , myCode,rateliter;
+    TextView  total, btntotal, tv_datepicker,lbl_snf_home,lbl_snf_avg,toolbartitle;
+    String weight, fat, snf, code ;
     String phone_number, message, sift, printString, titlename, mobile_self,comission;
     float rateperltr;
     Spinner sp_shift;
-    int  totalrs, tagCode;
+    int  totalrs;
     MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
     SharedPreferencesUtils sharedPreferencesUtils;
 
-    public String idEntry = "";
-    Boolean isSMSSemd = false,isPrint;
+    Boolean isPrint;
 
 
 
@@ -98,6 +97,7 @@ public class Fragment_sell extends Fragment {
 
         setClickEvents();
 
+        getCurrentDate();
         return rootView;
     }
 
@@ -130,6 +130,7 @@ public class Fragment_sell extends Fragment {
         });
 
 
+
         tv_datepicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +138,6 @@ public class Fragment_sell extends Fragment {
                 picker.show(getFragmentManager(), "datePicker");
             }
         });
-
 
         et_snf.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -154,10 +154,7 @@ public class Fragment_sell extends Fragment {
         btn_ratesave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (funSaveEntry() == true) {
-
-                }
+                if (funSaveEntry() == true) { }
             }
         });
 
@@ -167,11 +164,7 @@ public class Fragment_sell extends Fragment {
                     createmilkvalue();
             }
         });
-
-
     }
-
-
 
     private void printMethod() {
 
@@ -197,16 +190,13 @@ public class Fragment_sell extends Fragment {
 
     private void SaveAllData() {
 
-
         String replaceDate = reverceDate();
-
         if (MainActivity.getInstace().isDemoNotAccess(replaceDate)){
             return;
         }
         if (createmilkvalue()){
             saveData();
         }
-
     }
 
 
@@ -216,7 +206,7 @@ public class Fragment_sell extends Fragment {
         String date = tv_datepicker.getText().toString();
         String replaceDate = reverceDate();
 
-        rateliter = "1";
+
 
         if (MainActivity.getInstace().isDemoNotAccess(replaceDate)){
             return;
@@ -241,27 +231,23 @@ public class Fragment_sell extends Fragment {
         } else {
             try {
 
-
                 SingleEntry entry = new SingleEntry();
 
                 entry.setAmount(String.valueOf(totalrupees));
                 entry.setFat( fat);
                 entry.setSnf(snf);
                 entry.setSift(sift);
-                entry.setDate(date);
-                entry.setRate(rateliter);
+                entry.setDate(replaceDate);
+                entry.setRate(String.valueOf(rateperltr));
                 entry.setDatesave(date);
                 entry.setWeight(weight);
-
 
                 milkDBHelpers.AddSellData(entry);
                 total.setText("Total Amount");
 
+
                 resetValue();
-
-                Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateliter + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
-
-
+                Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateperltr + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
 
             } catch (Exception e) {
             }
@@ -392,6 +378,24 @@ public class Fragment_sell extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+
+
+    private void getCurrentDate() {
+
+        Calendar calendar = Calendar.getInstance();
+        int am_pm = calendar.get(Calendar.AM_PM);
+        if (am_pm == 0) {
+            sift = "M";
+            sp_shift.setSelection(0);
+        } else {
+            sp_shift.setSelection(1);
+            sift = "E";
+        }
+        tv_datepicker.setText(milkDBHelpers.getCurrentDateFromPublic());
     }
 
 

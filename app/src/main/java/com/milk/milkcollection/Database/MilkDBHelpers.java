@@ -27,7 +27,7 @@ import java.util.Calendar;
 public class MilkDBHelpers extends SQLiteOpenHelper {
 
 
-	public static final String DATABASE_NAME = "NewDB";
+	public static final String DATABASE_NAME = "western";
 
 
 	public MilkDBHelpers(Context context) {
@@ -51,7 +51,10 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		a.execSQL("create table member(Id Integer primary Key Autoincrement,membername text,membercode text,membermobile text,alldetails text)");
 		a.execSQL("create table member_pay(Id Integer primary Key Autoincrement,membername text,membercode text,pay_amount text,date text)");
 		a.execSQL("create table updatebhav(Id Integer primary Key Autoincrement,fromfat text,tofat text,fromsnf text,tosnf text,kgfatrat text,kgsnfrat text,comitionliter text,allfatsaf text,commissionType text)");
-		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,number text," + "sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
+
+		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,number text," +
+				"sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
+
 		a.execSQL("create table sell_data(Id Integer primary Key Autoincrement,weight text,rate text,amount text,date text,sift text,fat text,snf text,dateSave text)");
 
 	}
@@ -108,6 +111,9 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 	public void AddSellData(SingleEntry entry) {
 
 		Log.e("values" ,entry.getAmount());
+		Log.e("date" ,entry.getDate());
+		Log.e("weight" ,entry.getWeight());
+
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();

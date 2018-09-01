@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="2dp"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <TextView
+            android:text="@string/serial_no"
+            android:id="@+id/sra_no"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="visible"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:textSize="14dp"
+            android:layout_height="45dp"
+            />
+
+
+        <TextView
+            android:text="@string/date"
+            android:id="@+id/sra_date"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="2.5"
+            android:layout_width="0dp"
+            android:textSize="14dp"
+            android:layout_height="45dp"
+            />
+
+
+
+        <TextView
+            android:id="@+id/sra_count"
+            android:text="Count"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:textSize="14dp"
+            android:layout_height="45dp"
+            />
+        <TextView
+            android:id="@+id/sra_weight"
+            android:text="Total WT"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="2.5"
+            android:layout_width="0dp"
+            android:textSize="14dp"
+            android:layout_height="45dp"
+            />
+        <TextView
+            android:id="@+id/sra_amount"
+            android:text="@string/lw_amout"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="2.5"
+            android:layout_width="0dp"
+            android:textSize="14dp"
+            android:layout_height="45dp"
+            />
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

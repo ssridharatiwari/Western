@@ -6,10 +6,10 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="20dp"
         android:layout_width="270dp"
         android:layout_marginRight="10dp"
-        android:layout_height="90dp"
+        android:layout_height="70dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:weightSum="10">
@@ -17,7 +17,7 @@
         <Button
             android:id="@+id/btn_singlememberreport"
             android:text="@string/rep_mem_lzr"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:layout_weight="8"
             android:layout_width="0dp"
             android:textAllCaps="false"
@@ -30,7 +30,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="270dp"
-        android:layout_height="90dp"
+        android:layout_height="70dp"
         android:gravity="center"
         android:layout_gravity="center"
         android:layout_marginRight="10dp"
@@ -39,7 +39,7 @@
             android:id="@+id/btn_dailymemberreport"
             android:text="@string/rep_daily_report"
             android:gravity="center"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:textAllCaps="false"
             android:layout_weight="8"
             android:layout_width="0dp"
@@ -49,39 +49,84 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="270dp"
-        android:layout_height="90dp"
-        android:gravity="center"
+        android:layout_width="267dp"
+        android:layout_height="70dp"
         android:layout_gravity="center"
         android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
         android:weightSum="10">
+
         <Button
             android:id="@+id/btn_pay_report"
-            android:text="@string/rep_pay_report"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:textAllCaps="false"
-            android:layout_weight="8"
             android:layout_width="0dp"
-            android:textColor="#ffffff"
+            android:layout_height="50dp"
+            android:layout_weight="8"
             android:background="@drawable/button_blue"
-            android:layout_height="50dp" />
+            android:gravity="center"
+            android:text="@string/rep_pay_report"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="18dp" />
     </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="270dp"
-        android:layout_height="90dp"
+        android:layout_height="70dp"
         android:gravity="center"
         android:layout_gravity="center"
         android:layout_marginRight="10dp"
         android:weightSum="10">
         <Button
             android:id="@+id/btn_sell_report"
+            android:text="@string/rep_sell_report"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:textAllCaps="false"
+            android:layout_weight="8"
+            android:layout_width="0dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_blue"
+            android:layout_height="50dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="270dp"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:weightSum="10">
+        <Button
+            android:id="@+id/btn_sell_loss"
+            android:text="@string/rep_lossprofit_report"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:textAllCaps="false"
+            android:layout_weight="8"
+            android:layout_width="0dp"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_blue"
+            android:layout_height="50dp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="270dp"
+        android:layout_height="70dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:weightSum="10">
+        <Button
+            android:id="@+id/btn_socity_report"
             android:text="@string/rep_socity_report"
             android:gravity="center"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:textAllCaps="false"
             android:layout_weight="8"
             android:layout_width="0dp"

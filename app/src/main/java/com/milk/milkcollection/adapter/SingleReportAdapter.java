@@ -54,7 +54,7 @@ public class SingleReportAdapter extends ArrayAdapter<SingleEntry> {
         if(singleReport.getDate()!=null) {
             holder.txtcode.setText(String.valueOf(position+1) + ".");
             //holder.txtcode.setText(singleReport.getCode());
-            holder.txtdate.setText(singleReport.getDate());
+            holder.txtdate.setText(singleReport.getDatesave());
             holder.txtsift.setText(singleReport.getSift());
             holder.txtweight.setText(singleReport.getWeight());
             holder.txtrate.setText(singleReport.getRate());

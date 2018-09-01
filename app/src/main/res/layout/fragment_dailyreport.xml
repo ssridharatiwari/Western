@@ -95,7 +95,7 @@
             android:gravity="left|center_vertical"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:textSize="18dp"
+            android:textSize="15dp"
             android:layout_height="45dp"
             />
 
@@ -105,7 +105,7 @@
             android:gravity="left|center_vertical"
             android:layout_weight="1.1"
             android:layout_width="0dp"
-            android:textSize="17dp"
+            android:textSize="15dp"
             android:layout_height="45dp"
             />
         <TextView
@@ -114,7 +114,7 @@
             android:gravity="left|center_vertical"
             android:layout_weight="1.5"
             android:layout_width="0dp"
-            android:textSize="18dp"
+            android:textSize="15dp"
             android:layout_height="45dp"
             />
         <TextView
@@ -123,7 +123,7 @@
             android:gravity="left|center_vertical"
             android:layout_weight="1.4"
             android:layout_width="0dp"
-            android:textSize="18dp"
+            android:textSize="15dp"
             android:layout_height="45dp"
             />
         <TextView
@@ -133,7 +133,7 @@
             android:gravity="left|center_vertical"
             android:layout_weight="1.4"
             android:layout_width="0dp"
-            android:textSize="18dp"
+            android:textSize="15dp"
             android:layout_height="45dp"
             />
         <TextView
@@ -142,7 +142,7 @@
             android:gravity="left|center_vertical"
             android:layout_weight="1.7"
             android:layout_width="0dp"
-            android:textSize="18dp"
+            android:textSize="15dp"
             android:layout_height="45dp"
             />
         <TextView
@@ -151,7 +151,7 @@
             android:gravity="left|center_vertical"
             android:layout_weight="2"
             android:layout_width="0dp"
-            android:textSize="18dp"
+            android:textSize="15dp"
             android:layout_height="45dp"
             />
     </LinearLayout>

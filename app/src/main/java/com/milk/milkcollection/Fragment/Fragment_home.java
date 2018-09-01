@@ -811,6 +811,7 @@ public class Fragment_home extends Fragment {
         return ttmm;
     }
 
+
     public void setTextsAccordingRate()  {
         try {
             lbl_snf_home.setText(MainActivity.instace.rateString());
@@ -989,7 +990,7 @@ public class Fragment_home extends Fragment {
         if (sharedPreferencesUtils.isDownloaded().equals("0")) {
             sharedPreferencesUtils.setIsDownloaded();
             MainActivity.instace.showLoading("Data Downloading...");
-            String url =   "http://wokosoftware.com/western/uploads/" + sharedPreferencesUtils.getUserID() + "/MyDBName";
+            String url =   "http://wokosoftware.com/western/uploads/" + sharedPreferencesUtils.getUserID() + "/" + MilkDBHelpers.DATABASE_NAME;
             Log.e("url",url);
             new DownloadFile().execute(url);
         }

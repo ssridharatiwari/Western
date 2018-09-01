@@ -21,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,40 +28,47 @@ import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.adapter.SingleReportAdapter;
+import com.milk.milkcollection.adapter.SocietyReportAdapter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.SingleEntry;
-import com.milk.milkcollection.model.SingleReport;
+import com.milk.milkcollection.model.SocietyReport;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Er. Arjun on 28-02-2016.
  */
-public class Fragment_CellReport extends Fragment {
-    private ListView savedmilk_listview;
-    private Calendar calendar;
-    private int year, month, day;
+public class Fragment_SocietyReport extends Fragment {
+
+    private ListView listview;
+
+
     private Button startDateView,endDateView,btnsearch;
-    private TextView searchweight,searchamount;
+    private TextView txtweight,txtamount;
     ImageView iv_share;
 
     String message="",printString="";
-    int reportId;
 
-    ArrayList<SingleEntry>singleReportList = new ArrayList<>();
-    SingleReportAdapter singleResultAdapter;
+
+    ArrayList<SocietyReport>arrayList = new ArrayList<>();
+    SocietyReportAdapter adapter;
     SharedPreferencesUtils sharedPreferencesUtils;
     String title,memberNameReal;
+
     private List<String> dailyReportStringList = new ArrayList<>();
     private List<String> numberList = new ArrayList<>();
 
 
-    public Fragment_CellReport() {
+    public Fragment_SocietyReport() {
     }
 
     @Override
@@ -70,62 +76,30 @@ public class Fragment_CellReport extends Fragment {
                              Bundle savedInstanceState)
     {
 
-        View rootView = inflater.inflate(R.layout.fragment_cell_report, container, false);
+        View rootView = inflater.inflate(R.layout.society_report, container, false);
         startDateView =(Button)rootView.findViewById(R.id.btn_startdate);
         iv_share =(ImageView)rootView.findViewById(R.id.iv_share);
         endDateView =(Button)rootView.findViewById(R.id.btn_enddate);
-        searchweight =(TextView)rootView.findViewById(R.id.search_weight);
-        searchamount =(TextView)rootView.findViewById(R.id.search_amount);
-        getCalendarDate();
+        txtweight =(TextView)rootView.findViewById(R.id.search_weight);
+        txtamount =(TextView)rootView.findViewById(R.id.search_amount);
+
         sharedPreferencesUtils= new SharedPreferencesUtils(getActivity());
         title= sharedPreferencesUtils.getTitle();
 
-        iv_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!printString.equals("")){
-                shareDialog();
-                } else {
-                    Toast.makeText(getActivity(), "Please Search Data First", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        savedmilk_listview = (ListView)rootView.findViewById(R.id.saved_listview);
-        savedmilk_listview.setEmptyView(rootView.findViewById(R.id.empty_saved_list));
-        savedmilk_listview.setOnCreateContextMenuListener(this);
 
-
-
+        listview = (ListView)rootView.findViewById(R.id.saved_listview);
+        listview.setEmptyView(rootView.findViewById(R.id.empty_saved_list));
+        listview.setOnCreateContextMenuListener(this);
 
         btnsearch = (Button)rootView.findViewById(R.id.btn_searchimage);
-        btnsearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                message ="";
-                singleReportList.clear();
-                SearchSqlData();
 
-                singleResultAdapter = new SingleReportAdapter(getActivity(), R.layout.listviewmember,singleReportList ){
-                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        setDate();
+        getter();
 
-                        TextView v = (TextView) super.getView(position, convertView, parent);
-                        v.setBackground(getResources().getDrawable(R.drawable.text_underline_spinner));
-                        return v;
-                    }
-                };
+        return rootView;
+    }
 
-                savedmilk_listview.setAdapter(singleResultAdapter);
-            }
-        });
-
-        savedmilk_listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
-             //   deleteReport(position);
-                return true;
-            }
-        });
+    void getter(){
 
 
 
@@ -144,9 +118,43 @@ public class Fragment_CellReport extends Fragment {
             }
         });
 
-        return rootView;
-    }
 
+
+        btnsearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                message ="";
+                arrayList.clear();
+                SearchSqlData();
+
+                adapter = new SocietyReportAdapter(getActivity(), R.layout.adoptor_society_report,arrayList ){
+                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+
+                        TextView v = (TextView) super.getView(position, convertView, parent);
+                        v.setBackground(getResources().getDrawable(R.drawable.text_underline_spinner));
+                        return v;
+                    }
+                };
+
+                listview.setAdapter(adapter);
+            }
+        });
+
+
+        iv_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!printString.equals("")){
+                    shareDialog();
+                } else {
+                    Toast.makeText(getActivity(), "Please Search Data First", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
+    }
 
     public void SearchSqlData(){
 
@@ -166,7 +174,7 @@ public class Fragment_CellReport extends Fragment {
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
             Cursor cursor;
 
-            String query =  "SELECT * FROM 'sell_data' WHERE  date>='" + startDate + "' AND date <='" + endDate + "' ORDER BY date";
+            String query =  "SELECT * FROM 'milk_amount' WHERE  date>='" + startDate + "' AND date <='" + endDate + "' ORDER BY date";
             Log.e("query",query);
             cursor = sqLiteDatabase.rawQuery(query, null);
 
@@ -176,71 +184,104 @@ public class Fragment_CellReport extends Fragment {
 
             float weightsize = 0;
             float amountsize = 0;
+
+            JSONObject jsonObject = new JSONObject();
+
             if (cursor != null && cursor.moveToFirst()) {
                 while (cursor.isAfterLast() == false) {
 
-                    SingleEntry entry = new SingleEntry();
+
+                    String date =  cursor.getString(cursor.getColumnIndex("date"));
+                    String amount =  cursor.getString(cursor.getColumnIndex("totalamount"));
+                    String weight =  cursor.getString(cursor.getColumnIndex("milkweight"));
+                    String dateReal =  cursor.getString(cursor.getColumnIndex("dateSave"));
+                    String shift =  cursor.getString(cursor.getColumnIndex("sift"));
 
 
-                    entry.setId(cursor.getString(cursor.getColumnIndex("Id")));
-                    entry.setDate(cursor.getString(cursor.getColumnIndex("date")));
-                    entry.setSift(cursor.getString(cursor.getColumnIndex("sift")));
-                    entry.setDatesave(cursor.getString(cursor.getColumnIndex("dateSave")));
-                    entry.setWeight(cursor.getString(cursor.getColumnIndex("weight")));
-                    entry.setFat(cursor.getString(cursor.getColumnIndex("fat")));
-                    entry.setSnf(cursor.getString(cursor.getColumnIndex("snf")));
-                    entry.setRate(cursor.getString(cursor.getColumnIndex("rate")));
-                    entry.setAmount(cursor.getString(cursor.getColumnIndex("amount")));
+                  String keyOne =  date + shift;
 
+                    JSONObject item = new JSONObject();
+                    if (jsonObject.has(keyOne)) {
 
-                    String date =  cursor.getString(cursor.getColumnIndex("dateSave"));
-                    singleReportList.add(entry);
+                        item = jsonObject.getJSONObject(keyOne);
+                        if (item.has("amount")){
+                            Float amt = Float.valueOf((float) item.getDouble("amount"));
+                            amt = amt + Float.valueOf(amount);
+                            item.put("amount",amt);
+                        }
 
-                    try {
-                                String line = String.format("%5s%1s %-4s %-4s %-4s %-6s", date.substring(0,5),
-                                cursor.getString(cursor.getColumnIndex("sift")),
-                                MainActivity.oneDecimalString(entry.getWeight()),
-                                MainActivity.oneDecimalString(entry.getfat()),
-                                MainActivity.oneDecimalString(entry.getSnf()),
-                                MainActivity.twoDecimalString(entry.getAmount()));
+                        if (item.has("weight")){
+                            Float amt = Float.valueOf((float) item.getDouble("weight"));
+                            amt = amt + Float.valueOf(weight);
+                            item.put("weight",amt);
+                        }
 
-                        alldata = alldata + "\n" + line;
+                        if (item.has("count")){
+                            int count =  item.getInt("count");
+                            count++;
+                            item.put("count",count);
+                        }
 
-                    } catch (Exception e) {
-                       // Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
+                    }else{
+
+                        item.put("weight",weight);
+                        item.put("amount",amount);
+                        item.put("count","1");
+                        item.put("date",dateReal);
+                        item.put("shift",shift);
                     }
 
-                    weightsize = weightsize + Float.valueOf(entry.getWeight());
-                    amountsize = amountsize + Float.valueOf(entry.getAmount());
+                    jsonObject.putOpt(keyOne,item);
 
                     cursor.moveToNext();
-
                 }
             }
 
 
-//            searchweight.setText("Wgt:- "+MainActivity.twoDecimalFloatToString(weightsize)+" Kg");
-//            searchamount.setText("Amt:- "+MainActivity.twoDecimalFloatToString(amountsize)+" /-");
-//
-//            printString =  printString +  MainActivity.lineBreak() + "Date   Qty  Fat  "+MainActivity.instace.rateString()+"  Amt".toUpperCase();
-//            printString = printString+alldata+"\n " + MainActivity.lineBreak() + "Total Wgt : " + MainActivity.twoDecimalFloatToString(weightsize)+" Kg" +"\nTotal Amt : "+ MainActivity.twoDecimalFloatToString(amountsize)+"Rs";
-//
-//
-//            SharedPreferencesUtils  sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-//            String titlename = sharedPreferencesUtils.getTitle();
-//
-//            printString = titlename +  "\nMember Ladger\n"+memberNameReal + "   "+printString;
-//            printString = printString.toUpperCase();
+            Log.e("json value",jsonObject.toString());
+            setData(jsonObject);
 
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
         }
+
+    }
+
+    void setData(JSONObject json){
+
+        double weightTotal = 0.0;
+        double amountTotal = 0.0;
+
+        Iterator<String> iter = json.keys();
+        while (iter.hasNext()) {
+            String key = iter.next();
+            try {
+                JSONObject value = json.getJSONObject(key);
+
+                SocietyReport report = new SocietyReport();
+                report.setData(value.getString("weight"),
+                        value.getString("date"),
+                        value.getString("count"),
+                        value.getString("amount"),
+                        value.getString("shift"));
+
+                weightTotal += value.getDouble("weight");
+                amountTotal += value.getDouble("amount");
+
+                arrayList.add(report);
+            } catch (JSONException e) {
+                // Something went wrong!
+            }
+        }
+
+        txtweight.setText(String.format("%.2f Ltr", weightTotal));
+        txtamount.setText(String.format("Rs %.2f", amountTotal));
+
     }
 
 
+    private void setDate(){
 
-
-    private void getCalendarDate(){
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DATE);
         int month = calendar.get(Calendar.MONTH);

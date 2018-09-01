@@ -141,14 +141,13 @@ public class Fragment_SingleReport extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View arg1,
                                        int position, long arg3) {
                 membername = parent.getItemAtPosition(position) + "";
-if (position == 0)
-{
-    memberNameReal = "All";
+                if (position == 0){
+                    memberNameReal = "All";
 
-}else
-{
-    getUserName();
-}
+                }else
+                {
+                    getUserName();
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -270,8 +269,7 @@ if (position == 0)
         ArrayList<Integer> reportIdList = new ArrayList<>();
         reportIdList = milkDBHelpers.reportId();
         reportId = id_arrayList.get(position);
-        ////Log.e("-=-=-item=-=", String.valueOf(fatSnfId));
-        // fatSnfPosition = position;
+
 
         final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
         alertBuilder.setMessage("Are You sure want to delete this Report ");
@@ -343,6 +341,13 @@ if (position == 0)
                     cursor = sqLiteDatabase.rawQuery("SELECT * FROM 'milk_amount' WHERE memberCode = '" + membername + "' and date >= '" + startDate + "' and date <= '" + endDate + "' ORDER BY date", null);
                 }
 
+
+             //   a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight
+                // text,rateperliter text ,totalamount text,date text,number text," +
+          //              "sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation
+                // text,dailyInformation text,dateSave text)");
+
+
                 String alldata ="";
 
                 if (cursor != null && cursor.moveToFirst()) {
@@ -358,7 +363,7 @@ if (position == 0)
                         GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("allInformation")));
                         dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
 
-                        numberList.add(cursor.getString(cursor.getColumnIndex("milkinformation")));
+                        numberList.add(cursor.getString(cursor.getColumnIndex("number")));
 
                         String date =  cursor.getString(cursor.getColumnIndex("dateSave"));
 

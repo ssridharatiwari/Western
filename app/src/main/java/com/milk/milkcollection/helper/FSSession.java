@@ -85,6 +85,19 @@ public class FSSession {
 
 
 
+    static public String reverceDate (String date){
+
+
+        String replaceDate = date.replace("/", "");
+
+        String dd = replaceDate.substring(0, 2);
+        String mm = replaceDate.substring(2, 4);
+        String yy = replaceDate.substring(4, 8);
+
+        return yy + mm + dd;
+
+    }
+
 }
 
 

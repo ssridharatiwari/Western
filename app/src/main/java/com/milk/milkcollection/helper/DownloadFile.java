@@ -12,6 +12,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.milk.milkcollection.Database.MilkDBHelpers;
+
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -112,7 +114,7 @@ public  class DownloadFile extends AsyncTask<String, String, String> {
         FileChannel source = null;
         FileChannel destination = null;
 
-        String db_name = "MyDBName";
+        String db_name = MilkDBHelpers.DATABASE_NAME;
         String backupDBPath = "/data/" + instace.getPackageName() + "/databases/" + db_name;
         File backupDB = new File(data, backupDBPath);
 

@@ -30,7 +30,7 @@
     <string name="mobile">Mobile</string>
     <string name="date">Date</string>
     <string name="amount">Amount</string>
-    <string name="serial_no">s no</string>
+    <string name="serial_no">SN</string>
 
 
     <string name="save_print_sms">save print sms</string>
@@ -72,8 +72,9 @@
     <string name="mem_enter_code">Enter Code</string>
     <string name="mem_enter_name">Enter Name</string>
     <string name="mem_enter_phone">Enter Moble No.</string>
-    <string name="rep_socity_report">समिति रिपोर्ट</string>
-    <string name="rep_lossprofit_report">लाभ-हानि रिपोर्ट</string>
+    <string name="rep_socity_report">Society Report</string>
+    <string name="rep_lossprofit_report">Loss Profit Report</string>
+    <string name="rep_sell_report">Sell Report</string>
 
 
     <string name="rt_from_fat">from fat</string>

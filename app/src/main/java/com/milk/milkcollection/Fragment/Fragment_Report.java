@@ -15,7 +15,7 @@ import com.milk.milkcollection.R;
  */
 public class Fragment_Report extends Fragment {
 
-    private Button btn_singlememberreport,btn_dailymemberreport,btn_pay_report,btn_sell_report;
+    private Button btn_singlememberreport,btn_dailymemberreport,btn_pay_report,btn_sell_report,btn_socity_report,btnLossProfit;
     public TextView toolbartitle;
 
 
@@ -28,6 +28,14 @@ public class Fragment_Report extends Fragment {
         toolbartitle = (TextView)getActivity().findViewById(R.id.titletool);
         btn_singlememberreport=(Button)rootView.findViewById(R.id.btn_singlememberreport);
         btn_dailymemberreport=(Button)rootView.findViewById(R.id.btn_dailymemberreport);
+        btn_pay_report=(Button)rootView.findViewById(R.id.btn_pay_report);
+        btn_sell_report=(Button)rootView.findViewById(R.id.btn_sell_report);
+        btn_socity_report=(Button)rootView.findViewById(R.id.btn_socity_report);
+        btnLossProfit=(Button)rootView.findViewById(R.id.btn_sell_loss);
+
+
+
+
         btn_singlememberreport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,15 +49,13 @@ public class Fragment_Report extends Fragment {
                 ft.commit();
             }
         });
-        btn_pay_report=(Button)rootView.findViewById(R.id.btn_pay_report);
-        btn_sell_report=(Button)rootView.findViewById(R.id.btn_sell_report);
+
 
 
         btn_pay_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-               // startActivity(new Intent(getActivity(), SearchActivity.class));
                 toolbartitle.setText(getResources().getString(R.string.payment_report_text));
                 Fragment fragment = new FragmentPaymentReport();
                 android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -68,9 +74,6 @@ public class Fragment_Report extends Fragment {
                 ft.replace(R.id.content_frame, fragment);
                 ft.addToBackStack("home");
                 ft.commit();
-
-                //startActivity(new Intent(getActivity(), ShowAllMilkActivity.class));
-
             }
         });
 
@@ -79,8 +82,7 @@ public class Fragment_Report extends Fragment {
             @Override
             public void onClick(View v) {
 
-                // startActivity(new Intent(getActivity(), SearchActivity.class));
-                toolbartitle.setText(getResources().getString(R.string.payment_report_text));
+                toolbartitle.setText(getResources().getString(R.string.rep_sell_report));
                 Fragment fragment = new Fragment_CellReport();
                 android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, fragment);
@@ -90,8 +92,33 @@ public class Fragment_Report extends Fragment {
         });
 
 
-        toolbartitle.setText(getResources().getString(R.string.report));
+        btn_socity_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                toolbartitle.setText(getResources().getString(R.string.rep_socity_report));
+                Fragment fragment = new Fragment_SocietyReport();
+                android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.addToBackStack("home");
+                ft.commit();
+            }
+        });
+
+        btnLossProfit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                toolbartitle.setText(getResources().getString(R.string.rep_lossprofit_report));
+                Fragment fragment = new ReportLossProfit();
+                android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.addToBackStack("home");
+                ft.commit();
+            }
+        });
+
+        toolbartitle.setText(getResources().getString(R.string.report));
         return rootView;
     }
 }
