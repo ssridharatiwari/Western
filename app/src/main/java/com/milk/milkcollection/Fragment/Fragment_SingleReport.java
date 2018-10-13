@@ -394,7 +394,7 @@ public class Fragment_SingleReport extends Fragment {
                 for(int j =0;j<weight_arrayList.size();j++){
                     SingleEntry singleReport = new SingleEntry();
                     singleReport.setCode(String.valueOf(member_arrayList.get(j)));
-                    singleReport.setDate(String.valueOf(date_arrayList.get(j)));
+                    singleReport.setDatesave(String.valueOf(date_arrayList.get(j)));
                     singleReport.setWeight(String.valueOf(weight_arrayList.get(j)));
                     singleReport.setSift(String.valueOf(sift_arrayList.get(j)));
                     singleReport.setRate(String.valueOf(rate_arrayList.get(j)));

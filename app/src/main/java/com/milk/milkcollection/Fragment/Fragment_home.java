@@ -49,6 +49,7 @@ import com.milk.milkcollection.R;
 import com.milk.milkcollection.SClient;
 import com.milk.milkcollection.application.AppApplication;
 import com.milk.milkcollection.helper.AppString;
+import com.milk.milkcollection.helper.AppUrl;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
@@ -514,7 +515,7 @@ public class Fragment_home extends Fragment {
                         }
 
                         message = titlename + "\n" + "Date: " + date + "(" + strShipt + ")" + "\nCode: " + code + "-" + member_name +
-                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT= ₹ " + rateperliter + " AMT= ₹ " + totalrupees + "";
+                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT " + rateperliter + " AMT= " + totalrupees + "";
 
                         printString = "";
                         printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
@@ -564,7 +565,7 @@ public class Fragment_home extends Fragment {
 
 
 
-    private String reverceDate (){
+    private String reverceDate () {
 
         String date = tv_datepicker.getText().toString();
         String replaceDate = date.replace("/", "");
@@ -639,7 +640,7 @@ public class Fragment_home extends Fragment {
 
             message = message + "\n" + "Com. Ttl(" + preDate +
                     " - " + endDate + ") :\n" +
-                    "QTY=" + totalWeight + "\nAMT= ₹ " + totalAmount;
+                    "QTY=" + totalWeight + "\nAMT= " + totalAmount;
         }
 
 
@@ -912,7 +913,7 @@ public class Fragment_home extends Fragment {
 
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://wokosoftware.com/western/index.php?uid=" + MainActivity.instace.userID() + "&action=6&android_id=10" + PinActivity.getInstace().AndroidID;
+        String url = AppUrl.mainUrl + "uid=" + MainActivity.instace.userID() + "&action=6&android_id=10" + PinActivity.getInstace().AndroidID;
 
         Log.e("final ulr", url);
 

@@ -1,6 +1,7 @@
 package com.milk.milkcollection.adapter;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,14 +52,16 @@ public class SingleReportAdapter extends ArrayAdapter<SingleEntry> {
             convertView.setTag(holder);
         } else
             holder = (ViewHolder) convertView.getTag();
-        if(singleReport.getDate()!=null) {
+        if(singleReport.getDatesave()!=null) {
+
+            Log.e("value",singleReport.getDatesave());
+
             holder.txtcode.setText(String.valueOf(position+1) + ".");
-            //holder.txtcode.setText(singleReport.getCode());
-            holder.txtdate.setText(singleReport.getDatesave());
             holder.txtsift.setText(singleReport.getSift());
             holder.txtweight.setText(singleReport.getWeight());
             holder.txtrate.setText(singleReport.getRate());
             holder.txtamount.setText(singleReport.getAmount());
+            holder.txtdate.setText(singleReport.getDatesave());
         }
         return convertView;
     }

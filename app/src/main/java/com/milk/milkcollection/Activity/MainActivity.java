@@ -594,7 +594,6 @@ public class MainActivity extends AppCompatActivity {
             }*/
 
             if (values.length > 0) {
-
                 String toReceives = new StringBuilder(String.valueOf(newText)).append(toReceive).toString();
                 Log.e(" hello this is one ", toReceives);
             }
@@ -608,23 +607,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     static public void print(String  printSTRING) throws IOException {
 
 
-        printSTRING = printSTRING + " _WESTERN_JAIPUR_";
+        printSTRING = printSTRING + "\n _WESTERN_JAIPUR_";
 
         if (printSTRING.length() > 0) {
 
@@ -687,6 +673,7 @@ public class MainActivity extends AppCompatActivity {
 
     BluetoothAdapter btAdapter;
     BluetoothDevice mBtDevice;
+
     public void printFromBluthooth(final String printStiring){
 
         showLoading("Printing");

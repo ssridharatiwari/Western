@@ -29,7 +29,7 @@ import static com.milk.milkcollection.Activity.MainActivity.makeToast;
 
             try {
 
-                String db_name = "MyDBName";
+                String db_name = "western";
 
                 File data = Environment.getDataDirectory();
                 FileChannel source = null;
@@ -59,7 +59,7 @@ import static com.milk.milkcollection.Activity.MainActivity.makeToast;
                         SharedPreferencesUtils unit = new SharedPreferencesUtils(instace);
 
 
-                        String upLoadServerUri = "http://wokosoftware.com/western/index.php?action=8&id=" + unit.getUserID();
+                        String upLoadServerUri =  AppUrl.mainUrl + "action=11&id=" + unit.getUserID();
 
                         Log.e("url" , upLoadServerUri);
 

@@ -95,8 +95,20 @@ public class Fragment_sell extends Fragment {
         btn_ratesave = (Button) rootView.findViewById(R.id.s_btn_update);
 
 
-        setClickEvents();
+        et_rate.addTextChangedListener(new TextWatcher() {
 
+            public void afterTextChanged(Editable s) {
+                setTotal();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
+
+        setClickEvents();
         getCurrentDate();
         return rootView;
     }
@@ -110,6 +122,7 @@ public class Fragment_sell extends Fragment {
         ArrayAdapter<String> SpinnerAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinnertext, morning_evening);
         SpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_shift.setAdapter(SpinnerAdapter);
+
         sp_shift.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View arg1, int position, long arg3) {
@@ -142,6 +155,7 @@ public class Fragment_sell extends Fragment {
         et_snf.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+
                 if (keyCode == event.KEYCODE_ENTER) {
                     createmilkvalue();
                     hideKeyboard(getActivity());
@@ -151,13 +165,32 @@ public class Fragment_sell extends Fragment {
         });
 
 
+
+        et_snf.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                if (et_snf.getText().length() > 0) {
+                    createmilkvalue();
+                }else{
+
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
+
         btn_ratesave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (funSaveEntry() == true) { }
             }
         });
-
         btntotal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,6 +198,8 @@ public class Fragment_sell extends Fragment {
             }
         });
     }
+
+
 
     private void printMethod() {
 
@@ -194,9 +229,8 @@ public class Fragment_sell extends Fragment {
         if (MainActivity.getInstace().isDemoNotAccess(replaceDate)){
             return;
         }
-        if (createmilkvalue()){
-            saveData();
-        }
+        saveData();
+
     }
 
 
@@ -216,20 +250,26 @@ public class Fragment_sell extends Fragment {
         fat = et_fat.getText().toString();
         snf = et_snf.getText().toString();
 
+        if (fat.length() == 0) {
+            fat = "0";
+        }
+
+        if (snf.length() == 0) {
+            snf = "0";
+        }
+
+
         String totalrupees = total.getText().toString();
 
         if (weight.length() == 0)
             et_weight.setError("Weight is required!");
         else if (Float.parseFloat(weight) >= 1000)
             et_weight.setError("Weight limit 1 - 999");
-        else if (fat.length() == 0)
-            et_fat.setError("Fat is required!");
-        else if (snf.length() == 0)
-            et_snf.setError("Snf is required!");
         else if (totalrupees.equals("Total Rs/-")) {
             Toast.makeText(getActivity(), "Please create Total Rs/- ", Toast.LENGTH_LONG).show();
         } else {
             try {
+
 
                 SingleEntry entry = new SingleEntry();
 
@@ -238,7 +278,7 @@ public class Fragment_sell extends Fragment {
                 entry.setSnf(snf);
                 entry.setSift(sift);
                 entry.setDate(replaceDate);
-                entry.setRate(String.valueOf(rateperltr));
+                entry.setRate(String.valueOf(et_rate.getText()));
                 entry.setDatesave(date);
                 entry.setWeight(weight);
 
@@ -338,9 +378,7 @@ public class Fragment_sell extends Fragment {
                             } else {
 
                                 et_rate.setText(String.valueOf(rateperltr));
-                                float totalRate = rateperltr * Float.parseFloat(weight);
-                                totalrs = (int) totalRate;
-                                total.setText( MainActivity.twoDecimalFloatToString(totalRate));
+                                setTotal();
                             }
                             return true;
                         } catch (Exception e) {
@@ -354,6 +392,23 @@ public class Fragment_sell extends Fragment {
             return false;
         }
     }
+
+
+ private void setTotal()  {
+
+     weight = et_weight.getText().toString();
+
+     if (et_rate.getText().length() > 0 && weight.length() > 0){
+
+         try {
+             float totalRate = Float.parseFloat(String.valueOf(et_rate.getText())) * Float.parseFloat(weight);
+             totalrs = (int) totalRate;
+             total.setText(MainActivity.twoDecimalFloatToString(totalRate));
+         } catch (IOException e) {
+
+         }
+     }
+ }
 
 
 

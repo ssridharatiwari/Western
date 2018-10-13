@@ -150,7 +150,6 @@ public class PinActivity extends AppCompatActivity {
                  @Override
                  public void onClick(View v) {
 
-
                      OldCustomer();
                  }
              });
@@ -353,12 +352,12 @@ public class PinActivity extends AppCompatActivity {
         progress.show();
     }
 
+
+
     private void makeRequest() throws JSONException {
 
-
-
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://wokosoftware.com/western/index.php?name=" + settitle +
+        String url =  AppUrl.mainUrl + "name=" + settitle +
                      "&sim_id=" + sim_no +
                      "&android_id=" + AndroidID +
                      "&iemi_id=" + imeiNumber +
@@ -571,7 +570,7 @@ public class PinActivity extends AppCompatActivity {
         emi = (TextView) findViewById(R.id.emi);
         btnVerify = (TextView) findViewById(R.id.btnVerify);
         btnSend = (TextView) findViewById(R.id.btnSend);
-        pinCode1 = (EditText) findViewById(R.id.pinCode1);
+        // pinCode1 = (EditText) findViewById(R.id.pinCode1);
         btnOldCustomer = (TextView) findViewById(R.id.btnOldCustomer);
 
 
@@ -663,7 +662,7 @@ public class PinActivity extends AppCompatActivity {
         showLoading("Wait...");
 
         RequestQueue queue = Volley.newRequestQueue(PinActivity.this);
-        String url = "http://wokosoftware.com/western/index.php?uid=" + userID + "&action=9&android_id=" + AndroidID;
+        String url =  AppUrl.mainUrl + "uid=" + userID + "&action=9&android_id=" + AndroidID;
 
         Log.e("final ulr", url);
 
@@ -691,10 +690,7 @@ public class PinActivity extends AppCompatActivity {
                                 if (jsonStatus.equals("200")) {
 
                                     jsonObject = jsonObject.getJSONObject("details");
-
-
-
-
+                                    // sharedPreferencesUtils.setIsDownloaded();
 
 
                                     String userStatus = jsonObject.getString("status").toString();
@@ -729,7 +725,6 @@ public class PinActivity extends AppCompatActivity {
                         } catch (JSONException e) {
 
                             e.printStackTrace();
-                            MainActivity.dismiss();
 
                         }
                     }

@@ -9,17 +9,12 @@ import android.widget.TextView;
 
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.model.LossReport;
-import com.milk.milkcollection.model.SocietyReport;
 
 import java.util.List;
 
-/**
- * Created by Er. Arjun on 06-03-2016.
- */
 public class ProfitAdapter extends ArrayAdapter<LossReport> {
     Activity context;
     LossReport paymentReport;
-
 
     public ProfitAdapter(Activity context, int resourceId,
                          List<LossReport> items) {
@@ -27,7 +22,6 @@ public class ProfitAdapter extends ArrayAdapter<LossReport> {
         this.context = context;
     }
 
-    /*private view holder class*/
     private class ViewHolder {
         TextView txtno,txtweight,txtamount, textdate,txtSellWt,txtSellAmount,lossProfit,lossProfitAmount;
     }
@@ -48,17 +42,17 @@ public class ProfitAdapter extends ArrayAdapter<LossReport> {
             holder.txtSellAmount=(TextView)convertView.findViewById(R.id.sell_amount);
             holder.lossProfitAmount=(TextView)convertView.findViewById(R.id.loss_amount);
             holder.lossProfit=(TextView)convertView.findViewById(R.id.lossprofit);
-
             convertView.setTag(holder);
-        } else
+        } else {
             holder = (ViewHolder) convertView.getTag();
+        }
+
         if(paymentReport.getAmount()!=null) {
             holder.txtno.setText(String.valueOf(position+1));
             holder.txtweight.setText(paymentReport.getWeight());
             holder.txtamount.setText(paymentReport.getAmount());
             String date =  paymentReport.getDate().substring(0, 5)  + "-" + paymentReport.getShift();
             holder.textdate.setText(date);
-
             holder.txtSellWt.setText(paymentReport.getSellwt());
             holder.txtSellAmount.setText(paymentReport.getSellAmout());
             holder.lossProfit.setText(paymentReport.getLoss());

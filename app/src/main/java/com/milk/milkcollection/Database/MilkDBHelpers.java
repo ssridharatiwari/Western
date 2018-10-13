@@ -598,7 +598,8 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
         }
 
         for (int i = 0; i < FromFatList.size(); i++) {
-            String fromfff = FromFatList.get(i).toString();
+
+        	String fromfff = FromFatList.get(i).toString();
             String tofff = ToFatList.get(i).toString();
             String tosss = ToSnfList.get(i).toString();
             String fromsss = FromSnfList.get(i).toString();

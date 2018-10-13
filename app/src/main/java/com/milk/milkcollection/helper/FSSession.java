@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.model.SingleEntry;
@@ -87,6 +88,7 @@ public class FSSession {
 
     static public String reverceDate (String date){
 
+        Log.e("date =--",date);
 
         String replaceDate = date.replace("/", "");
 

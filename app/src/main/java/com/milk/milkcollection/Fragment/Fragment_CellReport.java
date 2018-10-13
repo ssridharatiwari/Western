@@ -121,8 +121,6 @@ public class Fragment_CellReport extends Fragment {
         savedmilk_listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
-             //   deleteReport(position);
                 return true;
             }
         });
@@ -241,6 +239,7 @@ public class Fragment_CellReport extends Fragment {
 
 
     private void getCalendarDate(){
+
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DATE);
         int month = calendar.get(Calendar.MONTH);
@@ -262,10 +261,11 @@ public class Fragment_CellReport extends Fragment {
             String date = String.valueOf(day)+"/"+"0"+String.valueOf(month)+"/"+""+String.valueOf(year);
             startDateView.setText(date);
             endDateView.setText(date);
-            endDateView.setText(date);
+
         }else if(monthlength>1&&daylength==1){
             String date = "0"+String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+String.valueOf(year);
             startDateView.setText(date);
+            endDateView.setText(date);
         }else if(monthlength>1&&daylength>1){
             String date = String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+""+String.valueOf(year);
             startDateView.setText(date);
