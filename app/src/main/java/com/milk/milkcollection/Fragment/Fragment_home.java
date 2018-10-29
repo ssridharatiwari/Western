@@ -896,9 +896,7 @@ public class Fragment_home extends Fragment {
                 }
 
                 catch (Exception e) {}
-
             }
-
 
         }, 100);
     }

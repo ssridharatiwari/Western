@@ -100,7 +100,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("rateperliter",rateliter);
 		values.put("totalamount",amount);
 		values.put("date",mydate);
-		values.put("number",number);
+		values.put("milkinformation",number);
 		values.put("sift",sift);
 		values.put("fat",fat);
 		values.put("fat_wt",fat_wt);
@@ -163,7 +163,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("dailyInformation",printString);
 		values.put("dateSave",dateSave);
 
-		db.update("milk_amount", values, "id="+id, null);
+		db.update("milk_amount", values, "Id="+id, null);
 		///myDB.update(TableName, cv, "_id="+id, null);
 
 

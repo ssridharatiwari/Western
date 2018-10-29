@@ -115,24 +115,18 @@ public class Fragment_SingleReport extends Fragment {
             public View getView(int position, View convertView, android.view.ViewGroup parent)
             {
                 TextView v = (TextView) super.getView(position, convertView, parent);
-                //  v.setTypeface(typeface);
                 v.setBackgroundColor(Color.TRANSPARENT);
                 v.setPadding(15,0,0,0);
-                // v.setTextSize(17);
                 return v;
             }
             public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
                 TextView v = (TextView) super.getView(position, convertView, parent);
                 v.setGravity(Gravity.CENTER);
-                // v.setTypeface(typeface);
-                //  v.setTextColor(Color.RED);
-                //  v.setPadding(50,0,0,0);
                 v.setBackground(getResources().getDrawable(R.drawable.text_underline_spinner));
-                //v.setTextSize(17);
                 return v;
             }
         };
-        //  SpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         spnr_membername.setAdapter(SpinnerAdapter);
 
         spnr_membername.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -342,11 +336,6 @@ public class Fragment_SingleReport extends Fragment {
                 }
 
 
-             //   a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight
-                // text,rateperliter text ,totalamount text,date text,number text," +
-          //              "sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation
-                // text,dailyInformation text,dateSave text)");
-
 
                 String alldata ="";
 
@@ -363,7 +352,7 @@ public class Fragment_SingleReport extends Fragment {
                         GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("allInformation")));
                         dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
 
-                        numberList.add(cursor.getString(cursor.getColumnIndex("number")));
+                        numberList.add(cursor.getString(cursor.getColumnIndex("milkinformation")));
 
                         String date =  cursor.getString(cursor.getColumnIndex("dateSave"));
 
@@ -453,18 +442,14 @@ public class Fragment_SingleReport extends Fragment {
 
 
     private void getCalendarDate(){
+
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DATE);
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
-        // String date = String.valueOf(year)+"/"+String.valueOf(month+1)+"/"+String.valueOf(day);
-        //startDateView.setText(date);
-        //endDateView.setText(date);
         month++;
         int monthlength =String.valueOf(month).length();
         int daylength =String.valueOf(day).length();
-        //Log.e("monthlength", String.valueOf(monthlength));
-        //Log.e("daylength", String.valueOf(daylength));
 
         if(monthlength==1&&daylength==1){
             String date = "0"+String.valueOf(day)+"/"+"0"+String.valueOf(month)+"/"+String.valueOf(year);
@@ -542,6 +527,8 @@ public class Fragment_SingleReport extends Fragment {
         });
         adb.show();
     }
+
+
 
     private void print(String printString){
 

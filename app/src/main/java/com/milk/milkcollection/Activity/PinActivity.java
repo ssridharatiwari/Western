@@ -83,7 +83,7 @@ public class PinActivity extends AppCompatActivity {
     EditText title, mobile;
     String settitle;
     SharedPreferencesUtils sharedPreferencesUtils;
-    public String pin1, mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "";
+    public String  mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "";
 
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
 
@@ -159,10 +159,8 @@ public class PinActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    pin1 = pinCode1.getText().toString();
                     settitle = title.getText().toString().trim();
                     mobile_string = mobile.getText().toString();
-                    verifypin = pin1;
 
                     if (settitle.length() > 0 && mobile_string.length() > 0) {
 

@@ -348,11 +348,9 @@ public class Fragment_DailyReport extends Fragment {
                     totalamount_arrayList.add(cursor.getFloat(cursor.getColumnIndex("totalamount")));
                     date_arrayList.add(cursor.getString(cursor.getColumnIndex("dateSave")));
                     GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("sift")));
-                    dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
-                    numberList.add(cursor.getString(cursor.getColumnIndex("number")));
+                    // dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
+                    numberList.add(cursor.getString(cursor.getColumnIndex("milkinformation")));
                     cursor.moveToNext();
-
-
 
 
                 }
