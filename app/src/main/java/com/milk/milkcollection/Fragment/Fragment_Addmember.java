@@ -197,8 +197,6 @@ getPrintStrng();
                 membercode = "00"+membercode;
             }else if( membercode.length() == 2 ){
                 membercode = "0"+membercode;
-            }else if( membercode.length() == 2 ){
-                membercode = "0"+membercode;
             }
         }
     }
@@ -211,9 +209,7 @@ getPrintStrng();
             milkDBHelpers=  new MilkDBHelpers(getActivity());
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
             Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where membercode='" + membercode + "'", null);
-
             if (cursor != null && cursor.moveToFirst()) {
-
                 while (cursor.isAfterLast() == false) {
                     int memberId = cursor.getInt(cursor.getColumnIndex("Id"));
                     Log.e("memberId", String.valueOf(memberId));
@@ -309,6 +305,7 @@ getPrintStrng();
             if (mobile.length() < 10){
                 mobile = "--";
             }
+
             printString = printString + "\n" + String.format("%4s %-10s %-10s " , member.getCode() ,name, mobile);
         }
     }

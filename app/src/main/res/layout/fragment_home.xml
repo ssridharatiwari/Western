@@ -81,7 +81,7 @@
             android:inputType="numberDecimal"
             android:layout_weight="1"
             android:hint="@string/enter_code"
-            android:maxLength="4"
+            android:maxLength="3"
             android:paddingLeft="10dp"
             android:background="@drawable/rectangle"
             android:layout_marginRight="20dp"
