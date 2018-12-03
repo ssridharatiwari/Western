@@ -95,7 +95,7 @@ import static java.lang.System.exit;
 public class Fragment_home extends Fragment {
 
     ArrayAdapter<String> adapter;
-    Button btn_ratesave, btn_message, btn_print, btn_pss;
+    Button btn_ratesave, btn_pss;
     LinearLayout createrate,todayDetailLL;
     EditText et_weight, et_fat, et_snf, et_code;
     TextView rate, total, btnrate, btntotal, tv_datepicker, tv_code_holder,lbl_avgFat,
@@ -122,6 +122,9 @@ public class Fragment_home extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+
+        rootView.playSoundEffect(android.view.SoundEffectConstants.CLICK);
         comission = "+";
 
         toolbartitle = (TextView) getActivity().findViewById(R.id.titletool);
@@ -152,8 +155,6 @@ public class Fragment_home extends Fragment {
         btnrate = (TextView) rootView.findViewById(R.id.click_rate);
         btntotal = (TextView) rootView.findViewById(R.id.click_total);
         tv_datepicker = (TextView) rootView.findViewById(R.id.tv_date);
-        btn_message = (Button) rootView.findViewById(R.id.btn_messsag);
-        btn_print = (Button) rootView.findViewById(R.id.btn_print);
         btn_pss = (Button) rootView.findViewById(R.id.btn_pss);
 
         sp_shift = (Spinner) rootView.findViewById(R.id.sp_shift);
@@ -250,7 +251,7 @@ public class Fragment_home extends Fragment {
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
+                //--  *  --// TODO Auto-generated method stub
             }
         });
 
@@ -318,13 +319,22 @@ public class Fragment_home extends Fragment {
         }
 
         btn_ratesave = (Button) rootView.findViewById(R.id.btn_rate_home);
-
         btn_ratesave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                isPrint = true;
-                isSMSSemd = true;
+
+                if (sharedPreferencesUtils.getSavePrint().equals("1")){
+                    isPrint = true;
+                }else{
+                    isPrint = false;
+                }
+                if (sharedPreferencesUtils.getSaveSms().equals("1")){
+                    isSMSSemd = true;
+                }else{
+                    isSMSSemd = false;
+                }
+
                 if (funSaveEntry() == true) {
 
                 }
@@ -332,29 +342,6 @@ public class Fragment_home extends Fragment {
             }
         });
 
-        btn_print.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                isPrint = true;
-
-                if (funSaveEntry() == true) {
-
-                }
-            }
-        });
-
-        btn_message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                isSMSSemd = true;
-
-                if (funSaveEntry()==true){
-
-                }
-            }
-        });
 
         getCurrentCollection();
         setTextsAccordingRate();
@@ -506,7 +493,6 @@ public class Fragment_home extends Fragment {
                         fat = String.valueOf(df.format(Float.parseFloat(fat)));
                         snf = String.valueOf(df.format(Float.parseFloat(snf)));
                         weight = String.valueOf(df.format(Float.parseFloat(weight)));
-
 
 
                         String strShipt = "Eve";
@@ -834,18 +820,14 @@ public class Fragment_home extends Fragment {
                 if (sharedPreferencesUtils.getDefaultSNF() > 0){
                     et_snf.setText(String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
                     et_snf.setEnabled(false);
-
                 }else{
                     et_snf.setText("");
                     et_snf.setEnabled(true);
-
                 }
-
             }
 
 
-        }, 100);
-
+        },100);
     }
 
 
@@ -975,14 +957,12 @@ public class Fragment_home extends Fragment {
             }
         });
         queue.add(stringRequest);
-
     }
-
 
 
     public void downloadFile() {
 
-        if (!MainActivity.instace.isNetworkConnected()){
+        if (!MainActivity.instace.isNetworkConnected()) {
             return;
         }
 
@@ -999,8 +979,6 @@ public class Fragment_home extends Fragment {
     public static double roundToHalf(double d) {
         return Math.round(d * 2) / 2.0;
     }
-
-
 
 
 }

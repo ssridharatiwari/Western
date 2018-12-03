@@ -267,7 +267,7 @@ public class FragmentPaymentReport extends Fragment {
                     }
                 }
 
-                message = "Payment Report\n"+message+ "\n*******************************\n"+"Total weight  : "+totalWeight+"\n" + "Total Amount  : " +totalAmount+" RS";
+                message = "Payment Report\n"+message+ "\n*******************************\n"+"Total weight  : "+ MainActivity.twoDecimalFloatToString( totalWeight)+"\n" + "Total Amount  : " +MainActivity.twoDecimalFloatToString(totalAmount) +" RS";
 
                 SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
 

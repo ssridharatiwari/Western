@@ -336,7 +336,7 @@ public class PinActivity extends AppCompatActivity {
         startActivity(new Intent(PinActivity.this, MainActivity.class));
         sharedPreferencesUtils.setTitle(settitle);
         sharedPreferencesUtils.setMobile(mobile_string);
-        sharedPreferencesUtils.printBy("wifi");
+        sharedPreferencesUtils.printBy("blutooth");
 
         finish();
 
@@ -522,21 +522,20 @@ public class PinActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= 23) {
 
-
-
-
             if ((activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(android.Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED)  &&
                     (activity.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED) &&
-                    (activity.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED)){
-                Log.e("Permission", "Permission is granted");
+                    (activity.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED) &&
+                    (activity.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED &&
+                            (activity.checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED)))
+               {
+                // Log.e("Permission", "Permission is granted");
                 return true;
             } else {
-
-                Log.e("Permission", "Permission is revoked");
+                // Log.e("Permission", "Permission is revoked");
                 activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE,
                         Manifest.permission.SEND_SMS,Manifest.permission.ACCESS_WIFI_STATE,

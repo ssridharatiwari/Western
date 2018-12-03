@@ -14,22 +14,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 
-import static com.milk.milkcollection.Activity.MainActivity.dismiss;
 import static com.milk.milkcollection.Activity.MainActivity.instace;
 import static com.milk.milkcollection.Activity.MainActivity.makeToast;
 
-/**
- * Created by sanjay on 27/05/18.
- */
 
- public  class UploadFile extends AsyncTask<String, Void, String> {
+public  class UploadFile extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
 
             try {
 
-                String db_name = "western";
+                String db_name = MilkDBHelpers.DATABASE_NAME;
 
                 File data = Environment.getDataDirectory();
                 FileChannel source = null;
@@ -54,12 +50,11 @@ import static com.milk.milkcollection.Activity.MainActivity.makeToast;
                         byte[] buffer;
                         int maxBufferSize = 1 * 1024 * 1024;
 
-                        Log.e("url file" , String.valueOf(sourceFile.getPath()));
 
                         SharedPreferencesUtils unit = new SharedPreferencesUtils(instace);
 
 
-                        String upLoadServerUri =  AppUrl.mainUrl + "action=11&id=" + unit.getUserID();
+                        String upLoadServerUri =  AppUrl.mainUrl + "action=8&id=" + unit.getUserID();
 
                         Log.e("url" , upLoadServerUri);
 
@@ -88,14 +83,11 @@ import static com.milk.milkcollection.Activity.MainActivity.makeToast;
                                 + db_name + "\"" + lineEnd);
 
                         dos.writeBytes(lineEnd);
-
-                        // create a buffer of maximum size
                         bytesAvailable = fileInputStream.available();
 
                         bufferSize = Math.min(bytesAvailable, maxBufferSize);
                         buffer = new byte[bufferSize];
 
-                        // read file and write it into form...
                         bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
                         while (bytesRead > 0) {
@@ -109,13 +101,10 @@ import static com.milk.milkcollection.Activity.MainActivity.makeToast;
 
                         }
 
-                        // send multipart form data necesssary after file
-                        // data...
                         dos.writeBytes(lineEnd);
                         dos.writeBytes(twoHyphens + boundary + twoHyphens
                                 + lineEnd);
 
-                        // Responses from the server (code and message)
                         int serverResponseCode = conn.getResponseCode();
                         String serverResponseMessage = conn
                                 .getResponseMessage();
@@ -125,9 +114,7 @@ import static com.milk.milkcollection.Activity.MainActivity.makeToast;
 
 
                         if (serverResponseCode == 200) {
-
                             makeToast("Data Uploaded ");
-
                         }
 
                         // close the streams //

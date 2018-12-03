@@ -32,10 +32,12 @@ import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.adapter.DailyReportAdapter;
+import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.helper.UploadFile;
 import com.milk.milkcollection.model.DailyReport;
+import com.milk.milkcollection.model.Member;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -72,7 +74,6 @@ public class Fragment_DailyReport extends Fragment {
     ArrayList<String> GetAllData_arrayList = new ArrayList<>();
     ArrayList<DailyReport> DailyReportList = new ArrayList<>();
     ArrayList<String> dailyReportStringList = new ArrayList<>();
-    ArrayList<String> numberList = new ArrayList<>();
     private DailyReportAdapter dailyReportAdapter;
     private int reportId = 0;
     Spinner spinr_ampm;
@@ -188,11 +189,13 @@ public class Fragment_DailyReport extends Fragment {
                                         break;
                                     case 1:
 
-                                        if(numberList.get(position)!="1234"){
+                                        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+                                        Member newMenber =  milkDBHelpers.getMember( membercode_arrayList.get(position));
 
-                                            String strSms = GetAllData_arrayList.get(position);
-                                            MainActivity.sendTextSms(strSms, numberList.get(position));
 
+                                         if(newMenber.getMobile()!="1234"){
+                                             String strSms = GetAllData_arrayList.get(position);
+                                             MainActivity.sendTextSms(strSms,newMenber.getMobile());
                                         }else {
                                             Toast.makeText(getActivity(), "Update Number And Try Again", Toast.LENGTH_LONG).show();
                                         }
@@ -317,7 +320,6 @@ public class Fragment_DailyReport extends Fragment {
         snf_arrayList.clear();
         snfwt_arrayList.clear();
         fatwt_arrayList.clear();
-        numberList.clear();
         date_arrayList.clear();
 
         String startdate = startDateView.getText().toString();
@@ -349,7 +351,6 @@ public class Fragment_DailyReport extends Fragment {
                     date_arrayList.add(cursor.getString(cursor.getColumnIndex("dateSave")));
                     GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("sift")));
                     // dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
-                    numberList.add(cursor.getString(cursor.getColumnIndex("milkinformation")));
                     cursor.moveToNext();
 
 
@@ -405,7 +406,7 @@ public class Fragment_DailyReport extends Fragment {
                 shifts = "Evening";
             }
 
-            message = "Shift Report\n"+startdate+"  "+shifts+ "\n" + MainActivity.lineBreak() + "Code Qty Fat "+MainActivity.instace.rateString()+"  Rate   AMT\n"+message;
+            message = "Shift Report\n"+startdate+"  "+shifts+ "\n" + MainActivity.lineBreak() + "Code Qty Fat "+MainActivity.instace.rateString()+"  Rate   AMT"+message;
 
 
             DecimalFormat df = new DecimalFormat("#.##");
@@ -419,7 +420,7 @@ public class Fragment_DailyReport extends Fragment {
 
             message = message + "\n" + MainActivity.lineBreak()
                     +"Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + avgFat +
-                    "\nAvarage SNF   :   " + avgSnf + "\nTotal Amount  :   " + amountTotal + "/-";
+                    "\nAvarage SNF   :   " + avgSnf + "\nTotal Amount  :   " + MainActivity.twoDecimalFloatToString(amountTotal)  + "/-";
 
 
             /// title

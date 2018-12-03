@@ -5,6 +5,6 @@ package com.milk.milkcollection.helper;
  */
 
 public class AppUrl {
-        public static String mainUrl = "http://wokosoftware.com/western/index.php?";
+        public static String mainUrl = "http://wokosoftware.com/western/index2.php?";
 }
 

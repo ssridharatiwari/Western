@@ -19,11 +19,13 @@ import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -77,12 +79,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.content.ContentValues.TAG;
 
 
 public class MainActivity extends AppCompatActivity {
 
 
     public  static String ruppe = "₹";
+    public  static String Version = "32";
 
     private ArrayList<String> categories;
     private DrawerLayout mDrawerLayout;
@@ -671,23 +675,54 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     BluetoothAdapter btAdapter;
     BluetoothDevice mBtDevice;
+    int BLU_ADMIN = 10;
+    String data = "";
 
     public void printFromBluthooth(final String printStiring){
 
+        data = printStiring;
         showLoading("Printing");
 
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @SuppressLint("LongLogTag")
             @Override
             public void run() {
-
 
                 dismiss();
                 try {
                     btAdapter = BluetoothAdapter.getDefaultAdapter();
-                    mBtDevice = btAdapter.getBondedDevices().iterator().next();
+
+
+                    if (!btAdapter.isEnabled()) {
+                        btAdapter.enable();
+                        makeToast("Blutooth turning on");
+                        final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
+                                                                                 @RequiresApi(api = Build.VERSION_CODES.M)
+                                                                                 @SuppressLint("LongLogTag")
+                                                                                 @Override
+                                                                                 public void run() {
+                                                                                     printFromBluthooth(data);
+                                                                                 } }, 10);
+                        return;
+                    }
+
+                    if (btAdapter.getBondedDevices().size() > 0) {
+                        for (BluetoothDevice device : btAdapter.getBondedDevices()) {
+                            //Log.e("new connection stiring mobile", device.getName());
+                            if (device.getName().equals(AppString.printername)) {
+                                mBtDevice = device;
+                            }
+                        }
+                    } else {
+                        instace.showAlert("WEG_Mobile Printer Not Availble");
+                        return;
+                    }
 
 
                     // Get first paired device
@@ -696,7 +731,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                Log.e("new connection stiring",printStiring);
+//                Log.e("new connection stiring mobile", mBtDevice.getName());
 
                 if (!mBtDevice.getName().equals(AppString.printername)) {
                     instace.showAlert("WEG_Mobile Printer Not Availble");
@@ -707,15 +742,14 @@ public class MainActivity extends AppCompatActivity {
                     myprinter = new BluetoothPrinter(mBtDevice);
                 }
 
-                if (myprinter.isConnected()){
+                if (myprinter.isConnected()) {
                     myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
                     myprinter.printText(printStiring);
                     myprinter.addNewLine();
                     myprinter.addNewLine();
                     myprinter.finish();
-                }
-                else{
-                    Log.e("new connection stiring",printStiring);
+                } else {
+                    Log.e("new connection stiring", printStiring);
                     myprinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
 
                         @Override
@@ -734,38 +768,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-        }, 100);
-
-
-
-
-
-
+         }, 10);
     }
-
 
 
     public void printFromOtherApp(String string){
 
         PackageManager pm = instace.getPackageManager();
         try {
-
             Intent waIntent = new Intent(Intent.ACTION_SEND);
             waIntent.setType("text/plain");
-            //   String text = "YOUR TEXT HERE";
-
             PackageInfo info = pm.getPackageInfo("pe.diegoveloper.printerserverapp", PackageManager.GET_META_DATA);
-            // Check if package exists or not. If not then code
-            // in catch block will be called
             waIntent.setPackage("pe.diegoveloper.printerserverapp");
 
             waIntent.putExtra(Intent.EXTRA_TEXT, string );
-            //waIntent.putExtra(Intent.EXTRA_TEXT, "1234567890123456780912345678901234567890");
             instace.getInstace().startActivity(Intent.createChooser(waIntent, "Share with"));
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-
             Toast.makeText(instace.getInstace(), "Please Install Printer Application", Toast.LENGTH_LONG).show();
         }
     }
@@ -806,9 +826,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     static public void sendWhatsApp(String message) {
-
-
-
             try {
                 Intent waIntent = new Intent(Intent.ACTION_SEND);
                 waIntent.setType("text/plain");
@@ -821,9 +838,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(instace, "Whats App Not installed", Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
-
-
-
     }
 
 
@@ -853,6 +867,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this,"ehgehfg",Toast.LENGTH_SHORT).show();
             }
         }
+
+        if (requestCode == BLU_ADMIN){
+            printFromBluthooth(data);
+        }
+
+
     }
 
 
@@ -931,6 +951,11 @@ public class MainActivity extends AppCompatActivity {
     }
     static public String trimString(String str) throws IOException {
         return str.replace(" ", "");
+    }
+
+    static public void makeTost(String message)  {
+
+        Toast.makeText(instace, message, Toast.LENGTH_LONG).show();
     }
 
     public String rateString() throws IOException {

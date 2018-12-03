@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.milk.milkcollection.R;
+import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.ShowMember;
 
 import java.util.ArrayList;
@@ -18,11 +19,11 @@ import java.util.ArrayList;
  */
 public class ShowmemberAdapter extends BaseAdapter {
     Context context;
-    ShowMember showMembermodel;
+    Member member;
     private LayoutInflater mInflater;
-    ArrayList<ShowMember> paymentReports;
+    ArrayList<Member> paymentReports;
 
-    public ShowmemberAdapter(Context context,ArrayList<ShowMember> items) {
+    public ShowmemberAdapter(Context context,ArrayList<Member> items) {
 
         this.context = context;
         this.paymentReports=items;
@@ -55,7 +56,7 @@ public class ShowmemberAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder = null;
-        ShowMember showMember = paymentReports.get(position);
+        Member member = paymentReports.get(position);
         mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
@@ -70,13 +71,13 @@ public class ShowmemberAdapter extends BaseAdapter {
         }
         else
             holder = (ViewHolder) convertView.getTag();
-            if(showMember.getMember_code()!=null) {
-                holder.txtcode.setText(showMember.getMember_code());
-                holder.txtName.setText(showMember.getMember_name());
-                holder.txtMobile.setText(showMember.getMember_contact());
+            if(member.getCode()!=null) {
+                holder.txtcode.setText(member.getCode());
+                holder.txtName.setText(member.getName());
+                holder.txtMobile.setText(member.getMobile());
 
-                if (showMember.getMember_contact().equals("1234")){
-                    holder.txtMobile.setText("--");
+                if (member.getMobile().equals("1234")){
+                    holder.txtMobile.setText("n/a");
                 }
 
                 holder.txtSrno.setText(String.valueOf(position+1)+ ".");

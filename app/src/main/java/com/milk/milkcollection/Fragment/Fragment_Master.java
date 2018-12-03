@@ -457,11 +457,8 @@ public class Fragment_Master extends Fragment {
 
     public void uploadFile(){
         if (MainActivity.instace.isNetworkConnected()){
-            //uploadFile();
             MainActivity.getInstace().showLoading("Uploading..");
             new UploadFile().execute();
-
-
         }else{
             MainActivity.makeToast("Internet Connection not available");
         }

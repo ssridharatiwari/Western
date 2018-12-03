@@ -1,11 +1,9 @@
 package com.milk.milkcollection.model;
 
-/**
- * Created by Er. Arjun on 06-03-2016.
- */
+import com.milk.milkcollection.Activity.MainActivity;
+
 public class SingleEntry {
 
-// a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,milkinformation text," + "sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
 
 
     String id,code,date,sift,weight,rate,amount,fat,snf,datesave,fatWt,snfWt,mobie;
@@ -101,5 +99,25 @@ public class SingleEntry {
     public void setMobile(String mobie) {
         this.mobie = mobie;
     }
+
+
+
+    //   public String getSMS() {
+//
+//        String  message =  MainActivity.sharedPref.getTitle() + "\n" + "Date: " + date + "(" + sift + ")" + "\nCode: " + code +
+//                "\nQTY=" + weight +  "\nRT " + rate + " AMT= " + amount ;
+//        return message;
+//    };
+//    public String getPrintMassge(){
+//
+//        String printString = MainActivity.sharedPref.getTitle() + "\n" + MainActivity.sharedPref.getMobile() + "\n" + MainActivity.lineBreakStar() +
+//                "Code: " + code +
+//                "\nDate: " + date + " - " +sift +
+//                "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
+//                "\nRate/Ltr: " + rate +
+//                "\nAmount:  Rs " + amount + "\n";
+//
+//        return printString;
+//    }
 
 }

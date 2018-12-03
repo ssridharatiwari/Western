@@ -9,8 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,24 +28,20 @@ import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.adapter.SingleReportAdapter;
+import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.SingleEntry;
-import com.milk.milkcollection.model.SingleReport;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * Created by Er. Arjun on 28-02-2016.
- */
+
 public class Fragment_SingleReport extends Fragment {
     private ListView savedmilk_listview;
-    private Calendar calendar;
-    private int year, month, day;
     private Button startDateView,endDateView,btnsearch;
     private TextView searchweight,searchamount;
     ImageView iv_share;
@@ -68,7 +62,6 @@ public class Fragment_SingleReport extends Fragment {
     SharedPreferencesUtils sharedPreferencesUtils;
     String title,memberNameReal;
     private List<String> dailyReportStringList = new ArrayList<>();
-    private List<String> numberList = new ArrayList<>();
 
 
     public Fragment_SingleReport() {
@@ -206,12 +199,19 @@ public class Fragment_SingleReport extends Fragment {
                                         break;
                                     case 1:
 
-                                        if(numberList.get(position)!="1234"){
-                                                String dataSms = GetAllData_arrayList.get(position);
-                                                MainActivity.sendTextSms(dataSms,numberList.get(position));
+
+                                        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+                                        Member newMenber =  milkDBHelpers.getMember(member_arrayList.get(position));
+
+
+                                        if(newMenber.getMobile()!="1234"){
+                                            String strSms = GetAllData_arrayList.get(position);
+                                            MainActivity.sendTextSms(strSms,newMenber.getMobile());
                                         }else {
                                             Toast.makeText(getActivity(), "Update Number And Try Again", Toast.LENGTH_LONG).show();
                                         }
+
+
 
                                         break;
 
@@ -352,7 +352,6 @@ public class Fragment_SingleReport extends Fragment {
                         GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("allInformation")));
                         dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
 
-                        numberList.add(cursor.getString(cursor.getColumnIndex("milkinformation")));
 
                         String date =  cursor.getString(cursor.getColumnIndex("dateSave"));
 
@@ -482,14 +481,9 @@ public class Fragment_SingleReport extends Fragment {
                 if (options[item].equals("WhatsApp")) {
                     PackageManager pm = getActivity().getPackageManager();
                     try {
-//pe.diegoveloper.printerserverapp
                         Intent waIntent = new Intent(Intent.ACTION_SEND);
                         waIntent.setType("text/plain");
-                        //   String text = "YOUR TEXT HERE";
-
                         PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-                        //Check if package exists or not. If not then code
-                        //in catch block will be called
                         waIntent.setPackage("com.whatsapp");
 
                         waIntent.putExtra(Intent.EXTRA_TEXT, printString);
@@ -531,13 +525,11 @@ public class Fragment_SingleReport extends Fragment {
 
 
     private void print(String printString){
-
         try {
             MainActivity.print(printString);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 

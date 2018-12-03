@@ -297,4 +297,37 @@ private Context _context;
         else
             return "0";
     }
+
+
+
+    public void setSaveSms(String data) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("savesms", data);
+        editor.commit();
+    }
+
+
+    public String getSaveSms() {
+        if(prefs.contains("savesms"))
+            return prefs.getString("savesms", "0");
+        else
+            return "0";
+    }
+
+
+    public void setSavePrint(String data) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("saveprint", data);
+        editor.commit();
+    }
+
+
+    public String getSavePrint() {
+        if(prefs.contains("saveprint"))
+            return prefs.getString("saveprint", "0");
+        else
+            return "0";
+    }
+
+
 }

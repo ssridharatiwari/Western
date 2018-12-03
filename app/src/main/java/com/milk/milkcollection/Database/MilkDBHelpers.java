@@ -11,8 +11,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.milk.milkcollection.Activity.MainActivity;
+import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
-import com.milk.milkcollection.model.ShowMember;
+import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.SingleEntry;
 
 import java.io.File;
@@ -26,17 +27,10 @@ import java.util.Calendar;
 
 public class MilkDBHelpers extends SQLiteOpenHelper {
 
-
 	public static final String DATABASE_NAME = "western";
-
-
 	public MilkDBHelpers(Context context) {
 		super(context, DATABASE_NAME, null, 1);
-		// TODO Auto-generated constructor stub
 	}
-
-
-
 
 
 	@SuppressLint("LongLogTag")
@@ -44,30 +38,16 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase a) {
 		// TODO Auto-generated method stub
 
-		Log.e("table created ----  ---- ",a.getPath());
-
+		// -- -- Log.e("table created ----  ---- ",a.getPath());
 		a.execSQL("create table ratechart(Id Integer primary Key Autoincrement,fat text,snf text ,rate text)");
 		a.execSQL("create table ratechartclr(Id Integer primary Key Autoincrement,fat text,snf text ,rate text)");
 		a.execSQL("create table member(Id Integer primary Key Autoincrement,membername text,membercode text,membermobile text,alldetails text)");
 		a.execSQL("create table member_pay(Id Integer primary Key Autoincrement,membername text,membercode text,pay_amount text,date text)");
 		a.execSQL("create table updatebhav(Id Integer primary Key Autoincrement,fromfat text,tofat text,fromsnf text,tosnf text,kgfatrat text,kgsnfrat text,comitionliter text,allfatsaf text,commissionType text)");
-
-		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,milkinformation text," +
+		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,"+ AppString.milk.number +" text," +
 				"sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
-
 		a.execSQL("create table sell_data(Id Integer primary Key Autoincrement,weight text,rate text,amount text,date text,sift text,fat text,snf text,dateSave text)");
-
 	}
-
-//	a.execSQL("create table ratechart(Id Integer primary Key Autoincrement,fat text,snf text ,rate text)");
-//		a.execSQL("create table ratechartclr(Id Integer primary Key Autoincrement,fat text,snf text ,rate text)");
-//		a.execSQL("create table member(Id Integer primary Key Autoincrement,membername text,membercode text,membermobile text,alldetails text)");
-//		a.execSQL("create table member_pay(Id Integer primary Key Autoincrement,membername text,membercode text,pay_amount text,date text)");
-//		a.execSQL("create table updatebhav(Id Integer primary Key Autoincrement,fromfat text,tofat text,fromsnf text,tosnf text,kgfatrat text,kgsnfrat text,comitionliter text,allfatsaf text,commissionType text)");
-//		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,milkinformation text," + "sift text,
-// fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
-
-
 
 	@Override
 	public void onUpgrade(SQLiteDatabase a, int arg1, int arg2) {
@@ -100,7 +80,6 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("rateperliter",rateliter);
 		values.put("totalamount",amount);
 		values.put("date",mydate);
-		values.put("milkinformation",number);
 		values.put("sift",sift);
 		values.put("fat",fat);
 		values.put("fat_wt",fat_wt);
@@ -153,7 +132,6 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("rateperliter",rateliter);
 		values.put("totalamount",amount);
 		values.put("date",mydate);
-		values.put("milkinformation",number);
 		values.put("sift",sift);
 		values.put("fat",fat);
 		values.put("fat_wt",fat_wt);
@@ -457,9 +435,9 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 	}
 
 
-	public ArrayList<ShowMember> getMembers() {
+	public ArrayList<Member> getMembers() {
 
-        ArrayList<ShowMember>memberCodeList = new ArrayList<>();
+        ArrayList<Member>memberCodeList = new ArrayList<>();
 		String selectQuery = "SELECT * FROM member ORDER BY memberCode";
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
@@ -468,23 +446,63 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
 			int count = 1;
 			do {
-				ShowMember showMember = new ShowMember();
-				showMember.setMember_code(cursor.getString(cursor.getColumnIndex("membercode")));
-				showMember.setMember_contact(cursor.getString(cursor.getColumnIndex("membermobile")));
-				showMember.setMember_name(cursor.getString(cursor.getColumnIndex("membername")));
+				Member member = new Member();
+				member.setCode(cursor.getString(cursor.getColumnIndex(AppString.memberTable.code)));
+				member.setMobile(cursor.getString(cursor.getColumnIndex(AppString.memberTable.mobile)));
+				member.setName(cursor.getString(cursor.getColumnIndex(AppString.memberTable.name)));
+				member.setID(cursor.getString(cursor.getColumnIndex(AppString.memberTable.id)));
+				member.setDetail(cursor.getString(cursor.getColumnIndex(AppString.memberTable.detail)));
 				//showMember.setNo(String.get  count);
 
-				memberCodeList.add(showMember);
+				memberCodeList.add(member);
 
-				Log.e(" cursor in members ",cursor.getString(cursor.getColumnIndex("membercode"))+" "+
-						cursor.getString(cursor.getColumnIndex("membermobile"))+" "+
-						cursor.getString(cursor.getColumnIndex("membername")));
 			} while (cursor.moveToNext());
 		}
 		return memberCodeList;
 	}
 
 
+
+	public Member getMember(String code) {
+
+		if (isUserExist(code)) {
+			SQLiteDatabase db = this.getWritableDatabase();
+			String query = "SELECT * FROM member WHERE code='"+code+"'";
+			Cursor cursor = db.rawQuery(query, null);
+
+			Member member = new Member();
+			if (cursor != null && cursor.moveToFirst()) {
+				while (cursor.isAfterLast() == false) {
+					member.setCode(code);
+					member.setID(cursor.getString(cursor.getColumnIndex("Id")).toString());
+					member.setName(cursor.getString(cursor.getColumnIndex(AppString.memberTable.name)).toString());
+					member.setMobile(cursor.getString(cursor.getColumnIndex(AppString.memberTable.mobile)).toString());
+					cursor.moveToNext();
+				}
+			}
+
+			return member;
+		}else{
+			Member member = new Member();
+			return member;
+		}
+	}
+
+	public boolean isUserExist(String code) {
+
+
+		Log.e("code-- ",code);
+		SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+		Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where code='" + code + "'", null);
+		if (cursor != null && cursor.moveToFirst()) {
+			while (cursor.isAfterLast() == false) {
+				cursor.moveToNext();
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public ArrayList<String> SearchName() {
 		ArrayList<String> nameList = new ArrayList<String>();
@@ -715,6 +733,48 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+
+
+	public void getAvgFatSnf(String date,String code) {
+
+
+		SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+		Cursor cursor;
+
+
+		long backdate = Long.valueOf(date) - 10;
+		cursor = sqLiteDatabase.rawQuery("SELECT * FROM 'milk_amount' WHERE memberCode = '" + code + "' and date >= '" + backdate + "' and date <= '" + date + "' ORDER BY date", null);
+
+
+		float weightTotal = 0;
+		float fat_wt = 0;
+		float snf_wt = 0;
+
+//		float avgFat = Float.valueOf(df.format(fat_wt / weightTotal));
+//		float avgSnf = Float.valueOf(df.format(snf_wt / weightTotal));
+
+
+		String alldata ="";
+
+		if (cursor != null && cursor.moveToFirst()) {
+			while (cursor.isAfterLast() == false) {
+
+				weightTotal = weightTotal + 	cursor.getFloat(cursor.getColumnIndex("memberCode"));
+				weightTotal = weightTotal + 	cursor.getFloat(cursor.getColumnIndex("fat_wt"));
+				weightTotal = weightTotal + 	cursor.getFloat(cursor.getColumnIndex("snf_wt"));
+				cursor.moveToNext();
+
+				//   alldata = alldata + "\n" + getNewString( String.valueOf(cursor.getColumnIndex("milkweight")), String.valueOf(cursor.getColumnIndex("fat")), String.valueOf(cursor.getColumnIndex("snf")),String.valueOf(cursor.getColumnIndex("rateperliter")),String.valueOf(cursor.getColumnIndex("totalamount")),String.valueOf(cursor.getColumnIndex("dateSave")),String.valueOf(cursor.getColumnIndex("sift")));
+			}
+
+			float avgFat = Float.valueOf((fat_wt / weightTotal));
+     		float avgSnf = Float.valueOf((snf_wt / weightTotal));
+
+		}
+
+
 	}
 
 

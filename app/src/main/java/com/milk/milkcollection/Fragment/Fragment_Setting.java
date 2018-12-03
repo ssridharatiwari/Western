@@ -31,36 +31,25 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.milk.milkcollection.Activity.MainActivity;
-import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.channels.FileChannel;
 
 import static android.content.ContentValues.TAG;
 import static java.lang.System.exit;
 
-/**
- * Created by Alpha on 13-12-2015.
- */
+
 public class Fragment_Setting extends Fragment {
     private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
-    private Button btn_rate_method,btn_select_print,btn_select_old_chart,btn_fetch,btn_defaultSnf;
+    private Button btn_rate_method,btn_select_print,btn_select_old_chart,btn_fetch,btn_defaultSnf,home_action;
     private ContentProvider contentResolver;
     SharedPreferencesUtils sharedPreferencesUtils;
     int PERMISSION_REQUEST_CODE = 1;
-    TextView lblRate,lblPrint,txtCommulative,lblTitle,lblSnf,lblStatus;
+    TextView lblRate,lblPrint,txtCommulative,lblTitle,lblSnf,lblStatus,lblMobile,lblVersion,lblSave;
     String uName = "";
 
     public Fragment_Setting() {}
@@ -73,7 +62,6 @@ public class Fragment_Setting extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
         sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
 
-
         btn_rate_method =(Button)rootView.findViewById(R.id.btn_rate_method);
         btn_select_print =(Button)rootView.findViewById(R.id.btn_select_print);
         btn_select_old_chart =(Button)rootView.findViewById(R.id.btn_select_old_chart);
@@ -83,12 +71,19 @@ public class Fragment_Setting extends Fragment {
         lblTitle = (TextView) rootView.findViewById(R.id.txtTitle);
         lblSnf = (TextView) rootView.findViewById(R.id.txtDsnf);
         lblStatus = (TextView) rootView.findViewById(R.id.txtStatus);
+        lblVersion = (TextView) rootView.findViewById(R.id.txtVersion);
+        lblMobile = (TextView) rootView.findViewById(R.id.txtMobile);
+        lblSave = (TextView) rootView.findViewById(R.id.txtHomeSave);
         txtCommulative = (TextView) rootView.findViewById(R.id.txtCommulative);
         btn_defaultSnf =(Button)rootView.findViewById(R.id.btn_defaultSnf);
+        home_action =(Button)rootView.findViewById(R.id.home_action);
 
         lblRate.setText( sharedPreferencesUtils.getRateMethodText());
         lblPrint.setText( sharedPreferencesUtils.getprintByText());
         lblTitle.setText( sharedPreferencesUtils.getTitle());
+
+        lblMobile.setText(sharedPreferencesUtils.getMobile());
+        lblVersion.setText("Version "+MainActivity.Version);
 
 
         setValuses();
@@ -110,28 +105,25 @@ public class Fragment_Setting extends Fragment {
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
                     builder.setTitle(messge + " Activeted" );
                     builder.setItems(new CharSequence[]
-                                    {"Wift Printer", "WEG_Mobile BT Printer", "Pos Printer", "Cancel"},
+                                    { "WEG_Mobile BT Printer", "Wift Printer", "Pos Printer", "Cancel"},
 
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    // The 'which' argument contains the index position
-                                    // of the selected item
+
                                     switch (which) {
                                         case 0:
-
-                                            if (!printBefore.equals("wifi")){
-                                                MainActivity.getInstace().runConnection();
-                                                sharedPreferencesUtils.printBy("wifi");
-                                                updateData();
-                                                Log.e("print method" , printBefore);
-                                            }
-
-                                            break;
-                                        case 1:
 
                                             MainActivity.getInstace().stopSocket();
                                             sharedPreferencesUtils.printBy("blutooth");
                                             updateData();
+
+                                            break;
+                                        case 1:
+                                            if (!printBefore.equals("wifi")){
+                                                MainActivity.getInstace().runConnection();
+                                                sharedPreferencesUtils.printBy("wifi");
+                                                updateData();
+                                            }
                                             break;
                                         case 2:
                                             MainActivity.getInstace().stopSocket();
@@ -164,17 +156,12 @@ public class Fragment_Setting extends Fragment {
                                     case 0:
                                         sharedPreferencesUtils.applyRateMethod("1");
                                         updateData();
-
                                         break;
                                     case 1:
-                                        // fetchCharts();
                                         sharedPreferencesUtils.applyRateMethod("2");
                                         updateData();
                                         break;
                                     case 2:
-
-                                        // fetchCharts();
-
                                         sharedPreferencesUtils.applyRateMethod("3");
                                         updateData();
                                         break;
@@ -204,7 +191,6 @@ public class Fragment_Setting extends Fragment {
                 }
             }
 
-
             }
 
         });
@@ -213,7 +199,6 @@ public class Fragment_Setting extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-
 
                 String messge = "Commulative Total";
 
@@ -234,11 +219,9 @@ public class Fragment_Setting extends Fragment {
                                         ft.replace(R.id.content_frame, fragment);
                                         ft.addToBackStack("home");
                                         ft.commit();
-
                                         break;
 
                                     case 1:
-
                                         sharedPreferencesUtils.setLastDateData("");
                                         sharedPreferencesUtils.setFromDateData("");
                                         setValuses();
@@ -249,11 +232,6 @@ public class Fragment_Setting extends Fragment {
                         });
                 builder.create().show();
 
-
-
-
-                //   verifyDetailApi();
-
              }
 
         });
@@ -262,7 +240,6 @@ public class Fragment_Setting extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-
 
                 String messge = "Use Default SNF";
 
@@ -275,52 +252,44 @@ public class Fragment_Setting extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 switch (which) {
-
                                     case 0:
-
-
                                         putDefaultSNF();
                                         break;
-
                                     case 1:
-
                                         sharedPreferencesUtils.setDefaultSNF(0);
                                         updateSNF();
-
                                         break;
-
                                 }
                             }
                         });
                 builder.create().show();
-
-
-
-
-                //   verifyDetailApi();
-
             }
 
         });
 
 
+        home_action.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+
+                Fragment fragment = new SettingSaveAction();
+                android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.addToBackStack("home");
+                ft.commit();
+            }
+
+        });
+
 
         updateSNF();
-
         return rootView;
     }
 
 
 
     public void updateSNF() {
-//        if (sharedPreferencesUtils.getDefaultSNF() > 0){
-//
-//            btn_defaultSnf.setText("Default SNF - " + String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
-//
-//        }else{
-//            btn_defaultSnf.setText("Default SNF - " + "OFF");
-//
-//        }
 
 
         if (sharedPreferencesUtils.getDefaultSNF() > 0){
@@ -329,6 +298,18 @@ public class Fragment_Setting extends Fragment {
 
         }else{
             lblSnf.setText("No SNF");
+
+        }
+
+
+        lblSave.setText("Save");
+        if (sharedPreferencesUtils.getSavePrint().equals("1")){
+            lblSave.setText(lblSave.getText() + ", Print");
+        }
+
+
+        if (sharedPreferencesUtils.getSaveSms().equals("1")){
+            lblSave.setText(lblSave.getText() + ", SMS");
 
         }
     }
@@ -341,76 +322,6 @@ public class Fragment_Setting extends Fragment {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void fetchCharts()  {
-        if (sharedPreferencesUtils.getImported().equals("1")){
-            return;
-        }
-        try {
-            getData();
-        }catch (IOException e){
-
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void getData() throws IOException {
-
-        Log.e("get data method",lblRate.getText().toString());
-
-
-
-
-        try {
-
-            if (ActivityCompat.checkSelfPermission(getActivity(), permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED  || ActivityCompat.checkSelfPermission(getActivity(), permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-
-                requestPermissions(new String[]{ android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PERMISSION_REQUEST_CODE);
-
-                return ;
-
-            }else {
-                InputStream in = getResources().openRawResource(R.raw.mydb);
-
-                FileOutputStream out = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
-                        File.separator + "MyData"+ File.separator  + "MyDBName");
-                byte[] buff = new byte[1024];
-                int read = 0;
-
-                try {
-                    while ((read = in.read(buff)) > 0) {
-                        out.write(buff, 0, read);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    in.close();
-                    out.close();
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            importDB();
-                        }
-                    }, 100);
-                }
-
-            }
-
-
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -420,45 +331,10 @@ public class Fragment_Setting extends Fragment {
 
         if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
             Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
-            try {
-                getData();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
         }
     }
 
-    public void importDB()  {
-
-        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-
-        String db_name = milkDBHelpers.DATABASE_NAME;
-        File sd = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
-                File.separator + "MyData"+ File.separator  );
-
-        Log.e("ImportDb", String.valueOf(sd.getPath()));
-        Log.e("ImportDb", String.valueOf(sd));
-        File data = Environment.getDataDirectory();
-        FileChannel source=null;
-        FileChannel destination=null;
-
-        String backupDBPath = "/data/"+ getActivity().getPackageName() +"/databases/"+db_name;
-        String currentDBPath = db_name;
-        File currentDB = new File(sd, currentDBPath);
-        File backupDB = new File(data, backupDBPath);
-        try {
-
-            sharedPreferencesUtils.setImported();
-            source = new FileInputStream(currentDB).getChannel();
-            destination = new FileOutputStream(backupDB).getChannel();
-            destination.transferFrom(source, 0, source.size());
-            source.close();
-            destination.close();
-            Toast.makeText(getActivity(), "Importing Charts", Toast.LENGTH_SHORT).show();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     private void changeName(){
@@ -473,16 +349,11 @@ public class Fragment_Setting extends Fragment {
         alert.setView(edittext);
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                //What ever you want to do with the value
-
-
-
 
                 String YouEditTextValue = edittext.getText().toString();
 
                 if (YouEditTextValue.length() > 3){
                     uName = YouEditTextValue;
-
                     changeNameApi();
                 }else{
                     try {
@@ -551,7 +422,7 @@ public class Fragment_Setting extends Fragment {
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                // what ever you want to do with No option.
+
             }
         });
 
@@ -694,7 +565,6 @@ MainActivity.instace.showLoading("");
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                    //               MainActivity.dismiss();
 
             }
         });
@@ -723,10 +593,6 @@ MainActivity.instace.showLoading("");
         }else {
             txtCommulative.setText("No Commulative");
         }
-
-        Log.e("date saved" , preDate);
-        Log.e("date saved" , endDate);
-
 
         if (sharedPreferencesUtils.getISDemo().equals("1")){
             lblStatus.setText("Demo up to  " + sharedPreferencesUtils.getDemoDate());
