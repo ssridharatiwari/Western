@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public  static String ruppe = "₹";
-    public  static String Version = "32";
+    public  static String Version = "33";
 
     private ArrayList<String> categories;
     private DrawerLayout mDrawerLayout;

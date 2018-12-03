@@ -407,6 +407,10 @@ public class Fragment_home extends Fragment {
             et_code.setError("Code is required!");
             return  false;
         } else {
+
+            code = String.valueOf(Integer.valueOf(code));
+            //MainActivity.makeToast(code);
+
             if (code.length() == 1) {
                 code = "00" + code;
                 SaveAllData();
@@ -752,6 +756,7 @@ public class Fragment_home extends Fragment {
         Log.e("getUserName", "getUserName");
         code = et_code.getText().toString();
 
+        code = String.valueOf(Integer.valueOf(code));
         if (code.length() == 1) {
             code = "00" + code;
         } else if (code.length() == 2) {

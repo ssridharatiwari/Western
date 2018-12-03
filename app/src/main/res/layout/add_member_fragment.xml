@@ -40,7 +40,7 @@
                 android:background="@drawable/rectangle"
                 android:hint="@string/mem_enter_code"
                 android:inputType="number"
-                android:maxLength="3"
+                android:maxLength="4"
                 android:paddingLeft="@dimen/density_ten"
                 android:textSize="20dp" />
         </LinearLayout>

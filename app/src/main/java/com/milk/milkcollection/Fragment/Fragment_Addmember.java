@@ -192,6 +192,8 @@ getPrintStrng();
 
     private void makeCorrectCode(){
 
+        membercode = String.valueOf(Integer.valueOf(membercode));
+
         if (membercode.length() > 0) {
             if( membercode.length() == 1 ) {
                 membercode = "00"+membercode;
