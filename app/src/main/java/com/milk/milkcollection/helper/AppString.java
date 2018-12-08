@@ -2,6 +2,8 @@ package com.milk.milkcollection.helper;
 
 import com.milk.milkcollection.R;
 
+import java.util.Calendar;
+
 /**
  * Created by sanjay on 27/08/18.
  */
@@ -41,4 +43,51 @@ public class AppString {
      }
 
 
+
+
+    static public String getCurrentDate(){
+
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DATE);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        month++;
+        int monthlength =String.valueOf(month).length();
+        int daylength =String.valueOf(day).length();
+
+        String date = "";
+
+        if(monthlength==1&&daylength==1){
+             date = "0"+String.valueOf(day)+"/"+"0"+String.valueOf(month)+"/"+String.valueOf(year);
+
+        }else if(monthlength==1&&daylength>1){
+            date = String.valueOf(day)+"/"+"0"+String.valueOf(month)+"/"+""+String.valueOf(year);
+
+        }else if(monthlength>1&&daylength==1){
+            date = "0"+String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+String.valueOf(year);
+
+        }else if(monthlength>1&&daylength>1){
+            date = String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+""+String.valueOf(year);
+
+        }
+        return date;
+    }
+
+
+    static public String reverceDate(String date) {
+        date = date.replace("/", "");
+        String dd = date.substring(0, 2);
+        String mm = date.substring(2, 4);
+        String yy = date.substring(4, 8);
+        return yy + mm + dd;
+
+    }
+
+    static public String lineBreak()  {
+        return "===========================\n";
+    }
+
+    static public String AddSlipSignature()  {
+        return "";
+    }
 }

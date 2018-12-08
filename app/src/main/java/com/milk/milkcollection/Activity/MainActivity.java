@@ -23,7 +23,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -111,10 +111,10 @@ public class MainActivity extends AppCompatActivity {
 
     public String demoDate = "";
 
-    public static BluetoothPrinter myprinter;
 
 
-    SharedPreferencesUtils sharedPreferencesUtils;
+
+    public  SharedPreferencesUtils sharedPreferencesUtils;
 
 
     public static MainActivity instace;
@@ -611,20 +611,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    static public void print(String  printSTRING) throws IOException {
+     public void print(String  printSTRING)  {
 
 
         printSTRING = printSTRING + "\n _WESTERN_JAIPUR_";
 
+        Log.e("Print String",printSTRING);
+
         if (printSTRING.length() > 0) {
 
-            SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(instace.getInstace());
+            if (printBy.equals("0")){
+                SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getInstace());
+                printBy = sharedPreferencesUtils.getprintBy();
+            }
 
-            String printBy = sharedPreferencesUtils.getprintBy();
-
-
-
-                if (printBy.equals("wifi")) {
+             if (printBy.equals("wifi")) {
 
                     try {
                         nos = nsocket.getOutputStream();
@@ -634,9 +635,14 @@ public class MainActivity extends AppCompatActivity {
 
                         // MainActivity.instace.runConnection();
 
-                        nos = nsocket.getOutputStream();
-                        nos.write(printSTRING.getBytes("UTF-8"));
-                        nos.write("\n\n\n".getBytes("UTF-8"));
+                        try {
+                            nos = nsocket.getOutputStream();
+                            nos.write(printSTRING.getBytes("UTF-8"));
+                            nos.write("\n\n\n".getBytes("UTF-8"));
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+
 
                         // Toast.makeText(instace.getInstace(), "Print failed, please try again.", Toast.LENGTH_LONG).show();
                         e.printStackTrace();
@@ -644,8 +650,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } else if (printBy.equals("blutooth")) {
 
-
-                        instace.printFromBluthooth(printSTRING+"\n\n");
+                   printFromBluthooth(printSTRING+"\n\n");
 
                 } else {
                     PackageManager pm = instace.getPackageManager();
@@ -677,8 +682,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    BluetoothAdapter btAdapter;
-    BluetoothDevice mBtDevice;
+    public  BluetoothAdapter btAdapter;
+    public  BluetoothDevice mBtDevice;
+    public  BluetoothPrinter myprinter;
+    String printBy = "0";
     int BLU_ADMIN = 10;
     String data = "";
 
@@ -687,6 +694,12 @@ public class MainActivity extends AppCompatActivity {
         data = printStiring;
         showLoading("Printing");
 
+        if (myprinter != null  ) {
+            printByPrinter(printStiring);
+            //dismiss();
+            return;
+        }
+
         final Handler handler = new Handler();
         final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -694,35 +707,42 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                dismiss();
+//                dismiss();
+
+                if (mBtDevice == null) {
+
+
                 try {
-                    btAdapter = BluetoothAdapter.getDefaultAdapter();
+                        btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-
-                    if (!btAdapter.isEnabled()) {
-                        btAdapter.enable();
-                        makeToast("Blutooth turning on");
-                        final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
-                                                                                 @RequiresApi(api = Build.VERSION_CODES.M)
-                                                                                 @SuppressLint("LongLogTag")
-                                                                                 @Override
-                                                                                 public void run() {
-                                                                                     printFromBluthooth(data);
-                                                                                 } }, 10);
-                        return;
-                    }
-
-                    if (btAdapter.getBondedDevices().size() > 0) {
-                        for (BluetoothDevice device : btAdapter.getBondedDevices()) {
-                            //Log.e("new connection stiring mobile", device.getName());
-                            if (device.getName().equals(AppString.printername)) {
-                                mBtDevice = device;
-                            }
+                        if (!btAdapter.isEnabled()) {
+                            btAdapter.enable();
+                            makeToast("Blutooth turning on");
+                            final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
+                                @RequiresApi(api = Build.VERSION_CODES.M)
+                                @SuppressLint("LongLogTag")
+                                @Override
+                                public void run() {
+                                    printFromBluthooth(data);
+                                }
+                            }, 10);
+                            return;
                         }
-                    } else {
-                        instace.showAlert("WEG_Mobile Printer Not Availble");
-                        return;
-                    }
+
+
+                        if (btAdapter.getBondedDevices().size() > 0) {
+                            for (BluetoothDevice device : btAdapter.getBondedDevices()) {
+                                //Log.e("new connection stiring mobile", device.getName());
+                                if (device.getName().equals(AppString.printername)) {
+                                    mBtDevice = device;
+                                }
+                            }
+                        } else {
+                            instace.showAlert("WEG_Mobile Printer Not Availble");
+                            return;
+                        }
+
+
 
 
                     // Get first paired device
@@ -733,6 +753,11 @@ public class MainActivity extends AppCompatActivity {
 
 //                Log.e("new connection stiring mobile", mBtDevice.getName());
 
+                if (mBtDevice == null) {
+                    instace.showAlert("WEG_Mobile Printer Not Availble");
+                    return;
+                }
+
                 if (!mBtDevice.getName().equals(AppString.printername)) {
                     instace.showAlert("WEG_Mobile Printer Not Availble");
                     return;
@@ -740,37 +765,53 @@ public class MainActivity extends AppCompatActivity {
 
                 if (myprinter == null) {
                     myprinter = new BluetoothPrinter(mBtDevice);
+                    printByPrinter(printStiring);
+                }
+            }else{
+
+                    if (myprinter == null) {
+                        myprinter = new BluetoothPrinter(mBtDevice);
+                        printByPrinter(printStiring);
+                    }
+
                 }
 
-                if (myprinter.isConnected()) {
+            }
+
+         }, 1);
+    }
+
+
+    public void printByPrinter( final String str){
+
+        if (myprinter.isConnected()) {
+            myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
+            myprinter.printText(str);
+            myprinter.addNewLine();
+            myprinter.addNewLine();
+            myprinter.finish();
+            dismiss();
+            Log.e("Already connected",myprinter.getDevice().getName());
+        } else {
+            Log.e("new connection stiring", str);
+            myprinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
+                @Override
+                public void onConnected() {
                     myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
-                    myprinter.printText(printStiring);
+                    myprinter.printText(str);
                     myprinter.addNewLine();
                     myprinter.addNewLine();
                     myprinter.finish();
-                } else {
-                    Log.e("new connection stiring", printStiring);
-                    myprinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
-
-                        @Override
-                        public void onConnected() {
-                            myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
-                            myprinter.printText(printStiring);
-                            myprinter.addNewLine();
-                            myprinter.addNewLine();
-                            myprinter.finish();
-                        }
-
-                        public void onFailed() {
-                            Log.d("BluetoothPrinter", "Conection failed");
-                        }
-                    });
+                    dismiss();
+                    Log.e("after connected",myprinter.getDevice().getName());
                 }
-            }
 
-         }, 10);
+                public void onFailed() {
+                    Log.d("BluetoothPrinter", "Conection failed");
+                }
+            });
+        }
     }
-
 
     public void printFromOtherApp(String string){
 
@@ -782,7 +823,7 @@ public class MainActivity extends AppCompatActivity {
             waIntent.setPackage("pe.diegoveloper.printerserverapp");
 
             waIntent.putExtra(Intent.EXTRA_TEXT, string );
-            instace.getInstace().startActivity(Intent.createChooser(waIntent, "Share with"));
+            getInstace().startActivity(Intent.createChooser(waIntent, "Share with"));
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -806,6 +847,19 @@ public class MainActivity extends AppCompatActivity {
                             return String.format("%.1f", Float.parseFloat(newStr));
                 else
                     return "0.0";
+
+        }catch (Exception e) {
+            return "0.0";
+        }
+    }
+
+    static public String twoDecimal(String  value)  {
+        try {
+            String newStr = value.replace(" ", "");
+            if (newStr.length()>0)
+                return String.format("%.1f", Float.parseFloat(newStr));
+            else
+                return "0.0";
 
         }catch (Exception e) {
             return "0.0";
@@ -1124,11 +1178,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 else if (options[item].equals("Print")) {
-                    try {
-                        print(printString);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    print(printString);
                 }
             }
         });

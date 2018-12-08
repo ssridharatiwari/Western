@@ -75,11 +75,7 @@ public class FSSession {
 
 
     public void print(String print) {
-        try {
-            MainActivity.print("");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainActivity.getInstace().print("");
         ///  sendDataToPort(printString);
 
     }

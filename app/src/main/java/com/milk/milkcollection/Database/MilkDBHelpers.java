@@ -134,9 +134,9 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("date",mydate);
 		values.put("sift",sift);
 		values.put("fat",fat);
-		values.put("fat_wt",fat_wt);
+		values.put("fat_wt",String.valueOf(fat_wt));
 		values.put("snf",snf);
-		values.put("snf_wt",snt_wt);
+		values.put("snf_wt",String.valueOf(snt_wt));
 		values.put("allInformation",message);
 		values.put("dailyInformation",printString);
 		values.put("dateSave",dateSave);
@@ -467,7 +467,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
 		if (isUserExist(code)) {
 			SQLiteDatabase db = this.getWritableDatabase();
-			String query = "SELECT * FROM member WHERE code='"+code+"'";
+			String query = "SELECT * FROM member WHERE membercode='"+code+"'";
 			Cursor cursor = db.rawQuery(query, null);
 
 			Member member = new Member();
@@ -494,7 +494,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		Log.e("code-- ",code);
 		SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
-		Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where code='" + code + "'", null);
+		Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where membercode='" + code + "'", null);
 		if (cursor != null && cursor.moveToFirst()) {
 			while (cursor.isAfterLast() == false) {
 				cursor.moveToNext();
@@ -557,32 +557,6 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 			} while (cursor.moveToNext());
 		}
 		return nameList;
-	}
-
-	public String getCurrentDateFromPublic() {
-
-		Calendar calendar = Calendar.getInstance();
-		int day = calendar.get(Calendar.DATE);
-		int month = calendar.get(Calendar.MONTH);
-		int year = calendar.get(Calendar.YEAR);
-
-		month++;
-		int monthlength = String.valueOf(month).length();
-		int daylength = String.valueOf(day).length();
-
-		String date = "";
-		if(monthlength==1&&daylength==1){
-			date = "0"+String.valueOf(day)+"/"+"0"+String.valueOf(month)+"/"+String.valueOf(year);
-
-
-		}else if(monthlength==1&&daylength>1){
-			date = String.valueOf(day)+"/"+"0"+String.valueOf(month)+"/"+""+String.valueOf(year);
-		}else if(monthlength>1&&daylength==1){
-			date = "0"+String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+String.valueOf(year);
-		}else if(monthlength>1&&daylength>1){
-			date = String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+""+String.valueOf(year);
-		}
-		return  date;
 	}
 
 

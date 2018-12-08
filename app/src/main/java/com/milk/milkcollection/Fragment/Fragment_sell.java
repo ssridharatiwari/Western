@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
+import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.DailyReport;
@@ -116,7 +117,7 @@ public class Fragment_sell extends Fragment {
 
     void setClickEvents(){
 
-        tv_datepicker.setText(milkDBHelpers.getCurrentDateFromPublic());
+        tv_datepicker.setText(AppString.getCurrentDate());
 
         String[] morning_evening = new String[]{"Morning", "Evening"};
         ArrayAdapter<String> SpinnerAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinnertext, morning_evening);
@@ -205,12 +206,7 @@ public class Fragment_sell extends Fragment {
 
         isPrint = false;
         try {
-            try {
-                MainActivity.print(printString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            MainActivity.getInstace().print(printString);
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Print failed, please try again.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
@@ -450,7 +446,7 @@ public class Fragment_sell extends Fragment {
             sp_shift.setSelection(1);
             sift = "E";
         }
-        tv_datepicker.setText(milkDBHelpers.getCurrentDateFromPublic());
+        tv_datepicker.setText(AppString.getCurrentDate());
     }
 
 

@@ -388,12 +388,7 @@ public class Fragment_home extends Fragment {
 
         isPrint = false;
         try {
-            try {
-                MainActivity.print(printString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            MainActivity.getInstace().print(printString);
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Print failed, please try again.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
@@ -524,7 +519,7 @@ public class Fragment_home extends Fragment {
 
                         milkDBHelpers.AddMilk(code, df.format(Float.parseFloat(weight)), rateperliter,
                                 totalamount, replaceDate,
-                                phone_number, sift, fat, fat_wt, snf, snf_wt, message, printString, date);
+                                phone_number, sift, fat, fat_wt, snf, snf_wt, "", "", date);
 
                         total.setText("Total Amount");
                         rate.setText("Rate/ltr");
@@ -663,7 +658,7 @@ public class Fragment_home extends Fragment {
             sp_shift.setSelection(1);
             sift = "E";
         }
-        tv_datepicker.setText(milkDBHelpers.getCurrentDateFromPublic());
+        tv_datepicker.setText(AppString.getCurrentDate());
     }
 
     private void resetValue() {
@@ -849,12 +844,9 @@ public class Fragment_home extends Fragment {
 
                     SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
 
-                    String date = milkDBHelpers.getCurrentDateFromPublic();
-                    date = date.replace("/", "");
-                    String dd = date.substring(0, 2);
-                    String mm = date.substring(2, 4);
-                    String yy = date.substring(4, 8);
-                    date = yy + mm + dd;
+                    String date = AppString.getCurrentDate();
+
+                    date = AppString.reverceDate(date);
 
                     Cursor cursor = sqLiteDatabase.rawQuery(" SELECT * FROM 'milk_amount' WHERE sift = '" + sift + "' and date = '" + date + "' ", null);
                     int value = 1;

@@ -26,6 +26,7 @@ import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.adapter.PaymentReportAdapter;
+import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.PaymentReport;
@@ -78,8 +79,8 @@ public class FragmentPaymentReport extends Fragment {
 ///   --- Set Current date in date text Views
 
         MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-        startDateView.setText(milkDBHelpers.getCurrentDateFromPublic());
-        endDateView.setText(milkDBHelpers.getCurrentDateFromPublic());
+        startDateView.setText(AppString.getCurrentDate());
+        endDateView.setText(AppString.getCurrentDate());
 
 
         iv_share.setOnClickListener(new View.OnClickListener() {
@@ -379,11 +380,7 @@ public class FragmentPaymentReport extends Fragment {
 
     private void print(String printString) {
 
-        try {
-            MainActivity.print(printString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainActivity.getInstace().print(printString);
     }
 
 }

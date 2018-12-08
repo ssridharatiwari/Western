@@ -710,12 +710,7 @@ public class PinActivity extends AppCompatActivity {
                                 }else{
 
                                     makeToast(jsonObject.getString("message").toString());
-
                                 }
-
-
-
-
                             } else {
                                 //   MainActivity.showToast("Network Error");
                             }

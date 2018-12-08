@@ -38,6 +38,7 @@ import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.helper.UploadFile;
 import com.milk.milkcollection.model.DailyReport;
 import com.milk.milkcollection.model.Member;
+import com.milk.milkcollection.model.SingleEntry;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -60,20 +61,7 @@ public class Fragment_DailyReport extends Fragment {
     private String sift = "";
     String message = "";
     ImageView iv_share;
-    ArrayList<Integer> id_arrayList = new ArrayList<>();
-    ArrayList<String> membercode_arrayList = new ArrayList<String>();
-    ArrayList<Float> weight_arrayList = new ArrayList<>();
-    ArrayList<Float> rate_arrayList = new ArrayList<>();
-    ArrayList<Float> fat_arrayList = new ArrayList<>();
-    ArrayList<Float> fatwt_arrayList = new ArrayList<>();
-    ArrayList<Float> snf_arrayList = new ArrayList<>();
-    ArrayList<Float> snfwt_arrayList = new ArrayList<>();
-    ArrayList<Float> totalamount_arrayList = new ArrayList<>();
-    ArrayList<String> date_arrayList = new ArrayList<String>();
-    ArrayList<String> SetAllData_arrayList = new ArrayList<String>();
-    ArrayList<String> GetAllData_arrayList = new ArrayList<>();
-    ArrayList<DailyReport> DailyReportList = new ArrayList<>();
-    ArrayList<String> dailyReportStringList = new ArrayList<>();
+    ArrayList<SingleEntry> DailyReportList = new ArrayList<>();
     private DailyReportAdapter dailyReportAdapter;
     private int reportId = 0;
     Spinner spinr_ampm;
@@ -182,34 +170,40 @@ public class Fragment_DailyReport extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 // The 'which' argument contains the index position
                                 // of the selected item
+
+
+                                SingleEntry entry = DailyReportList.get(position);
+
+
+
                                 switch (which) {
                                     case 0:
-                                        String data = GetAllData_arrayList.get(position);
-                                        MainActivity.sendWhatsApp(data);
+                                        MainActivity.sendWhatsApp(entry.getPrintMassge());
                                         break;
                                     case 1:
 
                                         MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-                                        Member newMenber =  milkDBHelpers.getMember( membercode_arrayList.get(position));
+                                        Member newMenber =  milkDBHelpers.getMember(entry.getCode());
 
 
-                                         if(newMenber.getMobile()!="1234"){
-                                             String strSms = GetAllData_arrayList.get(position);
-                                             MainActivity.sendTextSms(strSms,newMenber.getMobile());
+                                        if(newMenber.getMobile()!="1234"){
+                                            String strSms = entry.getSMS();
+                                            MainActivity.sendTextSms(strSms,newMenber.getMobile());
                                         }else {
                                             Toast.makeText(getActivity(), "Update Number And Try Again", Toast.LENGTH_LONG).show();
                                         }
 
+
                                         break;
                                     case 2:
-                                        String shareText = GetAllData_arrayList.get(position);
-                                        MainActivity.shareText(shareText);
-                                        break;
 
+                                        MainActivity.sendWhatsApp(entry.getPrintMassge());
+                                        String dataShare = entry.getPrintMassge();
+                                        MainActivity.shareText(dataShare);
+                                        break;
                                     case 3:
 
-                                        String dailyReport = dailyReportStringList.get(position);
-                                        print(dailyReport);
+                                        print(entry.getPrintMassge());
                                         break;
 
                                     case 4:
@@ -248,7 +242,7 @@ public class Fragment_DailyReport extends Fragment {
 
     public void setTextsAccordingRate()  {
         try {
-            lbl_snf_dr.setText(MainActivity.instace.rateString());
+            lbl_snf_dr.setText(MainActivity.getInstace().rateString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -259,7 +253,8 @@ public class Fragment_DailyReport extends Fragment {
         MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
         ArrayList<Integer> reportIdList = new ArrayList<>();
         reportIdList = milkDBHelpers.reportId();
-        reportId = id_arrayList.get(position);
+        SingleEntry entry = DailyReportList.get(position);
+        reportId = Integer.valueOf(entry.getID());
 
         final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
         alertBuilder.setMessage("Are You sure want to delete this Report ");
@@ -285,11 +280,11 @@ public class Fragment_DailyReport extends Fragment {
     }
 
     public void clickSearchButton() {
-        GetAllData_arrayList.clear();
+
         DailyReportList.clear();
         SearchSqlData();
 
-        sortByAtoZ();
+
         dailyReportAdapter = new DailyReportAdapter(getActivity(), R.layout.listviewmember, DailyReportList) {
             public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
                 TextView v = (TextView) super.getView(position, convertView, parent);
@@ -307,20 +302,8 @@ public class Fragment_DailyReport extends Fragment {
 
     public void SearchSqlData() {
 
-        id_arrayList.clear();
-        membercode_arrayList.clear();
-        weight_arrayList.clear();
-        rate_arrayList.clear();
-        totalamount_arrayList.clear();
-        date_arrayList.clear();
-        dailyReportStringList.clear();
-        GetAllData_arrayList.clear();
-        fat_arrayList.clear();
-        rate_arrayList.clear();
-        snf_arrayList.clear();
-        snfwt_arrayList.clear();
-        fatwt_arrayList.clear();
-        date_arrayList.clear();
+        DailyReportList.clear();
+
 
         String startdate = startDateView.getText().toString();
         String startDate = startdate.replace("/", "");
@@ -337,72 +320,51 @@ public class Fragment_DailyReport extends Fragment {
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
             Cursor cursor = sqLiteDatabase.rawQuery(" SELECT * FROM 'milk_amount' WHERE sift = '" + sift + "' and date = '" + startDate + "' ORDER BY memberCode", null);
 
-            if (cursor != null && cursor.moveToFirst()) {
-                while (cursor.isAfterLast() == false) {
-                    membercode_arrayList.add(cursor.getString(cursor.getColumnIndex("memberCode")));
-                    id_arrayList.add(cursor.getInt(cursor.getColumnIndex("Id")));
-                    weight_arrayList.add(cursor.getFloat(cursor.getColumnIndex("milkweight")));
-                    rate_arrayList.add(cursor.getFloat(cursor.getColumnIndex("rateperliter")));
-                    fat_arrayList.add(cursor.getFloat(cursor.getColumnIndex("fat")));
-                    fatwt_arrayList.add(cursor.getFloat(cursor.getColumnIndex("fat_wt")));
-                    snf_arrayList.add(cursor.getFloat(cursor.getColumnIndex("snf")));
-                    snfwt_arrayList.add(cursor.getFloat(cursor.getColumnIndex("snf_wt")));
-                    totalamount_arrayList.add(cursor.getFloat(cursor.getColumnIndex("totalamount")));
-                    date_arrayList.add(cursor.getString(cursor.getColumnIndex("dateSave")));
-                    GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("sift")));
-                    // dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
-                    cursor.moveToNext();
 
-
-                }
-            } else {
-                // Toast.makeText(getApplication(), "Not Found", Toast.LENGTH_LONG).show();
-            }
-            message = "";
             float weightTotal = 0;
             float amountTotal = 0;
             float fat_wt = 0;
             float snf_wt = 0;
-            String alldata = "";
 
-            for (int i = 0; i < weight_arrayList.size(); i++) {
+            message = "";
 
-                DailyReport dailyReport = new DailyReport();
-                dailyReport.setCode(membercode_arrayList.get(i));
-                dailyReport.setWeight(String.valueOf(weight_arrayList.get(i)));
-                dailyReport.setFat(String.valueOf(fat_arrayList.get(i)));
-                dailyReport.setSnf(String.valueOf(snf_arrayList.get(i)));
-                dailyReport.setRate(String.valueOf(rate_arrayList.get(i)));
-                dailyReport.setAmount(String.valueOf(totalamount_arrayList.get(i)));
-                dailyReport.setId(String.valueOf(id_arrayList.get(i)));
-                dailyReport.setDate(String.valueOf(date_arrayList.get(i)));
-                dailyReport.setShift(String.valueOf(GetAllData_arrayList.get(i)));
+            if (cursor != null && cursor.moveToFirst()) {
+                while (cursor.isAfterLast() == false) {
 
-                weightTotal = weightTotal + weight_arrayList.get(i);
-                amountTotal = amountTotal + totalamount_arrayList.get(i);
-                fat_wt = fat_wt + fatwt_arrayList.get(i);
-                snf_wt = snf_wt + snfwt_arrayList.get(i);
-                DailyReportList.add(dailyReport);
+                    SingleEntry entry = new SingleEntry();
+                    entry.setCode(cursor.getString(cursor.getColumnIndex(AppString.milk.code)));
+                    entry.setId(cursor.getString(cursor.getColumnIndex(AppString.milk.code)));
+                    entry.setRate(cursor.getString(cursor.getColumnIndex(AppString.milk.rate)));
+                    entry.setAmount(cursor.getString(cursor.getColumnIndex(AppString.milk.amount)));
+                    entry.setSift(cursor.getString(cursor.getColumnIndex(AppString.milk.sift)));
+                    entry.setDatesave(cursor.getString(cursor.getColumnIndex(AppString.milk.dateSave)));
+                    entry.setWeight(cursor.getString(cursor.getColumnIndex(AppString.milk.weight)));
+                    entry.setFat(cursor.getString(cursor.getColumnIndex(AppString.milk.fat)));
+                    entry.setSnf(cursor.getString(cursor.getColumnIndex(AppString.milk.snf)));
+                    entry.setFatWt(cursor.getString(cursor.getColumnIndex(AppString.milk.fat_wt)));
+                    entry.setSnfWt(cursor.getString(cursor.getColumnIndex(AppString.milk.snf_wt)));
+                    DailyReportList.add(entry);
 
-                //SetAllData_arrayList.add(GetAllData_arrayList.get(i));
-                alldata = alldata + GetAllData_arrayList.get(i);
+                    weightTotal = weightTotal + Float.valueOf(entry.getWeight());
+                    amountTotal = amountTotal + Float.valueOf(entry.getAmount());
+                    fat_wt = fat_wt + Float.valueOf(entry.getFatWt());
+                    snf_wt = snf_wt + Float.valueOf(entry.getSnfWt());
 
-                String nwt =  weight_arrayList.get(i).toString();
+                    message = message + "\n" + String.format("%s %-4s %-4s %-4s %-4s %-5s",
+                            entry.getCode(),
+                            entry.getWeight(),entry.getfat(),entry.getSnf(),entry.getRate(),
+                            entry.getAmount());
 
-                String nft =  fat_arrayList.get(i).toString();
-                String nsnf =  snf_arrayList.get(i).toString();
-                String nrt =  rate_arrayList.get(i).toString();
-
-                message = message + "\n" + String.format("%s %-4s %-4s %-4s %-4s %-5s",membercode_arrayList.get(i),nwt,nft,nsnf,nrt,totalamount_arrayList.get(i));
-
+                    cursor.moveToNext();
+                }
+            } else {
+                // Toast.makeText(getApplication(), "Not Found", Toast.LENGTH_LONG).show();
             }
 
-            if (sift.equals("M"))
-            {
+
+            if (sift.equals("M")) {
                 shifts = "Morning";
-            }
-            else
-            {
+            } else {
                 shifts = "Evening";
             }
 
@@ -422,13 +384,9 @@ public class Fragment_DailyReport extends Fragment {
                     +"Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + avgFat +
                     "\nAvarage SNF   :   " + avgSnf + "\nTotal Amount  :   " + MainActivity.twoDecimalFloatToString(amountTotal)  + "/-";
 
-
-            /// title
-
             SharedPreferencesUtils  sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
             String titlename = sharedPreferencesUtils.getTitle();
             message = titlename + "\n" + message;
-
 
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
@@ -447,26 +405,11 @@ public class Fragment_DailyReport extends Fragment {
             spinr_ampm.setSelection(1);
             sift = "E";
         }
-
-        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-        startDateView.setText(milkDBHelpers.getCurrentDateFromPublic());
+        startDateView.setText(AppString.getCurrentDate());
 
         clickSearchButton();
     }
 
-    private void sortByAtoZ() {
-        Collections.sort(DailyReportList, new Comparator<DailyReport>() {
-            @Override
-            public int compare(DailyReport lhs, DailyReport rhs) {
-                return lhs.getCode().compareTo(rhs.getCode());
-            }
-        });
-
-        for (int i = 0; i < DailyReportList.size(); i++) {
-            Log.e("getCorde", DailyReportList.get(i).getCode() + "");
-        }
-
-    }
 
 
     private void shareDialog() {
@@ -523,12 +466,7 @@ public class Fragment_DailyReport extends Fragment {
     }
 
     private void print(String printString){
-        try {
-            MainActivity.print(printString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        MainActivity.getInstace().print(printString);
     }
 
 

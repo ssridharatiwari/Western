@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,15 +49,6 @@ public class Fragment_SingleReport extends Fragment {
     Spinner spnr_membername;
     String membername,message="",printString="";
     int reportId;
-    ArrayList<Integer> id_arrayList = new ArrayList<>();
-    ArrayList<String>member_arrayList = new ArrayList<String>();
-    ArrayList<Float>weight_arrayList = new ArrayList<>();
-    ArrayList<Float>rate_arrayList = new ArrayList<>();
-    ArrayList<Float>totalamount_arrayList = new ArrayList<>();
-    ArrayList<String>date_arrayList = new ArrayList<String>();
-    ArrayList<String>sift_arrayList = new ArrayList<String>();
-    ArrayList<String>SetAllData_arrayList = new ArrayList<String>();
-    ArrayList<String>GetAllData_arrayList = new ArrayList<String>();
     ArrayList<SingleEntry>singleReportList = new ArrayList<>();
     SingleReportAdapter singleResultAdapter;
     SharedPreferencesUtils sharedPreferencesUtils;
@@ -69,8 +61,7 @@ public class Fragment_SingleReport extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_single_report, container, false);
         startDateView =(Button)rootView.findViewById(R.id.btn_startdate);
@@ -150,9 +141,8 @@ public class Fragment_SingleReport extends Fragment {
                 message ="";
                 singleReportList.clear();
                 SearchSqlData();
-              //  Log.e("=-m-m-m--=", " " + GetAllData_arrayList);
-                //ArrayList<SingleReportAdapter>si = new SingleReportAdapter(getActivity(), R.layout.listviewmember, singleReportList)
-                 singleResultAdapter = new SingleReportAdapter(getActivity(), R.layout.listviewmember,singleReportList ){
+
+                singleResultAdapter = new SingleReportAdapter(getActivity(), R.layout.listviewmember,singleReportList ){
                     public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
                         TextView v = (TextView) super.getView(position, convertView, parent);
                         // v.setTypeface(typeface);
@@ -191,38 +181,41 @@ public class Fragment_SingleReport extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 // The 'which' argument contains the index position
                                 // of the selected item
+
+                                SingleEntry entry = singleReportList.get(position);
                                 switch (which) {
                                     case 0:
-                                        String data = GetAllData_arrayList.get(position);
-                                        MainActivity.sendWhatsApp(data);
 
+                                        MainActivity.sendWhatsApp(entry.getPrintMassge());
                                         break;
                                     case 1:
 
-
                                         MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-                                        Member newMenber =  milkDBHelpers.getMember(member_arrayList.get(position));
+                                        Member newMenber =  milkDBHelpers.getMember(entry.getCode());
 
 
                                         if(newMenber.getMobile()!="1234"){
-                                            String strSms = GetAllData_arrayList.get(position);
+                                            String strSms = entry.getSMS();
                                             MainActivity.sendTextSms(strSms,newMenber.getMobile());
                                         }else {
                                             Toast.makeText(getActivity(), "Update Number And Try Again", Toast.LENGTH_LONG).show();
                                         }
 
-
-
                                         break;
 
                                     case 2:
-                                            String dataShare = GetAllData_arrayList.get(position);
+
+                                        entry = singleReportList.get(position);
+                                        MainActivity.sendWhatsApp(entry.getPrintMassge());
+                                            String dataShare = entry.getPrintMassge();
                                             MainActivity.shareText(dataShare);
                                         break;
                                     case 3:
 
-                                        String dailyReport = dailyReportStringList.get(position);
-                                        print(dailyReport);
+                                        Log.e("message",entry.getPrintMassge());
+
+
+                                        print(entry.getPrintMassge());
                                         break;
 
                                     case 4:
@@ -262,7 +255,10 @@ public class Fragment_SingleReport extends Fragment {
         MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
         ArrayList<Integer> reportIdList = new ArrayList<>();
         reportIdList = milkDBHelpers.reportId();
-        reportId = id_arrayList.get(position);
+
+        SingleEntry entry = singleReportList.get(position);
+
+        reportId =  Integer.getInteger(entry.getID());
 
 
         final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
@@ -271,7 +267,6 @@ public class Fragment_SingleReport extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-                // Log.e("-=-=-ddd=-=", "ddddd");
                 milkDBHelpers.deleteReport(reportId);
                 singleResultAdapter.remove((singleResultAdapter.getItem(position)));
                 singleResultAdapter.notifyDataSetChanged();
@@ -289,12 +284,9 @@ public class Fragment_SingleReport extends Fragment {
     }
 
     public void SearchSqlData(){
-        id_arrayList.clear();
-        member_arrayList.clear();
-        weight_arrayList.clear();
-        rate_arrayList.clear();
-        totalamount_arrayList.clear();
-        date_arrayList.clear();
+
+
+        singleReportList.clear();
 
         String startdate = startDateView.getText().toString();
         String enddate = endDateView.getText().toString();
@@ -338,19 +330,32 @@ public class Fragment_SingleReport extends Fragment {
 
 
                 String alldata ="";
+                float weightsize = 0;
+                float amountsize = 0;
+
+
 
                 if (cursor != null && cursor.moveToFirst()) {
                     while (cursor.isAfterLast() == false) {
 
-                        member_arrayList.add(cursor.getString(cursor.getColumnIndex("memberCode")));
-                        id_arrayList.add(cursor.getInt(cursor.getColumnIndex("Id")));
-                        weight_arrayList.add(cursor.getFloat(cursor.getColumnIndex("milkweight")));
-                        rate_arrayList.add(cursor.getFloat(cursor.getColumnIndex("rateperliter")));
-                        totalamount_arrayList.add(cursor.getFloat(cursor.getColumnIndex("totalamount")));
-                        sift_arrayList.add(cursor.getString(cursor.getColumnIndex("sift")));
-                        date_arrayList.add(cursor.getString(cursor.getColumnIndex("dateSave")));
-                        GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("allInformation")));
-                        dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
+                        SingleEntry entry = new SingleEntry();
+                        entry.setCode(cursor.getString(cursor.getColumnIndex(AppString.milk.code)));
+                        entry.setId(cursor.getString(cursor.getColumnIndex(AppString.milk.code)));
+                        entry.setRate(cursor.getString(cursor.getColumnIndex(AppString.milk.rate)));
+                        entry.setAmount(cursor.getString(cursor.getColumnIndex(AppString.milk.amount)));
+                        entry.setSift(cursor.getString(cursor.getColumnIndex(AppString.milk.sift)));
+                        entry.setDatesave(cursor.getString(cursor.getColumnIndex(AppString.milk.dateSave)));
+                        entry.setWeight(cursor.getString(cursor.getColumnIndex(AppString.milk.weight)));
+                        entry.setFat(cursor.getString(cursor.getColumnIndex(AppString.milk.fat)));
+                        entry.setSnf(cursor.getString(cursor.getColumnIndex(AppString.milk.snf)));
+                        entry.setFatWt(cursor.getString(cursor.getColumnIndex(AppString.milk.fat_wt)));
+                        entry.setSnfWt(cursor.getString(cursor.getColumnIndex(AppString.milk.snf_wt)));
+                        singleReportList.add(entry);
+
+
+                        weightsize = weightsize + Float.valueOf(entry.getWeight());
+                        amountsize = amountsize + Float.valueOf(entry.getAmount());
+
 
 
                         String date =  cursor.getString(cursor.getColumnIndex("dateSave"));
@@ -371,30 +376,11 @@ public class Fragment_SingleReport extends Fragment {
 
                         cursor.moveToNext();
 
-                        //alldata = alldata + "\n" + getNewString( String.valueOf(cursor.getColumnIndex("milkweight")), String.valueOf(cursor.getColumnIndex("fat")), String.valueOf(cursor.getColumnIndex("snf")),String.valueOf(cursor.getColumnIndex("rateperliter")),String.valueOf(cursor.getColumnIndex("totalamount")),String.valueOf(cursor.getColumnIndex("dateSave")),String.valueOf(cursor.getColumnIndex("sift")));
                     }
 
                 }
 
-                float weightsize = 0;
-                float amountsize = 0;
 
-                for(int j =0;j<weight_arrayList.size();j++){
-                    SingleEntry singleReport = new SingleEntry();
-                    singleReport.setCode(String.valueOf(member_arrayList.get(j)));
-                    singleReport.setDatesave(String.valueOf(date_arrayList.get(j)));
-                    singleReport.setWeight(String.valueOf(weight_arrayList.get(j)));
-                    singleReport.setSift(String.valueOf(sift_arrayList.get(j)));
-                    singleReport.setRate(String.valueOf(rate_arrayList.get(j)));
-                    singleReport.setAmount(String.valueOf(totalamount_arrayList.get(j)));
-                    singleReportList.add(singleReport);
-
-                    weightsize = weightsize + weight_arrayList.get(j);
-                    amountsize = amountsize + totalamount_arrayList.get(j);
-                    SetAllData_arrayList.add(GetAllData_arrayList.get(j));
-
-                    // alldata = alldata + "\n" + GetAllData_arrayList.get(j);
-                }
 
                 searchweight.setText("Wgt:- "+MainActivity.twoDecimalFloatToString(weightsize)+" Kg");
                 searchamount.setText("Amt:- "+MainActivity.twoDecimalFloatToString(amountsize)+" /-");
@@ -426,7 +412,6 @@ public class Fragment_SingleReport extends Fragment {
             if (cursor != null && cursor.moveToFirst()) {
                 while (cursor.isAfterLast() == false) {
                     memberNameReal = cursor.getString(1);
-                    // Toast.makeText(getActivity(),"member_name :- " + member_name, Toast.LENGTH_LONG).show();
                     cursor.moveToNext();
                 }
             } else {
@@ -442,31 +427,9 @@ public class Fragment_SingleReport extends Fragment {
 
     private void getCalendarDate(){
 
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DATE);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        month++;
-        int monthlength =String.valueOf(month).length();
-        int daylength =String.valueOf(day).length();
-
-        if(monthlength==1&&daylength==1){
-            String date = "0"+String.valueOf(day)+"/"+"0"+String.valueOf(month)+"/"+String.valueOf(year);
-            startDateView.setText(date);
-            endDateView.setText(date);
-        }else if(monthlength==1&&daylength>1){
-            String date = String.valueOf(day)+"/"+"0"+String.valueOf(month)+"/"+""+String.valueOf(year);
-            startDateView.setText(date);
-            endDateView.setText(date);
-            endDateView.setText(date);
-        }else if(monthlength>1&&daylength==1){
-            String date = "0"+String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+String.valueOf(year);
-            startDateView.setText(date);
-        }else if(monthlength>1&&daylength>1){
-            String date = String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+""+String.valueOf(year);
-            startDateView.setText(date);
-            endDateView.setText(date);
-        }
+        String date = AppString.getCurrentDate();
+        startDateView.setText(date);
+        endDateView.setText(date);
     }
 
 
@@ -478,6 +441,7 @@ public class Fragment_SingleReport extends Fragment {
         adb.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
+
                 if (options[item].equals("WhatsApp")) {
                     PackageManager pm = getActivity().getPackageManager();
                     try {
@@ -499,22 +463,18 @@ public class Fragment_SingleReport extends Fragment {
                     email.putExtra(Intent.EXTRA_EMAIL, new String[]{to});
                     email.putExtra(Intent.EXTRA_SUBJECT, subject);
                     email.putExtra(Intent.EXTRA_TEXT, printString);
-                    // need this to prompts email client only
                     email.setType("message/rfc822");
 
                     startActivity(Intent.createChooser(email, "Choose an Email client"));
 
 
-                } else if (options[item].equals("Other Share"))
-                {
+                } else if (options[item].equals("Other Share")) {
 
                     Intent sentIntent = new Intent(Intent.ACTION_SEND);
                     sentIntent.putExtra(Intent.EXTRA_TEXT, printString);
                     sentIntent.setType("text/plain");
                     startActivity(sentIntent);
-
-            }
-             else if (options[item].equals("Print Report")) {
+                } else if (options[item].equals("Print Report")) {
                     print(printString);
                 }
             }
@@ -523,15 +483,9 @@ public class Fragment_SingleReport extends Fragment {
     }
 
 
-
     private void print(String printString){
-        try {
-            MainActivity.print(printString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainActivity.getInstace().print(printString);
     }
-
 
 
 }

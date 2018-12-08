@@ -102,22 +102,24 @@ public class SingleEntry {
 
 
 
-    //   public String getSMS() {
-//
-//        String  message =  MainActivity.sharedPref.getTitle() + "\n" + "Date: " + date + "(" + sift + ")" + "\nCode: " + code +
-//                "\nQTY=" + weight +  "\nRT " + rate + " AMT= " + amount ;
-//        return message;
-//    };
-//    public String getPrintMassge(){
-//
-//        String printString = MainActivity.sharedPref.getTitle() + "\n" + MainActivity.sharedPref.getMobile() + "\n" + MainActivity.lineBreakStar() +
-//                "Code: " + code +
-//                "\nDate: " + date + " - " +sift +
-//                "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
-//                "\nRate/Ltr: " + rate +
-//                "\nAmount:  Rs " + amount + "\n";
-//
-//        return printString;
-//    }
+       public String getSMS() {
+
+        String  message =   MainActivity.instace.sharedPreferencesUtils.getTitle() + "\n" + "Date: " + date + "(" + sift + ")" + "\nCode: " + code +
+                "\nQTY=" + weight +  "\nRT " + rate + " AMT= " + amount ;
+        return message;
+    };
+    public String getPrintMassge(){
+
+        String printString = MainActivity.instace.sharedPreferencesUtils.getTitle() + "\n" + MainActivity.instace.sharedPreferencesUtils.getMobile() + "\n" + MainActivity.lineBreak() +
+                "Code: " + code +
+                "\nDate: " + date + " - " +sift +
+                "\nLitre: " + MainActivity.twoDecimal(weight) + " L" +
+                "\nRate/Ltr: " + rate +
+                "\nAmount:  Rs " + amount + "\n";
+        printString = printString + "\n" + MainActivity.lineBreak();
+
+        //return printString;
+        return "sanjay";
+    }
 
 }

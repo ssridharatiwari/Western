@@ -71,6 +71,7 @@ public class BluetoothPrinter {
         return shared;
     }
 
+
     public boolean isConnected() {
         return btSocket != null && btSocket.isConnected();
     }

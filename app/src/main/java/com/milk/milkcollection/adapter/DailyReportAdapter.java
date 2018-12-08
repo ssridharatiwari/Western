@@ -8,18 +8,20 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.model.DailyReport;
+import com.milk.milkcollection.model.SingleEntry;
+
 import java.util.List;
 
 /**
  * Created by Er. Arjun on 02-03-2016.
  */
-public class DailyReportAdapter  extends ArrayAdapter<DailyReport> {
+public class DailyReportAdapter  extends ArrayAdapter<SingleEntry> {
     Activity context;
-    DailyReport dailyReport;
+    SingleEntry dailyReport;
 
 
     public DailyReportAdapter(Activity context, int resourceId,
-                             List<DailyReport> items) {
+                             List<SingleEntry> items) {
         super(context, resourceId, items);
         this.context = context;
     }
@@ -52,7 +54,7 @@ public class DailyReportAdapter  extends ArrayAdapter<DailyReport> {
             holder.txtSno.setText(String.valueOf(position+1)+ ".");
             holder.txtcode.setText(dailyReport.getCode());
             holder.txtweight.setText(dailyReport.getWeight());
-            holder.txtfat.setText(dailyReport.getFat());
+            holder.txtfat.setText(dailyReport.getfat());
             holder.txtsnf.setText(dailyReport.getSnf());
             holder.txtrate.setText(dailyReport.getRate());
             holder.txtamount.setText(dailyReport.getAmount());

@@ -44,6 +44,7 @@ import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.DailyReport;
+import com.milk.milkcollection.model.SingleEntry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,7 +78,7 @@ public class Fragment_update extends Fragment {
     Boolean isSMSSemd = false,isPrint;
 
 
-    public DailyReport entry = new DailyReport();
+    public SingleEntry entry = new SingleEntry();
 
 
     public Fragment_update() {
@@ -121,10 +122,10 @@ public class Fragment_update extends Fragment {
         // toolbartitle.setText(titlename);
 
         et_code.setText(entry.getCode());
-        et_fat.setText(entry.getFat());
+        et_fat.setText(entry.getfat());
         et_snf.setText(entry.getSnf());
         et_weight.setText(entry.getWeight());
-        sift = entry.getShift();
+        sift = entry.getSift();
 
         tv_datepicker.setText(entry.getDate());
 
@@ -187,7 +188,7 @@ public class Fragment_update extends Fragment {
         });
 
 
-        if(entry.getShift().equals("M")) {
+        if(entry.getSift().equals("M")) {
             sp_shift.setSelection(0);
         } else {
             sp_shift.setSelection(1);
@@ -308,17 +309,9 @@ public class Fragment_update extends Fragment {
     private void printMethod() {
 
         isPrint = false;
-        try {
-            try {
-                MainActivity.print(printString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), "Print failed, please try again.", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
+        MainActivity.getInstace().print(printString);
+
     }
 
     public boolean funSaveEntry() {
@@ -443,7 +436,7 @@ public class Fragment_update extends Fragment {
 
                         milkDBHelpers.update(code, df.format(Float.parseFloat(weight)), rateperliter,
                                 totalamount, replaceDate,
-                                phone_number, sift, fat, fat_wt, snf, snf_wt, message, printString, date,entry.getId());
+                                phone_number, sift, fat, fat_wt, snf, snf_wt, message, printString, date,entry.getID());
 
                         total.setText("Total Amount");
                         rate.setText("Rate/ltr");
