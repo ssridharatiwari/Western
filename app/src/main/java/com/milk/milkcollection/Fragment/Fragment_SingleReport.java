@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,6 +36,9 @@ import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.SingleEntry;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,6 +58,8 @@ public class Fragment_SingleReport extends Fragment {
     SharedPreferencesUtils sharedPreferencesUtils;
     String title,memberNameReal;
     private List<String> dailyReportStringList = new ArrayList<>();
+
+    List<String> arrayPrints = new ArrayList<>();
 
 
     public Fragment_SingleReport() {
@@ -283,6 +289,8 @@ public class Fragment_SingleReport extends Fragment {
 
     }
 
+    int count = 0;
+
     public void SearchSqlData(){
 
 
@@ -291,7 +299,7 @@ public class Fragment_SingleReport extends Fragment {
         String startdate = startDateView.getText().toString();
         String enddate = endDateView.getText().toString();
         printString = "";
-        printString = membername+"\nDT:"+startdate+" to DT:"+enddate+"\n" ;
+
 
         String startDate = startdate.replace("/", "");
         String endDate = enddate.replace("/","");
@@ -330,17 +338,21 @@ public class Fragment_SingleReport extends Fragment {
 
 
                 String alldata ="";
+                String tempString ="";
                 float weightsize = 0;
                 float amountsize = 0;
-
+                count = 0;
+                arrayPrints.clear();
+                List<String> tempArray = new ArrayList<>();
 
 
                 if (cursor != null && cursor.moveToFirst()) {
+
                     while (cursor.isAfterLast() == false) {
 
                         SingleEntry entry = new SingleEntry();
                         entry.setCode(cursor.getString(cursor.getColumnIndex(AppString.milk.code)));
-                        entry.setId(cursor.getString(cursor.getColumnIndex(AppString.milk.code)));
+                        entry.setId(cursor.getString(cursor.getColumnIndex(AppString.milk.id)));
                         entry.setRate(cursor.getString(cursor.getColumnIndex(AppString.milk.rate)));
                         entry.setAmount(cursor.getString(cursor.getColumnIndex(AppString.milk.amount)));
                         entry.setSift(cursor.getString(cursor.getColumnIndex(AppString.milk.sift)));
@@ -357,11 +369,12 @@ public class Fragment_SingleReport extends Fragment {
                         amountsize = amountsize + Float.valueOf(entry.getAmount());
 
 
-
                         String date =  cursor.getString(cursor.getColumnIndex("dateSave"));
 
+
                         try {
-                                    String line = String.format("%5s%1s %-4s %-4s %-4s %-6s", date.substring(0,5),
+
+                            String line = String.format("%5s%1s %-4s %-4s %-4s %-6s", date.substring(0,5),
                                     cursor.getString(cursor.getColumnIndex("sift")),
                                     MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("milkweight"))),
                                     MainActivity.oneDecimalString(cursor.getString(cursor.getColumnIndex("fat"))),
@@ -369,15 +382,22 @@ public class Fragment_SingleReport extends Fragment {
                                     MainActivity.twoDecimalString(cursor.getString(cursor.getColumnIndex("totalamount"))));
 
                             alldata = alldata + "\n" + line;
+                            tempString = tempString + "\n" + line;
 
                         } catch (Exception e) {
                            // Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
                         }
 
+                        if (count > 0 && count%30 == 0) {
+                            tempArray.add(tempString);
+                            tempString = "";
+                        }
+
+                        count++;
+
                         cursor.moveToNext();
 
                     }
-
                 }
 
 
@@ -385,15 +405,44 @@ public class Fragment_SingleReport extends Fragment {
                 searchweight.setText("Wgt:- "+MainActivity.twoDecimalFloatToString(weightsize)+" Kg");
                 searchamount.setText("Amt:- "+MainActivity.twoDecimalFloatToString(amountsize)+" /-");
 
-                printString =  printString +  MainActivity.lineBreak() + "Date   Qty  Fat  "+MainActivity.instace.rateString()+"  Amt".toUpperCase();
-                printString = printString+alldata+"\n " + MainActivity.lineBreak() + "Total Wgt : " + MainActivity.twoDecimalFloatToString(weightsize)+" Kg" +"\nTotal Amt : "+ MainActivity.twoDecimalFloatToString(amountsize)+"Rs";
 
+                printString = "";
 
                 SharedPreferencesUtils  sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
                 String titlename = sharedPreferencesUtils.getTitle();
 
-                printString = titlename +  "\nMember Ladger\n"+memberNameReal + "   "+printString;
-                printString = printString.toUpperCase();
+                printString =  titlename +  "\nMember Ladger\n"+memberNameReal + " " +  membername+"\nDT:"+startdate+" to DT:"+enddate+"\n" ;
+                printString =  printString +  MainActivity.lineBreak() + "Date   Qty  Fat  "+MainActivity.instace.rateString()+"  Amt".toUpperCase();
+
+                printString = alldata + "\n" + MainActivity.lineBreak() + "Total Wgt : "
+                        + MainActivity.twoDecimalFloatToString(weightsize)+" Kg" +"\nTotal Amt : "
+                        + MainActivity.twoDecimalFloatToString(amountsize)+"Rs";
+
+//                for (int i = 0 ; i < tempArray.size(); i++ ){
+//
+//                    String string = "";
+//
+//                    if (i == 0) {
+//                        string =  titlename +  "\nMember Ladger\n"+memberNameReal + " " +  membername+"\nDT:"+startdate+" to DT:"+enddate+"\n" ;
+//                        string =  string +  MainActivity.lineBreak() + "Date   Qty  Fat  "+MainActivity.instace.rateString()+"  Amt".toUpperCase();
+//                    }
+//
+//                    String str = tempArray.get(i);
+//
+//                    if (i == (tempArray.size()-1)){
+//                        string = str+"\n" + MainActivity.lineBreak() + "Total Wgt : "
+//                                + MainActivity.twoDecimalFloatToString(weightsize)+" Kg" +"\nTotal Amt : "
+//                                + MainActivity.twoDecimalFloatToString(amountsize)+"Rs";
+//                    } else {
+//                        string = str;
+//                    }
+//
+//                    arrayPrints.add(string);
+//                    string = "";
+//                }
+
+
+
             } catch (Exception e) {
                 Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
             }
@@ -464,9 +513,7 @@ public class Fragment_SingleReport extends Fragment {
                     email.putExtra(Intent.EXTRA_SUBJECT, subject);
                     email.putExtra(Intent.EXTRA_TEXT, printString);
                     email.setType("message/rfc822");
-
                     startActivity(Intent.createChooser(email, "Choose an Email client"));
-
 
                 } else if (options[item].equals("Other Share")) {
 
@@ -475,7 +522,27 @@ public class Fragment_SingleReport extends Fragment {
                     sentIntent.setType("text/plain");
                     startActivity(sentIntent);
                 } else if (options[item].equals("Print Report")) {
+
                     print(printString);
+//                  //  if (arrayPrints.size() > 1){
+//                        for (int i = 0 ; i < arrayPrints.size(); i++ ) {
+//
+//                            final String print = arrayPrints.get(i);
+//                            final Handler handler = new Handler();
+//                            handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    print(print);
+//                                }
+//
+//                            }, 10);
+//
+//
+//                        }
+//                    }else {
+
+////.///                      }
+
                 }
             }
         });

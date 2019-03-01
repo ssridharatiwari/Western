@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -50,10 +51,7 @@ import java.util.Comparator;
 import static android.content.ContentValues.TAG;
 import static com.milk.milkcollection.Activity.MainActivity.instace;
 
-/**
- * Created by Alpha on 07-01-2016.
- */
-public class Fragment_DailyReport extends Fragment {
+ public class Fragment_DailyReport extends Fragment {
 
     private TextView daily_wight, daily_fat, daily_snf, daily_amut,lbl_snf_dr;
     private ListView savedmilk_listview;
@@ -67,7 +65,9 @@ public class Fragment_DailyReport extends Fragment {
     Spinner spinr_ampm;
     String shifts;
 
-    public Fragment_DailyReport() {
+     private AutoCompleteTextView acFrom,acTo;
+
+     public Fragment_DailyReport() {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -89,6 +89,8 @@ public class Fragment_DailyReport extends Fragment {
         savedmilk_listview.setEmptyView(rootView.findViewById(R.id.empty_saved_listmilk));
         savedmilk_listview.setOnCreateContextMenuListener(this);
 
+        acFrom = (AutoCompleteTextView)  rootView.findViewById(R.id.aCFrom);
+        acTo = (AutoCompleteTextView)  rootView.findViewById(R.id.aCTo);
 
         iv_share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,10 +183,8 @@ public class Fragment_DailyReport extends Fragment {
                                         MainActivity.sendWhatsApp(entry.getPrintMassge());
                                         break;
                                     case 1:
-
                                         MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
                                         Member newMenber =  milkDBHelpers.getMember(entry.getCode());
-
 
                                         if(newMenber.getMobile()!="1234"){
                                             String strSms = entry.getSMS();
@@ -192,7 +192,6 @@ public class Fragment_DailyReport extends Fragment {
                                         }else {
                                             Toast.makeText(getActivity(), "Update Number And Try Again", Toast.LENGTH_LONG).show();
                                         }
-
 
                                         break;
                                     case 2:
@@ -221,11 +220,29 @@ public class Fragment_DailyReport extends Fragment {
             }
         });
 
+        setAcData();
         setTextsAccordingRate();
         getCalendarDate();
         uploadFile();
         return rootView;
     }
+
+    void setAcData(){
+
+
+        ArrayList<String> arryMebers = MainActivity.getInstace().milkDBHelpers.memberCodeAutoComplet();
+
+        Log.e("array",arryMebers.get(0));
+        ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>
+                (getActivity(),android.R.layout.simple_list_item_1,arryMebers);
+        acFrom.setAdapter(adapter);
+        acTo.setAdapter(adapter);
+
+        acFrom.setText(arryMebers.get(0));
+        acTo.setText(arryMebers.get(arryMebers.size()-1));
+    }
+
 
     void updateEntry(int position){
 
@@ -241,11 +258,7 @@ public class Fragment_DailyReport extends Fragment {
     }
 
     public void setTextsAccordingRate()  {
-        try {
-            lbl_snf_dr.setText(MainActivity.getInstace().rateString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        lbl_snf_dr.setText(MainActivity.getInstace().rateString());
     }
 
     private void deleteReport( final int position){
@@ -304,22 +317,27 @@ public class Fragment_DailyReport extends Fragment {
 
         DailyReportList.clear();
 
-
         String startdate = startDateView.getText().toString();
-        String startDate = startdate.replace("/", "");
-        //  Log.e("replace Daily", startDate+" ;"+startdate);
+        String startDate = AppString.reverceDate(startdate);
 
-        String dd = startDate.substring(0, 2);
-        String mm = startDate.substring(2, 4);
-        String yy = startDate.substring(4, 8);
-        startDate = yy + mm + dd;
+        if ( acFrom.getText().toString().length() == 0 ||  acTo.getText().toString().length() == 0  ) {
 
+            MainActivity.makeTost("Fill Codes");
+            return;
+        }
+
+        if (Integer.valueOf(acFrom.getText().toString()) > Integer.valueOf(acTo.getText().toString()) ){
+            MainActivity.makeTost("From code lest must less than To Code");
+            return;
+        }
 
         try {
             MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery(" SELECT * FROM 'milk_amount' WHERE sift = '" + sift + "' and date = '" + startDate + "' ORDER BY memberCode", null);
 
+            String query = " SELECT * FROM 'milk_amount' WHERE sift = '" + sift + "' AND date = '" + startDate + "' AND memberCode >= '" + acFrom.getText().toString() + "' AND memberCode <= '" + acTo.getText().toString() + "' ORDER BY memberCode";
+            Log.e("query ::: ",query);
+            Cursor cursor = sqLiteDatabase.rawQuery(query, null);
 
             float weightTotal = 0;
             float amountTotal = 0;
@@ -333,11 +351,12 @@ public class Fragment_DailyReport extends Fragment {
 
                     SingleEntry entry = new SingleEntry();
                     entry.setCode(cursor.getString(cursor.getColumnIndex(AppString.milk.code)));
-                    entry.setId(cursor.getString(cursor.getColumnIndex(AppString.milk.code)));
+                    entry.setId(cursor.getString(cursor.getColumnIndex(AppString.milk.id)));
                     entry.setRate(cursor.getString(cursor.getColumnIndex(AppString.milk.rate)));
                     entry.setAmount(cursor.getString(cursor.getColumnIndex(AppString.milk.amount)));
                     entry.setSift(cursor.getString(cursor.getColumnIndex(AppString.milk.sift)));
                     entry.setDatesave(cursor.getString(cursor.getColumnIndex(AppString.milk.dateSave)));
+                    entry.setDate(cursor.getString(cursor.getColumnIndex(AppString.milk.date)));
                     entry.setWeight(cursor.getString(cursor.getColumnIndex(AppString.milk.weight)));
                     entry.setFat(cursor.getString(cursor.getColumnIndex(AppString.milk.fat)));
                     entry.setSnf(cursor.getString(cursor.getColumnIndex(AppString.milk.snf)));
@@ -348,11 +367,16 @@ public class Fragment_DailyReport extends Fragment {
                     weightTotal = weightTotal + Float.valueOf(entry.getWeight());
                     amountTotal = amountTotal + Float.valueOf(entry.getAmount());
                     fat_wt = fat_wt + Float.valueOf(entry.getFatWt());
+
+
                     snf_wt = snf_wt + Float.valueOf(entry.getSnfWt());
 
                     message = message + "\n" + String.format("%s %-4s %-4s %-4s %-4s %-5s",
                             entry.getCode(),
-                            entry.getWeight(),entry.getfat(),entry.getSnf(),entry.getRate(),
+                            entry.getWeight(),
+                            entry.getfat(),
+                            entry.getSnf(),
+                            entry.getRate(),
                             entry.getAmount());
 
                     cursor.moveToNext();
@@ -368,21 +392,20 @@ public class Fragment_DailyReport extends Fragment {
                 shifts = "Evening";
             }
 
-            message = "Shift Report\n"+startdate+"  "+shifts+ "\n" + MainActivity.lineBreak() + "Code Qty Fat "+MainActivity.instace.rateString()+"  Rate   AMT"+message;
+            message = "Shift Report\n"+startdate+"  "+shifts+ "\n" + MainActivity.lineBreak() +
+                    "Code Qty Fat " + MainActivity.getInstace().rateString() + "  Rate   AMT" + message;
 
+            float avgFat = fat_wt / weightTotal;
+            float avgSnf = snf_wt / weightTotal;
 
-            DecimalFormat df = new DecimalFormat("#.##");
-            float avgFat = Float.valueOf(df.format(fat_wt / weightTotal));
-            float avgSnf = Float.valueOf(df.format(snf_wt / weightTotal));
-
-            daily_fat.setText(String.valueOf(avgFat));
-            daily_snf.setText(String.valueOf(avgSnf));
+            daily_fat.setText(MainActivity.twoDecimalFloatToString(avgFat));
+            daily_snf.setText(MainActivity.twoDecimalFloatToString(avgSnf));
             daily_wight.setText(MainActivity.twoDecimalFloatToString(weightTotal) + " Kg");
             daily_amut.setText(MainActivity.twoDecimalFloatToString(amountTotal) + "/-");
 
             message = message + "\n" + MainActivity.lineBreak()
-                    +"Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + avgFat +
-                    "\nAvarage SNF   :   " + avgSnf + "\nTotal Amount  :   " + MainActivity.twoDecimalFloatToString(amountTotal)  + "/-";
+                    +"Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + MainActivity.twoDecimalFloatToString(avgFat) +
+                    "\nAvarage SNF   :   " + MainActivity.twoDecimalFloatToString(avgSnf)+ "\nTotal Amount  :   " + MainActivity.twoDecimalFloatToString(amountTotal)  + "/-";
 
             SharedPreferencesUtils  sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
             String titlename = sharedPreferencesUtils.getTitle();
@@ -413,7 +436,7 @@ public class Fragment_DailyReport extends Fragment {
 
 
     private void shareDialog() {
-        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Report"};
+        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Report","Print Summery"};
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Send Report");
         adb.setItems(options, new DialogInterface.OnClickListener() {
@@ -460,10 +483,36 @@ public class Fragment_DailyReport extends Fragment {
 
                   print(message);
                 }
+                else if (options[item].equals("Print Report")) {
+                    if (DailyReportList.size()>0) {
+                        print(getSummery());
+                    }
+
+                }
             }
         });
         adb.show();
     }
+
+
+    String getSummery(){
+
+        if (DailyReportList.size()==0) {
+            return "";
+        }
+
+        String titlename = MainActivity.getInstace().sharedPreferencesUtils.getTitle();
+
+        String summery = titlename + "\nShift Report\n"+startDateView.getText()+"  "+shifts+ "\n" + MainActivity.lineBreak() +
+                         "\nTotal Milk Weight : " + daily_wight.getText() +
+                         "\nAvg Fat : " + daily_fat.getText() +
+                         "\nAvg " + MainActivity.getInstace().rateString()+ ": " + daily_fat.getText() +
+                         "\nTotal Amount : " + daily_amut.getText();
+
+
+        return  summery;
+    }
+
 
     private void print(String printString){
         MainActivity.getInstace().print(printString);

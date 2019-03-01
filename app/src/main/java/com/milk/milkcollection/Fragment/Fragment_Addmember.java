@@ -195,7 +195,7 @@ getPrintStrng();
         membercode = String.valueOf(Integer.valueOf(membercode));
 
         if (membercode.length() > 0) {
-            if( membercode.length() == 1 ) {
+            if(membercode.length() == 1) {
                 membercode = "00"+membercode;
             }else if( membercode.length() == 2 ){
                 membercode = "0"+membercode;

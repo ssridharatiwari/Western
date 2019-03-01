@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.model.LossReport;
 
@@ -49,14 +50,14 @@ public class ProfitAdapter extends ArrayAdapter<LossReport> {
 
         if(paymentReport.getAmount()!=null) {
             holder.txtno.setText(String.valueOf(position+1));
-            holder.txtweight.setText(paymentReport.getWeight());
-            holder.txtamount.setText(paymentReport.getAmount());
+            holder.txtweight.setText(MainActivity.oneDecimal(paymentReport.getWeight()));
+            holder.txtamount.setText(MainActivity.oneDecimal(paymentReport.getAmount()));
             String date =  paymentReport.getDate().substring(0, 5)  + "-" + paymentReport.getShift();
             holder.textdate.setText(date);
-            holder.txtSellWt.setText(paymentReport.getSellwt());
-            holder.txtSellAmount.setText(paymentReport.getSellAmout());
-            holder.lossProfit.setText(paymentReport.getLoss());
-            holder.lossProfitAmount.setText(paymentReport.getLossProfitAmount());
+            holder.txtSellWt.setText(MainActivity.oneDecimal(paymentReport.getSellwt()));
+            holder.txtSellAmount.setText(MainActivity.twoDecimal(paymentReport.getSellAmout()) );
+            holder.lossProfit.setText(MainActivity.oneDecimal(paymentReport.getLoss()));
+            holder.lossProfitAmount.setText(MainActivity.twoDecimal(paymentReport.getLossProfitAmount()));
         }
         return convertView;
     }

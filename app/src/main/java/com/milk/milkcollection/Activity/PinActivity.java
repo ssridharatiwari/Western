@@ -80,7 +80,7 @@ public class PinActivity extends AppCompatActivity {
     private EditText pinCode1;
     private TextView btnVerify, emi, btnSend,btnOldCustomer;
     ProgressDialog dialog;
-    EditText title, mobile;
+    EditText title, mobile, venderCode;
     String settitle;
     SharedPreferencesUtils sharedPreferencesUtils;
     public String  mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "";
@@ -113,15 +113,17 @@ public class PinActivity extends AppCompatActivity {
 
         genRandomNo();
 
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-         String isLogin = preferences.getString("isLogin", "");
+        String isLogin = preferences.getString("isLogin", "");
+
+        String vender_name = preferences.getString("vender_name", "");
+        String vender_mobile = preferences.getString("vender_mobile", "");
+
+        Log.e("vender name",vender_name);
 
 
-
-
-
-
-         if (isLogin.equals("1") || isLogin.equals("2") ){
+        if (isLogin.equals("1") || isLogin.equals("2") ){
 
             startActivity(new Intent(PinActivity.this, MainActivity.class));
             finish();
@@ -179,7 +181,6 @@ public class PinActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-
                             }
                             else {
                                 Toast.makeText(PinActivity.this, "Device ID NOT genrated", Toast.LENGTH_LONG).show();
@@ -354,12 +355,18 @@ public class PinActivity extends AppCompatActivity {
 
     private void makeRequest() throws JSONException {
 
+        String vcode = "0";
+        if (venderCode.getText().toString().length() > 0) {
+            vcode  = venderCode.getText().toString();
+        }
+
         RequestQueue queue = Volley.newRequestQueue(this);
         String url =  AppUrl.mainUrl + "name=" + settitle +
                      "&sim_id=" + sim_no +
                      "&android_id=" + AndroidID +
                      "&iemi_id=" + imeiNumber +
                      "&mobile=" + mobile_string +
+                     "&vender=" + vcode +
                      "&action=1"  ;
 
 
@@ -457,6 +464,10 @@ public class PinActivity extends AppCompatActivity {
                                         settitle = jsonObject.getString("name").toString();
                                         mobile_string = jsonObject.getString("mobile").toString();
 
+                                        String vname = jsonObject.getString("vname").toString();
+                                        String vid = jsonObject.getString("vid").toString();
+                                        String vphone = jsonObject.getString("vphone").toString();
+                                        setVender(vname,vphone,vid);
                                         startNewActivity();
 
 
@@ -510,6 +521,15 @@ public class PinActivity extends AppCompatActivity {
         editor.putString("isLogin", status);
         editor.commit();
     }
+
+    public void setVender (String vname,String vphone, String vid){
+
+        sharedPreferencesUtils.setVenderName(vname);
+        sharedPreferencesUtils.setVPhone(vphone);
+
+    }
+
+
 
 
 
@@ -573,6 +593,7 @@ public class PinActivity extends AppCompatActivity {
 
         title = (EditText) findViewById(R.id.title);
         mobile = (EditText) findViewById(R.id.mobile);
+        venderCode = (EditText) findViewById(R.id.venderCode);
 
     }
 

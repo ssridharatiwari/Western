@@ -51,6 +51,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.Fragment.Fragment_Master;
 import com.milk.milkcollection.Fragment.Fragment_Report;
 import com.milk.milkcollection.Fragment.Fragment_Setting;
@@ -84,9 +85,8 @@ import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
-
     public  static String ruppe = "₹";
-    public  static String Version = "33";
+    public  static String Version = "37";
 
     private ArrayList<String> categories;
     private DrawerLayout mDrawerLayout;
@@ -112,9 +112,8 @@ public class MainActivity extends AppCompatActivity {
     public String demoDate = "";
 
 
-
-
-    public  SharedPreferencesUtils sharedPreferencesUtils;
+    public SharedPreferencesUtils sharedPreferencesUtils;
+    public MilkDBHelpers milkDBHelpers;
 
 
     public static MainActivity instace;
@@ -136,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         sharedPreferencesUtils = new SharedPreferencesUtils(MainActivity.this);
+        milkDBHelpers = new MilkDBHelpers(MainActivity.this);
         instace = MainActivity.this;
 
         fsSession = new FSSession(MainActivity.this);
@@ -174,13 +174,13 @@ public class MainActivity extends AppCompatActivity {
         ) {
             @SuppressLint("RestrictedApi")
             public void onDrawerClosed(View view) {
-                //getSupportActionBar().setTitle(mTitle);
+                // getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             @SuppressLint("RestrictedApi")
             public void onDrawerOpened(View drawerView) {
-                //getSupportActionBar().setTitle(mDrawerTitle);
+                // getSupportActionBar().setTitle(mDrawerTitle);
                 toolbartitle.setText(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
@@ -416,22 +416,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void runConnection() {
 
         try {
@@ -611,16 +595,24 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-     public void print(String  printSTRING)  {
+     public void print(String  string) {
+        printMainMethod(string);
+     }
 
+
+    public void printMainMethod(String  printSTRING) {
+
+        if (sharedPreferencesUtils.getWelcomeText().length() > 0) {
+            printSTRING = printSTRING + "\n " + sharedPreferencesUtils.getWelcomeText();
+        }
 
         printSTRING = printSTRING + "\n _WESTERN_JAIPUR_";
 
-        Log.e("Print String",printSTRING);
+        // Log.e("Print String",printSTRING);
 
         if (printSTRING.length() > 0) {
 
-            if (printBy.equals("0")){
+            if (printBy.equals("0")) {
                 SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getInstace());
                 printBy = sharedPreferencesUtils.getprintBy();
             }
@@ -657,7 +649,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
 
 
-                        printSTRING = printSTRING + "\n\n\n";
+                        printSTRING = printSTRING + "\n";
                         Intent waIntent = new Intent(Intent.ACTION_SEND);
                         waIntent.setType("text/plain");
                         PackageInfo info = pm.getPackageInfo("com.fidelier.posprinterdriver", PackageManager.GET_META_DATA);
@@ -696,7 +688,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (myprinter != null  ) {
             printByPrinter(printStiring);
-            //dismiss();
             return;
         }
 
@@ -707,73 +698,74 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-//                dismiss();
+//               // dismiss();
 
                 if (mBtDevice == null) {
 
+                    try {
+                            btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-                try {
-                        btAdapter = BluetoothAdapter.getDefaultAdapter();
-
-                        if (!btAdapter.isEnabled()) {
-                            btAdapter.enable();
-                            makeToast("Blutooth turning on");
-                            final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
-                                @RequiresApi(api = Build.VERSION_CODES.M)
-                                @SuppressLint("LongLogTag")
-                                @Override
-                                public void run() {
-                                    printFromBluthooth(data);
-                                }
-                            }, 10);
-                            return;
-                        }
-
-
-                        if (btAdapter.getBondedDevices().size() > 0) {
-                            for (BluetoothDevice device : btAdapter.getBondedDevices()) {
-                                //Log.e("new connection stiring mobile", device.getName());
-                                if (device.getName().equals(AppString.printername)) {
-                                    mBtDevice = device;
-                                }
+                            if (!btAdapter.isEnabled()) {
+                                btAdapter.enable();
+                                makeToast("Blutooth turning on");
+                                final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
+                                    @RequiresApi(api = Build.VERSION_CODES.M)
+                                    @SuppressLint("LongLogTag")
+                                    @Override
+                                    public void run() {
+                                        printFromBluthooth(data);
+                                    }
+                                }, 10);
+                                dismiss();
+                                return;
                             }
-                        } else {
-                            instace.showAlert("WEG_Mobile Printer Not Availble");
-                            return;
-                        }
 
 
+                            if (btAdapter.getBondedDevices().size() > 0) {
+                                for (BluetoothDevice device : btAdapter.getBondedDevices()) {
+                                    //Log.e("new connection stiring mobile", device.getName());
+                                    if (device.getName().equals(AppString.printername)) {
+                                        mBtDevice = device;
+                                    }
+                                }
+                            } else {
+                                instace.showAlert("WEG_Mobile Printer Not Availble");
+                                dismiss();
+                                return;
+                            }
 
+                        // Get first paired device
+                    } catch (Exception e) {
+                        instace.showAlert("Printer not conneted, \nEntry saved");
+                        dismiss();
+                        return;
+                    }
 
-                    // Get first paired device
-                } catch (Exception e) {
-                    instace.showAlert("Printer not conneted, \nEntry saved");
-                    return;
-                }
+   //               Log.e("new connection stiring mobile", mBtDevice.getName());
 
-//                Log.e("new connection stiring mobile", mBtDevice.getName());
+                    if (mBtDevice == null) {
+                        instace.showAlert("WEG_Mobile Printer Not Availble");
+                        dismiss();
+                        return;
+                    }
 
-                if (mBtDevice == null) {
-                    instace.showAlert("WEG_Mobile Printer Not Availble");
-                    return;
-                }
-
-                if (!mBtDevice.getName().equals(AppString.printername)) {
-                    instace.showAlert("WEG_Mobile Printer Not Availble");
-                    return;
-                }
-
-                if (myprinter == null) {
-                    myprinter = new BluetoothPrinter(mBtDevice);
-                    printByPrinter(printStiring);
-                }
-            }else{
+                    if (!mBtDevice.getName().equals(AppString.printername)) {
+                        instace.showAlert("WEG_Mobile Printer Not Availble");
+                        dismiss();
+                        return;
+                    }
 
                     if (myprinter == null) {
                         myprinter = new BluetoothPrinter(mBtDevice);
                         printByPrinter(printStiring);
                     }
-
+               }else{
+                    if (myprinter == null) {
+                        myprinter = new BluetoothPrinter(mBtDevice);
+                        printByPrinter(printStiring);
+                    }else{
+                        dismiss();
+                    }
                 }
 
             }
@@ -782,27 +774,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     public void printByPrinter( final String str){
 
+        dismiss();
         if (myprinter.isConnected()) {
             myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
             myprinter.printText(str);
             myprinter.addNewLine();
             myprinter.addNewLine();
             myprinter.finish();
-            dismiss();
+
             Log.e("Already connected",myprinter.getDevice().getName());
         } else {
             Log.e("new connection stiring", str);
             myprinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
                 @Override
                 public void onConnected() {
+
                     myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
                     myprinter.printText(str);
                     myprinter.addNewLine();
                     myprinter.addNewLine();
                     myprinter.finish();
-                    dismiss();
+
                     Log.e("after connected",myprinter.getDevice().getName());
                 }
 
@@ -840,11 +835,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    static public String oneDecimal(String  value) {
+        try {
+            return String.format("%.1f", Float.parseFloat(value));
+        }catch (Exception e) {
+            return "0.0";
+        }
+    }
+
     static public String twoDecimalString(String  value) throws IOException {
         try {
             String newStr = value.replace(" ", "");
                 if (newStr.length()>0)
-                            return String.format("%.1f", Float.parseFloat(newStr));
+                    return String.format("%.1f", Float.parseFloat(newStr));
                 else
                     return "0.0";
 
@@ -857,12 +861,12 @@ public class MainActivity extends AppCompatActivity {
         try {
             String newStr = value.replace(" ", "");
             if (newStr.length()>0)
-                return String.format("%.1f", Float.parseFloat(newStr));
+                return String.format("%.2f", Float.parseFloat(newStr));
             else
-                return "0.0";
+                return "0.00";
 
         }catch (Exception e) {
-            return "0.0";
+            return "0.00";
         }
     }
 
@@ -874,24 +878,25 @@ public class MainActivity extends AppCompatActivity {
         return  String.format("%.2f", value);
     }
 
+
     static public String lineBreak()  {
         return "===========================\n";
     }
 
 
     static public void sendWhatsApp(String message) {
-            try {
-                Intent waIntent = new Intent(Intent.ACTION_SEND);
-                waIntent.setType("text/plain");
-                PackageManager pm = instace.getPackageManager();
-                PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-                waIntent.setPackage("com.whatsapp");
-                waIntent.putExtra(Intent.EXTRA_TEXT, message);
-                instace.startActivity(Intent.createChooser(waIntent, "Share with"));
-            } catch (Exception e) {
-                Toast.makeText(instace, "Whats App Not installed", Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            }
+        try {
+            Intent waIntent = new Intent(Intent.ACTION_SEND);
+            waIntent.setType("text/plain");
+            PackageManager pm = instace.getPackageManager();
+            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+            waIntent.setPackage("com.whatsapp");
+            waIntent.putExtra(Intent.EXTRA_TEXT, message);
+            instace.startActivity(Intent.createChooser(waIntent, "Share with"));
+        } catch (Exception e) {
+            Toast.makeText(instace, "Whats App Not installed", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 
 
@@ -901,22 +906,12 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == MY_PERMISSIONS_REQUEST_SEND_SMS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-///             Toast.makeText(this,"Alredy DONE",Toast.LENGTH_SHORT).show();
                 TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
-
-
-
             } else {
                 Toast.makeText(this,"ehgehfg",Toast.LENGTH_SHORT).show();
             }
@@ -1012,7 +1007,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(instace, message, Toast.LENGTH_LONG).show();
     }
 
-    public String rateString() throws IOException {
+    public String rateString() {
 
         String method = sharedPreferencesUtils.getRateMethodCode();
         if (method.equals("3"))
@@ -1139,10 +1134,10 @@ public class MainActivity extends AppCompatActivity {
                 if (options[item].equals("WhatsApp")) {
                     PackageManager pm = MainActivity.getInstace().getPackageManager();
                     try {
-//pe.diegoveloper.printerserverapp
+                        //   pe.diegoveloper.printerserverapp
                         Intent waIntent = new Intent(Intent.ACTION_SEND);
                         waIntent.setType("text/plain");
-                        //   String text = "YOUR TEXT HERE";
+                        //  String text = "YOUR TEXT HERE";
 
                         PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
                         //Check if package exists or not. If not then code

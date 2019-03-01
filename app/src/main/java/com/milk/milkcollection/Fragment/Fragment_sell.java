@@ -172,7 +172,10 @@ public class Fragment_sell extends Fragment {
             public void afterTextChanged(Editable s) {
 
                 if (et_snf.getText().length() > 0) {
-                    createmilkvalue();
+
+                    if (!sharedPreferencesUtils.getRateMethodCode().equals("3")) {
+                        createmilkvalue();
+                    }
                 }else{
 
                 }
@@ -349,8 +352,8 @@ public class Fragment_sell extends Fragment {
                         {
 
                             if (sharedPreferencesUtils.getRateMethodCode().equals("3")){
-                                double value = Double.parseDouble(snf);
 
+                                double value = Double.parseDouble(snf);
                                 value = roundToHalf(value);
                                 Log.e("--------value", String.valueOf(value));
 
@@ -422,13 +425,9 @@ public class Fragment_sell extends Fragment {
     }
 
     public void setTextsAccordingRate()  {
-        try {
-            lbl_snf_home.setText(MainActivity.instace.rateString());
-            et_snf.setHint("Enter " + MainActivity.instace.rateString());
-            lbl_snf_avg.setText("Avg " + MainActivity.instace.rateString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        lbl_snf_home.setText(MainActivity.getInstace().rateString());
+        et_snf.setHint("Enter " + MainActivity.getInstace().rateString());
+        lbl_snf_avg.setText("Avg " + MainActivity.getInstace().rateString());
     }
 
 

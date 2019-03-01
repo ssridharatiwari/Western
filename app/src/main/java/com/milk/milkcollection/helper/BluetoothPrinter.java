@@ -178,6 +178,7 @@ public class BluetoothPrinter {
             this.listener = listener;
         }
 
+
         @Override
         protected BluetoothSocket doInBackground(BluetoothDevice... bluetoothDevices) {
             BluetoothDevice device = bluetoothDevices[0];
@@ -188,7 +189,9 @@ public class BluetoothPrinter {
             try {
                 socket = device.createRfcommSocketToServiceRecord(uuid);
             } catch (IOException e) {
+
             }
+
             try {
                 socket.connect();
             } catch (IOException e) {
@@ -221,7 +224,6 @@ public class BluetoothPrinter {
 
     public interface PrinterConnectListener {
         void onConnected();
-
         void onFailed();
     }
 
@@ -301,6 +303,7 @@ public class BluetoothPrinter {
         } else if (heightHexString.length() == 1) {
             heightHexString = "0" + heightHexString;
         }
+
         heightHexString = heightHexString + "00";
 
         List<String> commandList = new ArrayList<>();

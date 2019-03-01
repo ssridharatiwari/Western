@@ -77,14 +77,14 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
         values.put("memberCode",memberCode);
         values.put("milkweight",weight);
-		values.put("rateperliter",rateliter);
-		values.put("totalamount",amount);
+		values.put("rateperliter", String.valueOf( rateliter));
+		values.put("totalamount", String.valueOf( amount));
 		values.put("date",mydate);
 		values.put("sift",sift);
 		values.put("fat",fat);
-		values.put("fat_wt",fat_wt);
+		values.put("fat_wt", String.valueOf( fat_wt));
 		values.put("snf",snf);
-		values.put("snf_wt",snt_wt);
+		values.put("snf_wt", String.valueOf( snt_wt));
 		values.put("allInformation",message);
 		values.put("dailyInformation",printString);
 		values.put("dateSave",dateSave);
@@ -121,27 +121,23 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 	}
 
 
-	public void update(String memberCode, String weight, float rateliter, float amount, String mydate,
-						String number, String sift, String fat, Float fat_wt, String snf, Float snt_wt,
-						String message, String printString, String dateSave,String id) {
+	public void update(SingleEntry entry) {
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
-		values.put("memberCode",memberCode);
-		values.put("milkweight",weight);
-		values.put("rateperliter",rateliter);
-		values.put("totalamount",amount);
-		values.put("date",mydate);
-		values.put("sift",sift);
-		values.put("fat",fat);
-		values.put("fat_wt",String.valueOf(fat_wt));
-		values.put("snf",snf);
-		values.put("snf_wt",String.valueOf(snt_wt));
-		values.put("allInformation",message);
-		values.put("dailyInformation",printString);
-		values.put("dateSave",dateSave);
+		values.put("memberCode",entry.getCode());
+		values.put("milkweight",entry.getWeight());
+		values.put("rateperliter",entry.getRate());
+		values.put("totalamount",entry.getAmount());
+		values.put("date",entry.getDate());
+		values.put("sift",entry.getSift());
+		values.put("fat",entry.getfat());
+		values.put("fat_wt",String.valueOf(entry.getFatWt()));
+		values.put("snf",entry.getSnf());
+		values.put("snf_wt",String.valueOf(entry.getSnfWt()));
+		values.put("dateSave",entry.getDatesave());
 
-		db.update("milk_amount", values, "Id="+id, null);
+		db.update("milk_amount", values, "Id="+entry.getID(), null);
 		///myDB.update(TableName, cv, "_id="+id, null);
 
 
@@ -358,12 +354,28 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 			return 0;
 	}
 
-	public String getMemberNameByCode(String code)
-    {
-		SQLiteDatabase db = this.getWritableDatabase();
-		String query = "SELECT membername FROM member WHERE memberCode='"+code+"'";
-		Cursor cursor = db.rawQuery(query, null);
-		return cursor.getString(cursor.getColumnIndex("membername")).toString();
+	public String getMemberNameByCode(String code) {
+
+		if (isUserExist(code)) {
+
+			SQLiteDatabase db = this.getWritableDatabase();
+			String query = "SELECT * FROM member WHERE membercode='"+code+"'";
+			Cursor cursor = db.rawQuery(query, null);
+
+			Member member = new Member();
+			if (cursor != null && cursor.moveToFirst()) {
+				while (cursor.isAfterLast() == false) {
+					member.setCode(code);
+					member.setID(cursor.getString(cursor.getColumnIndex("Id")).toString());
+					member.setName(cursor.getString(cursor.getColumnIndex(AppString.memberTable.name)).toString());
+					member.setMobile(cursor.getString(cursor.getColumnIndex(AppString.memberTable.mobile)).toString());
+					cursor.moveToNext();
+				}
+			}
+			return member.getName();
+		} else{
+			return "";
+		}
 	}
 
 	public int getupdatebhav() {
@@ -429,6 +441,47 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 			do {
 				search = cursor.getString(2);
 				memberCodeList.add(search);
+			} while (cursor.moveToNext());
+		}
+		return memberCodeList;
+	}
+
+
+
+
+	public ArrayList<String> memberCode() {
+
+		ArrayList<String> memberCodeList = new ArrayList<String>();
+
+		String selectQuery = "SELECT * FROM member ORDER BY memberCode";
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		String search = null;
+
+		if (cursor != null && cursor.moveToFirst()) {
+			do {
+				search = cursor.getString(2);
+				memberCodeList.add(search);
+			} while (cursor.moveToNext());
+		}
+		return memberCodeList;
+	}
+
+
+	public ArrayList<String> memberCodeAutoComplet() {
+
+		ArrayList<String> memberCodeList = new ArrayList<String>();
+
+		String selectQuery = "SELECT * FROM member ORDER BY memberCode";
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		String code = "";
+
+		if (cursor != null && cursor.moveToFirst()) {
+			do {
+				code = cursor.getString(2);
+
+				memberCodeList.add(code);
 			} while (cursor.moveToNext());
 		}
 		return memberCodeList;
@@ -683,7 +736,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		//preExportDB();
 
 		String db_name = DATABASE_NAME;
-		File tempFile = new File("/data/" + MainActivity.instace.getPackageName() + "/databases/" + DATABASE_NAME);
+		File tempFile = new File("/data/" +  MainActivity.getInstace().getPackageName() + "/databases/" + DATABASE_NAME);
 
 		Log.e("ImportDb", String.valueOf(tempFile.getPath()));
 		Log.e("ImportDb", String.valueOf(tempFile));
@@ -691,7 +744,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		FileChannel source = null;
 		FileChannel destination = null;
 
-		String mainFileToimport = "/data/" + MainActivity.instace.getPackageName() + "/databases/" + db_name;
+		String mainFileToimport = "/data/" + MainActivity.getInstace().getPackageName() + "/databases/" + db_name;
 		String tempFileName = db_name;
 
 		//File currentDB = new File(tempFile, tempFileName);

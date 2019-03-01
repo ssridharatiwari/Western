@@ -45,7 +45,7 @@ import static java.lang.System.exit;
 
 public class Fragment_Setting extends Fragment {
     private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
-    private Button btn_rate_method,btn_select_print,btn_select_old_chart,btn_fetch,btn_defaultSnf,home_action;
+    private Button btn_rate_method,btn_select_print,btn_select_old_chart,btn_fetch,btn_defaultSnf,home_action,secure_setting;
     private ContentProvider contentResolver;
     SharedPreferencesUtils sharedPreferencesUtils;
     int PERMISSION_REQUEST_CODE = 1;
@@ -77,6 +77,7 @@ public class Fragment_Setting extends Fragment {
         txtCommulative = (TextView) rootView.findViewById(R.id.txtCommulative);
         btn_defaultSnf =(Button)rootView.findViewById(R.id.btn_defaultSnf);
         home_action =(Button)rootView.findViewById(R.id.home_action);
+        secure_setting =(Button)rootView.findViewById(R.id.secure_setting);
 
         lblRate.setText( sharedPreferencesUtils.getRateMethodText());
         lblPrint.setText( sharedPreferencesUtils.getprintByText());
@@ -283,6 +284,18 @@ public class Fragment_Setting extends Fragment {
         });
 
 
+
+        secure_setting.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+
+             SecureSetting();
+            }
+
+        });
+
+
         updateSNF();
         return rootView;
     }
@@ -429,6 +442,64 @@ public class Fragment_Setting extends Fragment {
         alert.show();
 
     }
+
+
+
+
+
+    private void SecureSetting (){
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+        final EditText edittext = new EditText(getActivity());
+
+        edittext.setInputType( InputType.TYPE_NUMBER_FLAG_DECIMAL );
+        edittext.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+
+        alert.setMessage("Settings");
+        alert.setTitle("Enter Password");
+
+        alert.setView(edittext);
+
+        final AlertDialog.Builder ok = alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public String toString() {
+                return "$classname{}";
+            }
+
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+
+
+                String value = edittext.getText().toString();
+
+                if (value.equals("2295")) {
+                    Fragment fragment = new SecureSetiing();
+                    android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.addToBackStack("home");
+                    ft.commit();
+                } else {
+                    try {
+                        MainActivity.showToast("Wrong value");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+
+        alert.show();
+
+    }
+
+
 
 
 

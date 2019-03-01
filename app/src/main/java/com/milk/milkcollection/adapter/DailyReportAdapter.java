@@ -6,10 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.R;
-import com.milk.milkcollection.model.DailyReport;
 import com.milk.milkcollection.model.SingleEntry;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -53,11 +55,11 @@ public class DailyReportAdapter  extends ArrayAdapter<SingleEntry> {
 
             holder.txtSno.setText(String.valueOf(position+1)+ ".");
             holder.txtcode.setText(dailyReport.getCode());
-            holder.txtweight.setText(dailyReport.getWeight());
-            holder.txtfat.setText(dailyReport.getfat());
-            holder.txtsnf.setText(dailyReport.getSnf());
-            holder.txtrate.setText(dailyReport.getRate());
-            holder.txtamount.setText(dailyReport.getAmount());
+            holder.txtweight.setText( MainActivity.twoDecimal(dailyReport.getWeight()) );
+            holder.txtfat.setText( MainActivity.oneDecimal(dailyReport.getfat())  );
+            holder.txtsnf.setText( MainActivity.oneDecimal(dailyReport.getSnf())  );
+            holder.txtrate.setText(MainActivity.oneDecimal(dailyReport.getRate()) );
+            holder.txtamount.setText( MainActivity.twoDecimal(dailyReport.getAmount()) );
         }
         return convertView;
     }

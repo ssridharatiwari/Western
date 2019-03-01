@@ -91,6 +91,25 @@ android:weightSum="10">
         android:background="@drawable/rectangle"
         android:textColor="@android:color/black"/>
 
+
+
+    <EditText
+
+        android:id="@+id/venderCode"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginRight="@dimen/density_twenty"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:maxLength="10"
+        android:hint="Enter Code"
+        android:singleLine="true"
+        android:background="@drawable/rectangle"
+        android:textColor="@android:color/black"/>
+
 <TextView
     android:layout_marginRight="@dimen/density_twenty"
     android:layout_marginLeft="@dimen/density_twenty"

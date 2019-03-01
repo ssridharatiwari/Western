@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.model.PaymentReport;
 
@@ -49,8 +50,8 @@ public class PaymentReportAdapter extends ArrayAdapter<PaymentReport> {
         {
             holder.txtcode.setText(paymentReport.getCode());
             holder.textname.setText(paymentReport.getName());
-            holder.txtweight.setText(paymentReport.getWeight());
-            holder.txtamount.setText(paymentReport.getAmount());
+            holder.txtweight.setText(  MainActivity.twoDecimal(paymentReport.getWeight()) );
+            holder.txtamount.setText(  MainActivity.twoDecimal(paymentReport.getAmount())  );
         }
         return convertView;
     }

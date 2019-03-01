@@ -46,9 +46,13 @@ public class SingleEntry {
     }
 
     public void setSnfWt(String snfWt) {
-        this.datesave = snfWt;
+        if (snfWt!=null){
+            this.snfWt = snfWt;
+        }
+
     }
     public String getSnfWt() { return snfWt;}
+
 
     public void setCode(String code) {
         this.code = code;
@@ -102,24 +106,27 @@ public class SingleEntry {
 
 
 
-       public String getSMS() {
+    public String getSMS() {
 
-        String  message =   MainActivity.instace.sharedPreferencesUtils.getTitle() + "\n" + "Date: " + date + "(" + sift + ")" + "\nCode: " + code +
+        String  message =   MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Date: " + date + "(" + sift + ")" + "\nCode: " + code +
                 "\nQTY=" + weight +  "\nRT " + rate + " AMT= " + amount ;
         return message;
     };
+
+
     public String getPrintMassge(){
 
-        String printString = MainActivity.instace.sharedPreferencesUtils.getTitle() + "\n" + MainActivity.instace.sharedPreferencesUtils.getMobile() + "\n" + MainActivity.lineBreak() +
-                "Code: " + code +
-                "\nDate: " + date + " - " +sift +
+        String printString = MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + MainActivity.getInstace().sharedPreferencesUtils.getMobile() + "\n" + MainActivity.lineBreak() +
+                "\nName: " + MainActivity.getInstace().milkDBHelpers.getMemberNameByCode(code) + "(" + code + ")" +
+                "\nDate: " + datesave + " - " +sift +
+                "\nFat: " + fat + " ,  SNF: " + snf +
                 "\nLitre: " + MainActivity.twoDecimal(weight) + " L" +
                 "\nRate/Ltr: " + rate +
                 "\nAmount:  Rs " + amount + "\n";
         printString = printString + "\n" + MainActivity.lineBreak();
 
-        //return printString;
-        return "sanjay";
+        return printString;
+        //return "sanjay";
     }
 
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.model.ShowMember;
 import com.milk.milkcollection.model.SingleEntry;
@@ -58,9 +59,9 @@ public class SingleReportAdapter extends ArrayAdapter<SingleEntry> {
 
             holder.txtcode.setText(String.valueOf(position+1) + ".");
             holder.txtsift.setText(singleReport.getSift());
-            holder.txtweight.setText(singleReport.getWeight());
-            holder.txtrate.setText(singleReport.getRate());
-            holder.txtamount.setText(singleReport.getAmount());
+            holder.txtweight.setText(MainActivity.twoDecimal(singleReport.getWeight()));
+            holder.txtrate.setText(MainActivity.oneDecimal(singleReport.getRate()));
+            holder.txtamount.setText(MainActivity.twoDecimal(singleReport.getAmount()));
             holder.txtdate.setText(singleReport.getDatesave());
         }
         return convertView;

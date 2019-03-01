@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,8 +98,8 @@ public class Fragment_home extends Fragment {
     ArrayAdapter<String> adapter;
     Button btn_ratesave, btn_pss;
     LinearLayout createrate,todayDetailLL;
-    EditText et_weight, et_fat, et_snf, et_code;
-    TextView rate, total, btnrate, btntotal, tv_datepicker, tv_code_holder,lbl_avgFat,
+    EditText et_weight, et_fat, et_snf, et_code,rate;
+    TextView  total, btnrate, btntotal, tv_datepicker, tv_code_holder,lbl_avgFat,
             lbl_avgSnf,lbl_wgt,lbl_amt,lbl_SeriolNo,lbl_snf_home,lbl_snf_avg,toolbartitle;
     String weight, fat, snf, code , myCode;
     String phone_number, message, sift, printString, titlename, mobile_self,comission;
@@ -109,6 +110,7 @@ public class Fragment_home extends Fragment {
     MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
     SharedPreferencesUtils sharedPreferencesUtils;
 
+    Switch switchManual;
     Boolean isSMSSemd = false,isPrint;
 
     public Fragment_home() {
@@ -149,7 +151,7 @@ public class Fragment_home extends Fragment {
         et_fat = (EditText) rootView.findViewById(R.id.fat);
         et_snf = (EditText) rootView.findViewById(R.id.snf);
         et_code = (EditText) rootView.findViewById(R.id.et_code);
-        rate = (TextView) rootView.findViewById(R.id.rate);
+        rate = (EditText) rootView.findViewById(R.id.rate);
         tv_code_holder = (TextView) rootView.findViewById(R.id.tv_code_holder);
         total = (TextView) rootView.findViewById(R.id.total);
         btnrate = (TextView) rootView.findViewById(R.id.click_rate);
@@ -157,7 +159,9 @@ public class Fragment_home extends Fragment {
         tv_datepicker = (TextView) rootView.findViewById(R.id.tv_date);
         btn_pss = (Button) rootView.findViewById(R.id.btn_pss);
 
+
         sp_shift = (Spinner) rootView.findViewById(R.id.sp_shift);
+        switchManual = (Switch)rootView.findViewById(R.id.switch_manual);
 
         sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
         milkDBHelpers=  new MilkDBHelpers(getActivity());
@@ -350,6 +354,9 @@ public class Fragment_home extends Fragment {
         checkDefaultSnf();
         downloadFile();
 
+
+
+
         return rootView;
     }
 
@@ -522,7 +529,7 @@ public class Fragment_home extends Fragment {
                                 phone_number, sift, fat, fat_wt, snf, snf_wt, "", "", date);
 
                         total.setText("Total Amount");
-                        rate.setText("Rate/ltr");
+                        rate.setText("");
                         et_weight.setText("");
                         et_fat.setText("");
                         et_snf.setText("");
@@ -664,7 +671,7 @@ public class Fragment_home extends Fragment {
     private void resetValue() {
 
         total.setText("Total Amount");
-        rate.setText("Rate/ltr");
+        rate.setText("");
         et_weight.setText("");
         et_fat.setText("");
 
@@ -677,6 +684,10 @@ public class Fragment_home extends Fragment {
             et_snf.setText("");
         }
     }
+
+
+
+
 
     private void createmilkvalue() {
 
@@ -800,13 +811,9 @@ public class Fragment_home extends Fragment {
 
 
     public void setTextsAccordingRate()  {
-        try {
-            lbl_snf_home.setText(MainActivity.instace.rateString());
-            et_snf.setHint("Enter " + MainActivity.instace.rateString());
-            lbl_snf_avg.setText("Avg " + MainActivity.instace.rateString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        lbl_snf_home.setText(MainActivity.instace.rateString());
+        et_snf.setHint("Enter " + MainActivity.instace.rateString());
+        lbl_snf_avg.setText("Avg " + MainActivity.instace.rateString());
     }
 
 
@@ -828,7 +835,81 @@ public class Fragment_home extends Fragment {
 
 
         },100);
+
+
+        if (sharedPreferencesUtils.isManualRate()) {
+            rate.setEnabled(true);
+            switchManual.setVisibility(View.VISIBLE);
+        }else {
+            rate.setEnabled(false);
+            switchManual.setVisibility(View.INVISIBLE);
+        }
+
+
+
+
+        switchManual.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String statusSwitch1, statusSwitch2;
+                if (switchManual.isChecked()){
+                    rate.setEnabled(true);
+                }else{
+                    rate.setEnabled(false);
+                    hideKeyboard(getActivity());
+                }
+            }
+        });
+
+
+        rate.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+
+                if (rate.getText().length() > 0) {
+
+
+                    if (rate.getText().toString().equals("Rate/ltr")) {
+                        return;
+                    }
+
+                    Float rateperliter = Float.valueOf(rate.getText().toString());
+                    if (et_weight.getText().toString().length() > 0){
+                        try {
+                            total.setText(MainActivity.twoDecimalFloatToString(rateperliter * Float.valueOf(et_weight.getText().toString())));
+                        } catch (IOException e) {
+                        }
+                    }
+
+                }else{
+
+
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

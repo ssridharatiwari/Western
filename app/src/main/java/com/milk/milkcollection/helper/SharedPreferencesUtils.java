@@ -330,4 +330,71 @@ private Context _context;
     }
 
 
+
+    public boolean isManualRate() {
+        if(prefs.contains("isManualRate"))
+            return prefs.getBoolean("isManualRate", false);
+        else
+            return false;
+    }
+
+
+    public void setManualRate(boolean isManual) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("isManualRate", isManual);
+        editor.commit();
+    }
+
+
+
+
+    public void setWelcomeText(String str) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("welcomeText", str);
+        editor.commit();
+    }
+
+
+    public String getWelcomeText() {
+        if(prefs.contains("welcomeText"))
+            return prefs.getString("welcomeText", "");
+        else
+            return "";
+    }
+
+
+
+
+    public void setVenderName(String str) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("vender_name", str);
+        editor.commit();
+    }
+
+
+    public String getVenderName() {
+        if(prefs.contains("vender_name"))
+            return prefs.getString("vender_name", "");
+        else
+            return "";
+    }
+
+
+
+    public void setVPhone(String str) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("vender_phone", str);
+        editor.commit();
+    }
+
+
+    public String getVPhone() {
+        if(prefs.contains("vender_phone"))
+            return prefs.getString("vender_phone", "");
+        else
+            return "";
+    }
+
+
+
 }
