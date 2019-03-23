@@ -7,7 +7,9 @@ import android.os.AsyncTask;
 
 import com.milk.milkcollection.Activity.MainActivity;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -393,4 +395,8 @@ public class BluetoothPrinter {
     public BluetoothDevice getDevice() {
         return printer;
     }
+
+
+
+
 }

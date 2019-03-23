@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.IllegalFormatCodePointException;
 
 import static android.content.ContentValues.TAG;
 import static com.milk.milkcollection.Activity.MainActivity.instace;
@@ -232,15 +233,17 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
 
         ArrayList<String> arryMebers = MainActivity.getInstace().milkDBHelpers.memberCodeAutoComplet();
 
-        Log.e("array",arryMebers.get(0));
-        ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<String>
-                (getActivity(),android.R.layout.simple_list_item_1,arryMebers);
-        acFrom.setAdapter(adapter);
-        acTo.setAdapter(adapter);
+        if (arryMebers.size()> 0){
+            ArrayAdapter<String> adapter;
+            adapter = new ArrayAdapter<String>
+                    (getActivity(),android.R.layout.simple_list_item_1,arryMebers);
+            acFrom.setAdapter(adapter);
+            acTo.setAdapter(adapter);
 
-        acFrom.setText(arryMebers.get(0));
-        acTo.setText(arryMebers.get(arryMebers.size()-1));
+            acFrom.setText(arryMebers.get(0));
+            acTo.setText(arryMebers.get(arryMebers.size()-1));
+        }
+
     }
 
 

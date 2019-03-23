@@ -965,8 +965,12 @@ public class Fragment_home extends Fragment {
 
     private void verifyDetailApi(){
 
-        if (!MainActivity.instace.isNetworkConnected()){
+        if (!MainActivity.getInstace().isNetworkConnected()){
             return;
+        }
+
+        if (MainActivity.getInstace().userID().toString().length() == 0 && MainActivity.getInstace().userID().toString().equals("0")) {
+            exit(0);
         }
 
 

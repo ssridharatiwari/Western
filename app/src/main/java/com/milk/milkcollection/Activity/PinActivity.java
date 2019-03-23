@@ -125,7 +125,8 @@ public class PinActivity extends AppCompatActivity {
 
         if (isLogin.equals("1") || isLogin.equals("2") ){
 
-            startActivity(new Intent(PinActivity.this, MainActivity.class));
+            startActivity(new Intent(PinActivity.this, NewActivity.class));
+//            startActivity(new Intent(PinActivity.this, MainActivity.class));
             finish();
         }
         else {
@@ -645,10 +646,7 @@ public class PinActivity extends AppCompatActivity {
 
                 } else {
 
-
                 }
-
-
             }
         });
 

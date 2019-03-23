@@ -604,6 +604,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (sharedPreferencesUtils.getWelcomeText().length() > 0) {
             printSTRING = printSTRING + "\n " + sharedPreferencesUtils.getWelcomeText();
+            Log.e("gone -- ",printSTRING);
+            Log.e("gone -- ",sharedPreferencesUtils.getWelcomeText());
         }
 
         printSTRING = printSTRING + "\n _WESTERN_JAIPUR_";
