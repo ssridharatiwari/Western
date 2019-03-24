@@ -1,9 +1,18 @@
 package com.milk.milkcollection.helper;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Handler;
+import android.support.annotation.RequiresApi;
+import android.util.Log;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.milk.milkcollection.Activity.MainActivity;
 
@@ -13,12 +22,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-/**
- * Created by Martin Forejt on 28.06.2017.
- * forejt.martin97@gmail.com
- */
 
 public class BluetoothPrinter {
 
@@ -34,6 +40,7 @@ public class BluetoothPrinter {
     private BluetoothDevice printer;
     private BluetoothSocket btSocket = null;
     private OutputStream btOutputStream = null;
+
 
     public BluetoothPrinter(BluetoothDevice printer) {
         this.printer = printer;
@@ -397,6 +404,171 @@ public class BluetoothPrinter {
     }
 
 
+
+    public BluetoothAdapter mBluetoothAdapter;
+    public BluetoothSocket mmSocket;
+    public BluetoothDevice mmDevice;
+    public OutputStream mmOutputStream;
+    public InputStream mmInputStream;
+    public Thread workerThread;
+    byte[] readBuffer;
+    int readBufferPosition;
+    int counter;
+    public boolean stopWorker;
+
+    public String inputString = "";
+
+    public void findBT() {
+
+
+
+        if ( mmInputStream!=null){
+            return;
+        }
+        stopWorker = true;
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(mBluetoothAdapter == null) {
+
+        }
+
+        if(!mBluetoothAdapter.isEnabled())
+        {
+            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            MainActivity.getInstace().startActivityForResult(enableBluetooth, 0);
+        }
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+        if(pairedDevices.size() > 0) {
+            for(BluetoothDevice device : pairedDevices) {
+                if(device.getName().equals(AppString.printername)) {
+                    mmDevice = device;
+                    Log.e("device name",mmDevice.getName());
+                    break;
+                }
+            }
+        }
+
+
+        try {
+            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID "0000110E-0000-1000-8000-00805F9B34FB"
+            mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+            mmSocket.connect();
+            mmOutputStream = mmSocket.getOutputStream();
+            mmInputStream = mmSocket.getInputStream();
+            readBufferPosition = 0;
+            readBuffer = new byte[1024];
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
+
+    public  String bluetoothString()  {
+
+        if (mmInputStream != null) {
+
+            int bufferSize=1024;
+            final byte[] buffer=new byte[bufferSize];
+            int bytress = 0;
+            try {
+                bytress = mmInputStream.read(buffer);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return  "0";
+            }
+            String readMessage = new String(buffer, 0, bytress);
+
+
+
+            inputString = new String(buffer, 0, bytress);
+            Log.e("input string",BluetoothPrinter.getInstace().inputString);
+            String mystring = BluetoothPrinter.getInstace().inputString;
+
+            if (mystring.length() > 8) {
+                mystring = mystring.substring((mystring.length()-8), mystring.length());
+                mystring = mystring.replace("$", "");
+                mystring = mystring.replace("L", "");
+                if(mystring.contains("-")){
+                    return  "0";
+                } else{
+                    return MainActivity.twoDecimal(mystring);
+                }
+            }
+        }
+
+        return  "0";
+    }
+
+
+
+    public void sendData(String text){
+
+        if (mmOutputStream == null){
+            findBT();
+        }
+
+        if (mmOutputStream != null){
+            text += "\n";
+            try {
+                mmOutputStream.write(text.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void findWeg() {
+
+
+
+        if ( mmInputStream!=null){
+            return;
+        }
+        stopWorker = true;
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(mBluetoothAdapter == null) {
+
+        }
+
+        if(!mBluetoothAdapter.isEnabled())
+        {
+            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            MainActivity.getInstace().startActivityForResult(enableBluetooth, 0);
+        }
+
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+        if(pairedDevices.size() > 0) {
+            for(BluetoothDevice device : pairedDevices) {
+                if(device.getName().equals(AppString.printername)) {
+                    mmDevice = device;
+                    Log.e("device name",mmDevice.getName());
+                    break;
+                }
+            }
+        }
+
+
+        try {
+            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID "0000110E-0000-1000-8000-00805F9B34FB"
+            mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+            mmSocket.connect();
+            mmOutputStream = mmSocket.getOutputStream();
+            mmInputStream = mmSocket.getInputStream();
+            readBufferPosition = 0;
+            readBuffer = new byte[1024];
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 }

@@ -69,7 +69,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
 	}
 
-	public void AddMilk(String memberCode, String weight, float rateliter, float amount, String mydate,
+	public void AddMilk(String memberCode, String weight, Float rateliter, float amount, String mydate,
                         String number, String sift, String fat, Float fat_wt, String snf, Float snt_wt,
                         String message, String printString, String dateSave) {
 

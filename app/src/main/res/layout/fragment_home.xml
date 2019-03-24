@@ -103,12 +103,26 @@
         <TextView
             android:text="@string/weight"
             android:gravity="center_vertical"
-            android:layout_weight="1"
+            android:layout_weight=".5"
             android:layout_marginLeft="18dp"
             android:textSize="20dp"
             android:layout_width="0dp"
 
             android:layout_height="40dp" />
+
+        <Button
+            android:layout_weight=".5"
+            android:id="@+id/btn_auto_manual"
+            android:text="Man"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textColor="@color/app_background"
+            android:layout_gravity="center"
+            android:background="@color/green"
+            android:layout_width="0dp"
+            android:layout_height="40dp" />
+
         <EditText
             android:layout_marginTop="2dp"
             android:id="@+id/weight"
@@ -233,9 +247,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="2dp" />
-
-
     </LinearLayout>
+
     <LinearLayout
         android:layout_weight=".9"
         android:gravity="center"

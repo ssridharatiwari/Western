@@ -16,7 +16,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -63,12 +62,9 @@ import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -80,13 +76,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static android.content.ContentValues.TAG;
-
 
 public class MainActivity extends AppCompatActivity {
 
     public  static String ruppe = "₹";
-    public  static String Version = "37";
+    public  static String Version = "40";
 
     private ArrayList<String> categories;
     private DrawerLayout mDrawerLayout;
@@ -163,8 +157,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
@@ -174,21 +166,16 @@ public class MainActivity extends AppCompatActivity {
         ) {
             @SuppressLint("RestrictedApi")
             public void onDrawerClosed(View view) {
-                // getSupportActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu();
             }
 
             @SuppressLint("RestrictedApi")
             public void onDrawerOpened(View drawerView) {
-                // getSupportActionBar().setTitle(mDrawerTitle);
                 toolbartitle.setText(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu();
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
-        //toolbartitle.setText("Milk Collection");
         mDrawerToggle.syncState();
 
         toolbariv_home.setOnClickListener(new View.OnClickListener() {
@@ -560,11 +547,14 @@ public class MainActivity extends AppCompatActivity {
             return Boolean.valueOf(result);
         }
 
+
+
         protected void onProgressUpdate(byte[]... values) {
             String toReceive = new String();
             String newText = "hellvcv fv";
             // String newText = new String();
             toReceive = "";
+
 
             //  newText = editReceive.getText().toString();
             /* if (checkHex.isChecked()) {
@@ -592,13 +582,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
-     public void print(String  string) {
+    public void print(String  string) {
         printMainMethod(string);
      }
-
 
     public void printMainMethod(String  printSTRING) {
 
@@ -608,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("gone -- ",sharedPreferencesUtils.getWelcomeText());
         }
 
-        printSTRING = printSTRING + "\n _WESTERN_JAIPUR_";
+        printSTRING = printSTRING + " _WESTERN_JAIPUR_ \n";
 
         // Log.e("Print String",printSTRING);
 
@@ -676,9 +662,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public  BluetoothAdapter btAdapter;
-    public  BluetoothDevice mBtDevice;
-    public  BluetoothPrinter myprinter;
     String printBy = "0";
     int BLU_ADMIN = 10;
     String data = "";
@@ -688,144 +671,11 @@ public class MainActivity extends AppCompatActivity {
         data = printStiring;
         showLoading("Printing");
 
-        if (myprinter != null  ) {
-            printByPrinter(printStiring);
-            return;
-        }
-
         final Handler handler = new Handler();
-        final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @SuppressLint("LongLogTag")
-            @Override
-            public void run() {
 
-//               // dismiss();
-
-                if (mBtDevice == null) {
-
-                    try {
-                            btAdapter = BluetoothAdapter.getDefaultAdapter();
-
-                            if (!btAdapter.isEnabled()) {
-                                btAdapter.enable();
-                                makeToast("Blutooth turning on");
-                                final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
-                                    @RequiresApi(api = Build.VERSION_CODES.M)
-                                    @SuppressLint("LongLogTag")
-                                    @Override
-                                    public void run() {
-                                        printFromBluthooth(data);
-                                    }
-                                }, 10);
-                                dismiss();
-                                return;
-                            }
-
-
-                            if (btAdapter.getBondedDevices().size() > 0) {
-                                for (BluetoothDevice device : btAdapter.getBondedDevices()) {
-                                    //Log.e("new connection stiring mobile", device.getName());
-                                    if (device.getName().equals(AppString.printername)) {
-                                        mBtDevice = device;
-                                    }
-                                }
-                            } else {
-                                instace.showAlert("WEG_Mobile Printer Not Availble");
-                                dismiss();
-                                return;
-                            }
-
-                        // Get first paired device
-                    } catch (Exception e) {
-                        instace.showAlert("Printer not conneted, \nEntry saved");
-                        dismiss();
-                        return;
-                    }
-
-   //               Log.e("new connection stiring mobile", mBtDevice.getName());
-
-                    if (mBtDevice == null) {
-                        instace.showAlert("WEG_Mobile Printer Not Availble");
-                        dismiss();
-                        return;
-                    }
-
-                    if (!mBtDevice.getName().equals(AppString.printername)) {
-                        instace.showAlert("WEG_Mobile Printer Not Availble");
-                        dismiss();
-                        return;
-                    }
-
-                    if (myprinter == null) {
-                        myprinter = new BluetoothPrinter(mBtDevice);
-                        printByPrinter(printStiring);
-                    }
-               }else{
-                    if (myprinter == null) {
-                        myprinter = new BluetoothPrinter(mBtDevice);
-                        printByPrinter(printStiring);
-                    }else{
-                        dismiss();
-                    }
-                }
-
-            }
-
-         }, 1);
-    }
-
-
-
-    public void printByPrinter( final String str){
-
+        BluetoothPrinter.getInstace().sendData(printStiring);
         dismiss();
-        if (myprinter.isConnected()) {
-            myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
-            myprinter.printText(str);
-            myprinter.addNewLine();
-            myprinter.addNewLine();
-            myprinter.finish();
-
-            Log.e("Already connected",myprinter.getDevice().getName());
-        } else {
-            Log.e("new connection stiring", str);
-            myprinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
-                @Override
-                public void onConnected() {
-
-                    myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
-                    myprinter.printText(str);
-                    myprinter.addNewLine();
-                    myprinter.addNewLine();
-                    myprinter.finish();
-
-                    Log.e("after connected",myprinter.getDevice().getName());
-                }
-
-                public void onFailed() {
-                    Log.d("BluetoothPrinter", "Conection failed");
-                }
-            });
-        }
-    }
-
-    public void printFromOtherApp(String string){
-
-        PackageManager pm = instace.getPackageManager();
-        try {
-            Intent waIntent = new Intent(Intent.ACTION_SEND);
-            waIntent.setType("text/plain");
-            PackageInfo info = pm.getPackageInfo("pe.diegoveloper.printerserverapp", PackageManager.GET_META_DATA);
-            waIntent.setPackage("pe.diegoveloper.printerserverapp");
-
-            waIntent.putExtra(Intent.EXTRA_TEXT, string );
-            getInstace().startActivity(Intent.createChooser(waIntent, "Share with"));
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(instace.getInstace(), "Please Install Printer Application", Toast.LENGTH_LONG).show();
-        }
+        return;
     }
 
 

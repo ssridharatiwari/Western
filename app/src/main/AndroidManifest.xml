@@ -40,6 +40,9 @@
         <activity
             android:name=".Activity.PinActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.New"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -56,9 +56,9 @@ public class DailyReportAdapter  extends ArrayAdapter<SingleEntry> {
             holder.txtSno.setText(String.valueOf(position+1)+ ".");
             holder.txtcode.setText(dailyReport.getCode());
             holder.txtweight.setText( MainActivity.twoDecimal(dailyReport.getWeight()) );
-            holder.txtfat.setText( MainActivity.oneDecimal(dailyReport.getfat())  );
-            holder.txtsnf.setText( MainActivity.oneDecimal(dailyReport.getSnf())  );
-            holder.txtrate.setText(MainActivity.oneDecimal(dailyReport.getRate()) );
+            holder.txtfat.setText( MainActivity.twoDecimal(dailyReport.getfat())  );
+            holder.txtsnf.setText( MainActivity.twoDecimal(dailyReport.getSnf())  );
+            holder.txtrate.setText(MainActivity.twoDecimal(dailyReport.getRate()) );
             holder.txtamount.setText( MainActivity.twoDecimal(dailyReport.getAmount()) );
         }
         return convertView;

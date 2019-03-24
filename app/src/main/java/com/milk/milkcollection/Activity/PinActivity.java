@@ -125,8 +125,8 @@ public class PinActivity extends AppCompatActivity {
 
         if (isLogin.equals("1") || isLogin.equals("2") ){
 
-            startActivity(new Intent(PinActivity.this, NewActivity.class));
-//            startActivity(new Intent(PinActivity.this, MainActivity.class));
+//            startActivity(new Intent(PinActivity.this, New.class));
+            startActivity(new Intent(PinActivity.this, MainActivity.class));
             finish();
         }
         else {
@@ -450,23 +450,27 @@ public class PinActivity extends AppCompatActivity {
                                     jsonObject = jsonObject.getJSONObject("details");
 
                                     String userStatus = jsonObject.getString("status").toString();
-
-                                    String userID = jsonObject.getString("id").toString();
-
-                                    if (userID != "") {
-                                        sharedPreferencesUtils.setUserId(userID);
-                                    }
                                     if (!userStatus.equals("")){
                                         setStatus(userStatus);
                                     }
 
+
+
                                     if (userStatus.equals("1")){
+
+                                        String userID = jsonObject.getString("id").toString();
+
+                                        if (userID != "") {
+                                            sharedPreferencesUtils.setUserId(userID);
+                                        }
+
+
                                         makeToast("Thank you : registration successful");
                                         settitle = jsonObject.getString("name").toString();
                                         mobile_string = jsonObject.getString("mobile").toString();
 
                                         String vname = jsonObject.getString("vname").toString();
-                                        String vid = jsonObject.getString("vid").toString();
+                                        String vid = jsonObject.getString("vender_id").toString();
                                         String vphone = jsonObject.getString("vphone").toString();
                                         setVender(vname,vphone,vid);
                                         startNewActivity();

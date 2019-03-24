@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,12 +35,7 @@ import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.SingleEntry;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -418,28 +412,12 @@ public class Fragment_SingleReport extends Fragment {
                         + MainActivity.twoDecimalFloatToString(weightsize)+" Kg" +"\nTotal Amt : "
                         + MainActivity.twoDecimalFloatToString(amountsize)+"Rs";
 
-//                for (int i = 0 ; i < tempArray.size(); i++ ){
-//
-//                    String string = "";
-//
-//                    if (i == 0) {
-//                        string =  titlename +  "\nMember Ladger\n"+memberNameReal + " " +  membername+"\nDT:"+startdate+" to DT:"+enddate+"\n" ;
-//                        string =  string +  MainActivity.lineBreak() + "Date   Qty  Fat  "+MainActivity.instace.rateString()+"  Amt".toUpperCase();
-//                    }
-//
-//                    String str = tempArray.get(i);
-//
-//                    if (i == (tempArray.size()-1)){
-//                        string = str+"\n" + MainActivity.lineBreak() + "Total Wgt : "
-//                                + MainActivity.twoDecimalFloatToString(weightsize)+" Kg" +"\nTotal Amt : "
-//                                + MainActivity.twoDecimalFloatToString(amountsize)+"Rs";
-//                    } else {
-//                        string = str;
-//                    }
-//
-//                    arrayPrints.add(string);
-//                    string = "";
-//                }
+
+
+
+
+
+
 
 
 
@@ -523,25 +501,27 @@ public class Fragment_SingleReport extends Fragment {
                     startActivity(sentIntent);
                 } else if (options[item].equals("Print Report")) {
 
-                    print(printString);
-//                  //  if (arrayPrints.size() > 1){
-//                        for (int i = 0 ; i < arrayPrints.size(); i++ ) {
-//
-//                            final String print = arrayPrints.get(i);
-//                            final Handler handler = new Handler();
-//                            handler.postDelayed(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    print(print);
-//                                }
-//
-//                            }, 10);
-//
-//
-//                        }
-//                    }else {
 
-////.///                      }
+
+                    String[] items = printString.split("\n");
+                    if (items.length > 25) {
+                        int index = 0;
+                        String data = "";
+
+                        for (String str : items){
+
+                            data = data + "\n" + str;
+                            if (index%25 == 0){
+                                print(data);
+                            }else{
+                                data = "";
+                            }
+
+                            index ++;
+                        }
+                    }else{
+                        print(printString);
+                    }
 
                 }
             }

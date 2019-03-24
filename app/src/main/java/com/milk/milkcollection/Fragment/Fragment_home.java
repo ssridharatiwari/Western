@@ -1,6 +1,7 @@
 package com.milk.milkcollection.Fragment;
 
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -11,6 +12,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +53,7 @@ import com.milk.milkcollection.SClient;
 import com.milk.milkcollection.application.AppApplication;
 import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.AppUrl;
+import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
@@ -58,8 +61,11 @@ import com.milk.milkcollection.myutility;
 import com.milk.milkcollection.retrofit.HttpServerBackend;
 import com.milk.milkcollection.retrofit.RestAdapter;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -90,30 +96,35 @@ import retrofit2.Response;
 
 import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
 import static com.milk.milkcollection.Activity.MainActivity.instace;
+import static com.milk.milkcollection.Activity.MainActivity.makeToast;
 import static java.lang.System.exit;
 
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class Fragment_home extends Fragment {
 
     ArrayAdapter<String> adapter;
-    Button btn_ratesave, btn_pss;
+    Button btn_ratesave, btn_pss,btn_auto_manual;
     LinearLayout createrate,todayDetailLL;
     EditText et_weight, et_fat, et_snf, et_code,rate;
     TextView  total, btnrate, btntotal, tv_datepicker, tv_code_holder,lbl_avgFat,
             lbl_avgSnf,lbl_wgt,lbl_amt,lbl_SeriolNo,lbl_snf_home,lbl_snf_avg,toolbartitle;
     String weight, fat, snf, code , myCode;
     String phone_number, message, sift, printString, titlename, mobile_self,comission;
-    float rateperltr;
+
     Spinner sp_shift;
     int  totalrs, tagCode;
     ProgressDialog dialog;
     MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
     SharedPreferencesUtils sharedPreferencesUtils;
 
+    Float rateMain = Float.valueOf((float) 0.0);
     Switch switchManual;
-    Boolean isSMSSemd = false,isPrint;
+    Boolean isSMSSemd = false,isPrint,isAuto=false;
+
+
 
     public Fragment_home() {
+
     }
 
     byte FONT_TYPE;
@@ -156,8 +167,10 @@ public class Fragment_home extends Fragment {
         total = (TextView) rootView.findViewById(R.id.total);
         btnrate = (TextView) rootView.findViewById(R.id.click_rate);
         btntotal = (TextView) rootView.findViewById(R.id.click_total);
+        btntotal = (TextView) rootView.findViewById(R.id.click_total);
         tv_datepicker = (TextView) rootView.findViewById(R.id.tv_date);
         btn_pss = (Button) rootView.findViewById(R.id.btn_pss);
+        btn_auto_manual = (Button) rootView.findViewById(R.id.btn_auto_manual);
 
 
         sp_shift = (Spinner) rootView.findViewById(R.id.sp_shift);
@@ -286,6 +299,7 @@ public class Fragment_home extends Fragment {
         });
 
 
+
         todayDetailLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -342,6 +356,26 @@ public class Fragment_home extends Fragment {
                 if (funSaveEntry() == true) {
 
                 }
+
+            }
+        });
+
+        btn_auto_manual.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
+                Log.e("isaut", String.valueOf(isAuto));
+                if (isAuto == false){
+                    startFindBt();
+                    btn_auto_manual.setBackgroundColor(R.color.green);
+                    btn_auto_manual.setText("Auto");
+                    isAuto = true;
+                }else {
+                    btn_auto_manual.setBackgroundColor(R.color.gray);
+                    btn_auto_manual.setText("Man");
+                    isAuto = false;
+                }
+                Log.e("isaut", String.valueOf(isAuto));
 
             }
         });
@@ -460,14 +494,21 @@ public class Fragment_home extends Fragment {
         snf = et_snf.getText().toString();
 
         String totalrupees = total.getText().toString();
-        String rateliter = rate.getText().toString();
 
-        if (rateliter.equals("00.00")) {
-            Toast.makeText(getActivity(), "Amount Not Found", Toast.LENGTH_LONG).show();
+        if(rateMain == 0) {
+            if (rate.getText().toString().length() > 0){
+                if (Float.parseFloat(rate.getText().toString()) > 0.0) {
+                    rateMain =  Float.parseFloat(rate.getText().toString());
+                }
+            }
+        }
+
+        if (rateMain == 0) {
+            Toast.makeText(getActivity(), "Rate Amount Not Found", Toast.LENGTH_LONG).show();
         } else if (weight.length() == 0)
             et_weight.setError("Weight is required!");
-        else if (Float.parseFloat(weight) >= 1000)
-            et_weight.setError("Weight limit 1 - 999");
+        else if (Float.parseFloat(weight) >= 10000)
+            et_weight.setError("Weight limit 1 - 9999");
         else if (fat.length() == 0)
             et_fat.setError("Fat is required!");
         else if (snf.length() == 0)
@@ -486,20 +527,21 @@ public class Fragment_home extends Fragment {
 
                     while (cursor.isAfterLast() == false) {
 
-                        Float rateperliter = Float.valueOf(rateliter);
+
                         Float currentweight = Float.parseFloat(weight);
                         Float currentfat = Float.parseFloat(fat);
                         Float currentsnf = Float.parseFloat(snf);
+
                         Float fat_wt = currentfat * currentweight;
                         Float snf_wt = currentsnf * currentweight;
+
                         phone_number = cursor.getString(3);
                         String member_name = (String)tv_code_holder.getText();
-                        Float totalamount = Float.parseFloat(totalrupees);
-                        DecimalFormat df = new DecimalFormat("#.##");
-                        fat = String.valueOf(df.format(Float.parseFloat(fat)));
-                        snf = String.valueOf(df.format(Float.parseFloat(snf)));
-                        weight = String.valueOf(df.format(Float.parseFloat(weight)));
 
+                        weight = MainActivity.twoDecimal(weight);
+                        fat = MainActivity.twoDecimal(fat);
+                        snf = MainActivity.twoDecimal(snf);
+                        Float totalamount = currentweight *  rateMain;
 
                         String strShipt = "Eve";
                         if (sift.equals("M")){
@@ -507,7 +549,7 @@ public class Fragment_home extends Fragment {
                         }
 
                         message = titlename + "\n" + "Date: " + date + "(" + strShipt + ")" + "\nCode: " + code + "-" + member_name +
-                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT " + rateperliter + " AMT= " + totalrupees + "";
+                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT " + rateMain + " AMT= " + totalrupees + "";
 
                         printString = "";
                         printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
@@ -516,7 +558,7 @@ public class Fragment_home extends Fragment {
                                 "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
                                 "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
                                 "\nFat: " + fat + "  "+MainActivity.instace.rateString()+": " + snf +
-                                "\nRate/Ltr: " + rateliter +
+                                "\nRate/Ltr: " + rateMain +
                                 "\nAmount:  Rs " + totalamount + "\n";
 
 
@@ -524,20 +566,16 @@ public class Fragment_home extends Fragment {
 
                         myCode = code;
 
-                        milkDBHelpers.AddMilk(code, df.format(Float.parseFloat(weight)), rateperliter,
+                        milkDBHelpers.AddMilk(code,weight, rateMain,
                                 totalamount, replaceDate,
                                 phone_number, sift, fat, fat_wt, snf, snf_wt, "", "", date);
 
-                        total.setText("Total Amount");
-                        rate.setText("");
-                        et_weight.setText("");
-                        et_fat.setText("");
-                        et_snf.setText("");
+
                         resetValue();
 
 
                         et_code.requestFocus();
-                        Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateperliter + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateMain + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
                         cursor.moveToNext();
 
                         getCurrentCollection();
@@ -633,6 +671,9 @@ public class Fragment_home extends Fragment {
             message = message + "\n" + "Com. Ttl(" + preDate +
                     " - " + endDate + ") :\n" +
                     "QTY=" + totalWeight + "\nAMT= " + totalAmount;
+
+
+            Log.e("printe  ",printString);
         }
 
 
@@ -670,11 +711,12 @@ public class Fragment_home extends Fragment {
 
     private void resetValue() {
 
+
+        rateMain = Float.valueOf(0);
         total.setText("Total Amount");
         rate.setText("");
         et_weight.setText("");
         et_fat.setText("");
-
         et_code.setText("");
 
         if (sharedPreferencesUtils.getDefaultSNF() > 0){
@@ -735,14 +777,13 @@ public class Fragment_home extends Fragment {
 
                             fat = MainActivity.oneDecimalString(fat);
                             snf = MainActivity.oneDecimalString(snf);
-                            rateperltr = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
+                            rateMain = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
 
-
-                            if (rateperltr == 0){
+                            if (rateMain == 0){
                                 Toast.makeText(getActivity(), "rate not found", Toast.LENGTH_LONG).show();
                             } else {
 
-                                rate.setText(String.valueOf(rateperltr));
+                                rate.setText(String.valueOf(rateMain));
                                 float totalRate = Float.parseFloat(rate.getText().toString()) * Float.parseFloat(weight);
                                 totalrs = (int) totalRate;
                                 total.setText( MainActivity.twoDecimalFloatToString(totalRate));
@@ -759,7 +800,6 @@ public class Fragment_home extends Fragment {
 
     public void getUserName() {
 
-        Log.e("getUserName", "getUserName");
         code = et_code.getText().toString();
 
         code = String.valueOf(Integer.valueOf(code));
@@ -781,6 +821,7 @@ public class Fragment_home extends Fragment {
                     String member_name = cursor.getString(1);
                     tv_code_holder.setText(cursor.getString(1));
                     tv_code_holder.setTextColor(getResources().getColor(R.color.colorAccent));
+
                     tagCode = 0;
                     cursor.moveToNext();
                 }
@@ -792,6 +833,35 @@ public class Fragment_home extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Enter Another Code", Toast.LENGTH_LONG).show();
         }
+    }
+
+    Boolean onceStarted = false;
+    void startFindBt() {
+
+        BluetoothPrinter.getInstace().findBT();
+        getBlutoothData();
+
+    }
+
+    void getBlutoothData(){
+
+        Log.e("my string","get");
+        Log.e("value", String.valueOf(isAuto));
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                String mystring = BluetoothPrinter.getInstace().bluetoothString();
+                Log.e("my string",mystring);
+                et_weight.setText(mystring);
+
+                if (isAuto == true ){
+                    getBlutoothData();
+                }
+            }
+        }, 500);
+
     }
 
 
@@ -884,7 +954,6 @@ public class Fragment_home extends Fragment {
 
                 }else{
 
-
                 }
             }
 
@@ -896,18 +965,6 @@ public class Fragment_home extends Fragment {
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -941,8 +998,8 @@ public class Fragment_home extends Fragment {
                             value++;
                             cursor.moveToNext();
                         }
-                        lbl_avgFat.setText( MainActivity.oneDecimalFloatToString(avgFat/wgt) );
-                        lbl_avgSnf.setText( MainActivity.oneDecimalFloatToString(avgSnf/wgt) );
+                        lbl_avgFat.setText( MainActivity.twoDecimalFloatToString(avgFat/wgt) );
+                        lbl_avgSnf.setText( MainActivity.twoDecimalFloatToString(avgSnf/wgt) );
                         lbl_wgt.setText( MainActivity.twoDecimalFloatToString(wgt) );
                         lbl_amt.setText( MainActivity.twoDecimalFloatToString(amt) );
                         lbl_SeriolNo.setText("Sr. No. " + value);
