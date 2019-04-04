@@ -636,7 +636,6 @@ public class MainActivity extends AppCompatActivity {
                     PackageManager pm = instace.getPackageManager();
                     try {
 
-
                         printSTRING = printSTRING + "\n";
                         Intent waIntent = new Intent(Intent.ACTION_SEND);
                         waIntent.setType("text/plain");
@@ -652,8 +651,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(instace.getInstace(), "Please Install POS Printer Application", Toast.LENGTH_LONG).show();
                     }
                 }
-
-
         }
     }
 

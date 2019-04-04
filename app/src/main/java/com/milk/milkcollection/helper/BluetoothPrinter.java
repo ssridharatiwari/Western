@@ -567,8 +567,9 @@ public class BluetoothPrinter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
+
 
 
 }

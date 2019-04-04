@@ -1,24 +1,19 @@
 package com.milk.milkcollection.Fragment;
-
-
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
-import android.telephony.SmsManager;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,71 +27,31 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonObject;
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Activity.PinActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
-import com.milk.milkcollection.SClient;
-import com.milk.milkcollection.application.AppApplication;
 import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.AppUrl;
-import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
-import com.milk.milkcollection.myutility;
-import com.milk.milkcollection.retrofit.HttpServerBackend;
-import com.milk.milkcollection.retrofit.RestAdapter;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.UnknownHostException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-
-import java.io.OutputStream;
-
-import android.bluetooth.BluetoothSocket;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Response;
-
 import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
 import static com.milk.milkcollection.Activity.MainActivity.instace;
-import static com.milk.milkcollection.Activity.MainActivity.makeToast;
 import static java.lang.System.exit;
 
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
@@ -127,9 +82,14 @@ public class Fragment_home extends Fragment {
 
     }
 
-    byte FONT_TYPE;
 
 
+    @SuppressLint("ValidFragment")
+    public Fragment_home(ArrayAdapter<String> adapter) {
+        this.adapter = adapter;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -360,13 +320,14 @@ public class Fragment_home extends Fragment {
             }
         });
 
+        btn_auto_manual.setVisibility(View.INVISIBLE);
         btn_auto_manual.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
                 Log.e("isaut", String.valueOf(isAuto));
                 if (isAuto == false){
-                    startFindBt();
+                    //startFindBt();
                     btn_auto_manual.setBackgroundColor(R.color.green);
                     btn_auto_manual.setText("Auto");
                     isAuto = true;
@@ -834,36 +795,36 @@ public class Fragment_home extends Fragment {
             Toast.makeText(getActivity(), "Enter Another Code", Toast.LENGTH_LONG).show();
         }
     }
-
-    Boolean onceStarted = false;
-    void startFindBt() {
-
-        BluetoothPrinter.getInstace().findBT();
-        getBlutoothData();
-
-    }
-
-    void getBlutoothData(){
-
-        Log.e("my string","get");
-        Log.e("value", String.valueOf(isAuto));
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                String mystring = BluetoothPrinter.getInstace().bluetoothString();
-                Log.e("my string",mystring);
-                et_weight.setText(mystring);
-
-                if (isAuto == true ){
-                    getBlutoothData();
-                }
-            }
-        }, 500);
-
-    }
-
+//
+//    Boolean onceStarted = false;
+//    void startFindBt() {
+//
+//        BluetoothPrinter.getInstace().findBT();
+//        getBlutoothData();
+//
+//    }
+//
+//    void getBlutoothData(){
+//
+//        Log.e("my string","get");
+//        Log.e("value", String.valueOf(isAuto));
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                String mystring = BluetoothPrinter.getInstace().bluetoothString();
+//                Log.e("my string",mystring);
+//                et_weight.setText(mystring);
+//
+//                if (isAuto == true ){
+//                    getBlutoothData();
+//                }
+//            }
+//        }, 500);
+//
+//    }
+//
 
 
     private String getTimeOne() {
@@ -1099,7 +1060,7 @@ public class Fragment_home extends Fragment {
     }
 
 
-    public void downloadFile() {
+    public void download() {
 
         if (!MainActivity.instace.isNetworkConnected()) {
             return;
@@ -1114,7 +1075,36 @@ public class Fragment_home extends Fragment {
         }
     }
 
+    int PERMISSION_REQUEST_CODE = 10;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void downloadFile(){
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED  || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[]{ android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_CODE);                }
+        else {
+            download();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_CODE){
+            if(grantResults[0]== PackageManager.PERMISSION_GRANTED)
+                download();
+        }else{
+            downloadFile();
+        }
+    }
     public static double roundToHalf(double d) {
         return Math.round(d * 2) / 2.0;
     }

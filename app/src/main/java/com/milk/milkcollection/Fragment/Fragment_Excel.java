@@ -283,9 +283,7 @@ public class Fragment_Excel extends Fragment {
                 }
                 intent.setType(mimeTypesStr.substring(0, mimeTypesStr.length() - 1));
             }
-
             startActivityForResult(Intent.createChooser(intent, "ChooseFile"), 0);
-
         }
     }
 
@@ -294,9 +292,6 @@ public class Fragment_Excel extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
 
         if( data != null) {
-
-            Log.e("request code ", String.valueOf(requestCode));
-
 
             final Uri uri = data.getData();
 
