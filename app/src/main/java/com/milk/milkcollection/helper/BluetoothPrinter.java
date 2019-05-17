@@ -414,96 +414,97 @@ public class BluetoothPrinter {
     byte[] readBuffer;
     int readBufferPosition;
     int counter;
-    public boolean stopWorker;
+
 
     public String inputString = "";
 
     public void findBT() {
 
+        if (mmDevice == null){
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            Log.e("hi","ji32423");
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                MainActivity.getInstace().startActivityForResult(enableBluetooth, 0);
+            }
 
+            Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
-        if ( mmInputStream!=null){
-            return;
-        }
-        stopWorker = true;
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if(mBluetoothAdapter == null) {
-
-        }
-
-        if(!mBluetoothAdapter.isEnabled())
-        {
-            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            MainActivity.getInstace().startActivityForResult(enableBluetooth, 0);
-        }
-
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-        if(pairedDevices.size() > 0) {
-            for(BluetoothDevice device : pairedDevices) {
-                if(device.getName().equals(AppString.printername)) {
-                    mmDevice = device;
-                    Log.e("device name",mmDevice.getName());
-                    break;
+            Log.e("bluetootsh detals", String.valueOf(pairedDevices));
+            if (pairedDevices.size() > 0) {
+                for (BluetoothDevice device : pairedDevices) {
+                    if (device.getName().equals(AppString.printername)) {
+                        mmDevice = device;
+                        Log.e("device name", mmDevice.getName());
+                        break;
+                    }
                 }
             }
+
+            try {
+                UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+                mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+                mmSocket.connect();
+                mmOutputStream = mmSocket.getOutputStream();
+                mmInputStream = mmSocket.getInputStream();
+                readBufferPosition = 0;
+                readBuffer = new byte[1024];
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-
-        try {
-            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID "0000110E-0000-1000-8000-00805F9B34FB"
-            mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
-            mmSocket.connect();
-            mmOutputStream = mmSocket.getOutputStream();
-            mmInputStream = mmSocket.getInputStream();
-            readBufferPosition = 0;
-            readBuffer = new byte[1024];
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
     }
+
 
 
 
 
     public  String bluetoothString()  {
 
+        Log.e("device name", mmDevice.getName());
         if (mmInputStream != null) {
 
             int bufferSize=1024;
             final byte[] buffer=new byte[bufferSize];
             int bytress = 0;
+
             try {
                 bytress = mmInputStream.read(buffer);
+                inputString = new String(buffer, 0, bytress);
+                Log.e("input string",BluetoothPrinter.getInstace().inputString);
+                String mystring = BluetoothPrinter.getInstace().inputString;
+
+
+                if (mystring.length() > 8) {
+                    mystring = mystring.substring((mystring.length()-8), mystring.length());
+                    mystring = mystring.replace("$", "");
+                    mystring = mystring.replace("L", "");
+                    if(mystring.contains("-")){
+                        return  "0";
+                    } else{
+
+                        if(!(mystring.indexOf(".") > -1 )){
+                            mystring = String.valueOf(Float.parseFloat(mystring) / 100);
+                        }
+
+                        if (Float.valueOf(mystring.toString()) < 0){
+                            return "0";
+                        }
+                        return MainActivity.twoDecimal(mystring);
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 return  "0";
-            }
-            String readMessage = new String(buffer, 0, bytress);
-
-
-
-            inputString = new String(buffer, 0, bytress);
-            Log.e("input string",BluetoothPrinter.getInstace().inputString);
-            String mystring = BluetoothPrinter.getInstace().inputString;
-
-            if (mystring.length() > 8) {
-                mystring = mystring.substring((mystring.length()-8), mystring.length());
-                mystring = mystring.replace("$", "");
-                mystring = mystring.replace("L", "");
-                if(mystring.contains("-")){
-                    return  "0";
-                } else{
-                    return MainActivity.twoDecimal(mystring);
-                }
             }
         }
 
         return  "0";
     }
+
+
+
 
 
 
@@ -526,11 +527,11 @@ public class BluetoothPrinter {
     public void findWeg() {
 
 
-
         if ( mmInputStream!=null){
             return;
         }
-        stopWorker = true;
+
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mBluetoothAdapter == null) {
 

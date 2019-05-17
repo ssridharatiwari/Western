@@ -119,9 +119,9 @@
             android:textAllCaps="false"
             android:textColor="@color/app_background"
             android:layout_gravity="center"
-            android:background="@color/green"
+            android:background="@color/gray"
             android:layout_width="0dp"
-            android:layout_height="40dp" />
+            android:layout_height="35dp" />
 
         <EditText
             android:layout_marginTop="2dp"

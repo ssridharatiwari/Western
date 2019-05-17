@@ -207,8 +207,6 @@ public class Fragment_Master extends Fragment {
                         File.separator + "MyData" +
                         File.separator);
 
-
-                //Log.e("Export", String.valueOf(sd));
                 boolean success = true;
                 if (!sd.exists()) {
                     success = sd.mkdir();

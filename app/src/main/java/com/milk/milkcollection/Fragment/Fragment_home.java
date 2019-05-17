@@ -42,6 +42,7 @@ import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.AppUrl;
+import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
@@ -320,21 +321,23 @@ public class Fragment_home extends Fragment {
             }
         });
 
-        btn_auto_manual.setVisibility(View.INVISIBLE);
+//        btn_auto_manual.setVisibility(View.INVISIBLE);
         btn_auto_manual.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
                 Log.e("isaut", String.valueOf(isAuto));
-                if (isAuto == false){
-                    //startFindBt();
+                if (MainActivity.getInstace().isAutoBt == false){
+
+                    MainActivity.getInstace().isAutoBt = true;
+                    startFindBt();
                     btn_auto_manual.setBackgroundColor(R.color.green);
                     btn_auto_manual.setText("Auto");
-                    isAuto = true;
+
                 }else {
                     btn_auto_manual.setBackgroundColor(R.color.gray);
                     btn_auto_manual.setText("Man");
-                    isAuto = false;
+                    MainActivity.getInstace().isAutoBt = false;
                 }
                 Log.e("isaut", String.valueOf(isAuto));
 
@@ -348,8 +351,6 @@ public class Fragment_home extends Fragment {
         verifyDetailApi();
         checkDefaultSnf();
         downloadFile();
-
-
 
 
         return rootView;
@@ -795,36 +796,34 @@ public class Fragment_home extends Fragment {
             Toast.makeText(getActivity(), "Enter Another Code", Toast.LENGTH_LONG).show();
         }
     }
-//
-//    Boolean onceStarted = false;
-//    void startFindBt() {
-//
-//        BluetoothPrinter.getInstace().findBT();
-//        getBlutoothData();
-//
-//    }
-//
-//    void getBlutoothData(){
-//
-//        Log.e("my string","get");
-//        Log.e("value", String.valueOf(isAuto));
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                String mystring = BluetoothPrinter.getInstace().bluetoothString();
-//                Log.e("my string",mystring);
-//                et_weight.setText(mystring);
-//
-//                if (isAuto == true ){
-//                    getBlutoothData();
-//                }
-//            }
-//        }, 500);
-//
-//    }
-//
+
+
+    void startFindBt() {
+        BluetoothPrinter.getInstace().findBT();
+        getBlutoothData();
+
+    }
+
+    void getBlutoothData(){
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                String mystring = BluetoothPrinter.getInstace().bluetoothString();
+                Log.e("my string",mystring);
+                et_weight.setText(mystring);
+
+                if (MainActivity.getInstace().isAutoBt == true ){
+                    getBlutoothData();
+                }
+
+            }
+        }, 500);
+
+    }
+
 
 
     private String getTimeOne() {

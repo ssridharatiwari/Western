@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     FSSession fsSession;
 
 
-    NetworkTask networktask;
+
     public static InputStream nis;
     public static OutputStream nos;
     public static Socket nsocket = new Socket();
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     public SharedPreferencesUtils sharedPreferencesUtils;
     public MilkDBHelpers milkDBHelpers;
 
-
+    public boolean isAutoBt;
     public static MainActivity instace;
 
     public static MainActivity getInstace(){
@@ -381,206 +381,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void stopSocket()  {
-        try {
-            if (nsocket.isConnected()) {
-
-                nis.close();
-                nos.close();
-                nsocket.close();
-
-            } else {
-                // Log.e(" is ", "No Connected");
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-
-
-
-    public void runConnection() {
-
-        try {
-            sockaddr = new InetSocketAddress("192.168.4.1", 80);
-            nsocket = new Socket();
-            networktask = new NetworkTask();
-            networktask.execute(new Void[0]);
-            synchronized (nsocket) {
-                nsocket.wait(1000000);
-            }
-            if (nsocket.isConnected()) {
-
-            } else {
-                // Log.e(" is ", "No Connected");
-            }
-        } catch (Exception e) {
-
-            e.getStackTrace();
-        }
-    }
-
-
-
-    private class ClientThread implements Runnable {
-
-        @Override
-        public void run() {
-
-            try {
-                sockaddr = new InetSocketAddress("192.168.4.1", 80);
-                nsocket = new Socket();
-                networktask = new NetworkTask();
-                networktask.execute(new Void[0]);
-                synchronized (nsocket) {
-                    nsocket.wait(10000);
-                }
-                if (nsocket.isConnected()) {
-
-                    Log.e(" is ", " Connected");
-
-                } else {
-                    Log.e(" is ", "No Connected");
-                }
-            } catch (Exception e) {
-
-                e.getStackTrace();
-
-
-                try {
-                    nis.close();
-                    nos.close();
-                    nsocket.close();
-                } catch (IOException e2) {
-                } catch (Exception e3) {
-                }
-            }
-        }
-
-    }
-
-    private class NetworkTask extends AsyncTask<Void, byte[], Boolean> {
-        protected void onPreExecute() {
-        }
-
-        protected Boolean doInBackground(Void... params) {
-            boolean result = false;
-            try {
-                nsocket.connect(sockaddr, 1000);
-                synchronized (nsocket) {
-                    nsocket.notify();
-                }
-                if (nsocket.isConnected()) {
-                    nis = nsocket.getInputStream();
-                    nos = nsocket.getOutputStream();
-                    byte[] buffer = new byte[4096];
-                    int read = nis.read(buffer, 0, 4096);
-                    while (read != -1) {
-                        System.arraycopy(buffer, 0, new byte[read], 0, read);
-                        publishProgress(new byte[][]{});
-                        //   publishProgress(new byte[][]{tempdata});
-                        read = nis.read(buffer, 0, 4096);
-                    }
-                }
-                synchronized (nsocket) {
-                    nsocket.notify();
-                }
-                try {
-                    nis.close();
-                    nos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            } catch (IOException e3) {
-                try {
-                    e3.printStackTrace();
-                    synchronized (nsocket) {
-                        nsocket.notify();
-                        result = true;
-                        synchronized (nsocket) {
-                            nsocket.notify();
-                            try {
-                                nis.close();
-                                nos.close();
-                            } catch (IOException e32) {
-                                e32.printStackTrace();
-                            } catch (Exception e22) {
-                                e22.printStackTrace();
-                            }
-                        }
-                    }
-                } catch (Throwable th) {
-                    synchronized (nsocket) {
-                        nsocket.notify();
-                        try {
-                            nis.close();
-                            nos.close();
-                        } catch (IOException e322) {
-                            e322.printStackTrace();
-                        } catch (Exception e222) {
-                            e222.printStackTrace();
-                        }
-                    }
-                }
-            } catch (Exception e2222) {
-                e2222.printStackTrace();
-                synchronized (nsocket) {
-                    nsocket.notify();
-                    result = true;
-                    synchronized (nsocket) {
-                        nsocket.notify();
-                        try {
-                            nis.close();
-                            nos.close();
-                        } catch (Exception e22222) {
-                            e22222.printStackTrace();
-                        }
-                    }
-                }
-            }
-            return Boolean.valueOf(result);
-        }
-
-
-
-        protected void onProgressUpdate(byte[]... values) {
-            String toReceive = new String();
-            String newText = "hellvcv fv";
-            // String newText = new String();
-            toReceive = "";
-
-
-            //  newText = editReceive.getText().toString();
-            /* if (checkHex.isChecked()) {
-                try {
-                    toReceive = myutility.convertStringToHex(new String(values[0], "ISO-8859-1"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    toReceive = new String(values[0], "ISO-8859-1");
-                } catch (UnsupportedEncodingException e2) {
-                    e2.printStackTrace();
-                }
-            }*/
-
-            if (values.length > 0) {
-                String toReceives = new StringBuilder(String.valueOf(newText)).append(toReceive).toString();
-                Log.e(" hello this is one ", toReceives);
-            }
-        }
-
-        protected void onCancelled() {
-        }
-    }
-
 
     public void print(String  string) {
         printMainMethod(string);
@@ -607,26 +407,7 @@ public class MainActivity extends AppCompatActivity {
 
              if (printBy.equals("wifi")) {
 
-                    try {
-                        nos = nsocket.getOutputStream();
-                        nos.write(printSTRING.getBytes("UTF-8"));
-                        nos.write("\n\n\n".getBytes("UTF-8"));
-                    } catch (Exception e) {
 
-                        // MainActivity.instace.runConnection();
-
-                        try {
-                            nos = nsocket.getOutputStream();
-                            nos.write(printSTRING.getBytes("UTF-8"));
-                            nos.write("\n\n\n".getBytes("UTF-8"));
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-
-
-                        // Toast.makeText(instace.getInstace(), "Print failed, please try again.", Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
 
                 } else if (printBy.equals("blutooth")) {
 
