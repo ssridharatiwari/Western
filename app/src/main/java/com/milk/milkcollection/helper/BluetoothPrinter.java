@@ -571,6 +571,37 @@ public class BluetoothPrinter {
     }
 
 
+    public void printFromBluthooth(final String printStiring){
+
+        data = printStiring;
+        showLoading("Printing");
+
+        if (myprinter != null  ) {
+            printByPrinter(printStiring);
+            return;
+        }
+
+        final Handler handler = new Handler();
+        final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @SuppressLint("LongLogTag")
+            @Override
+            public void run() {
+
+//               // dismiss();
+
+                if (mmDevice == null) {
+                   findBT();
+                }else{
+
+                }
+
+            }
+
+        }, 1);
+    }
+
+
 
 
 }
