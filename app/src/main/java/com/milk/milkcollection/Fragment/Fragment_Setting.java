@@ -114,20 +114,20 @@ public class Fragment_Setting extends Fragment {
                                     switch (which) {
                                         case 0:
 
-                                            MainActivity.getInstace().stopSocket();
+//                                            MainActivity.getInstace().stopSocket();
                                             sharedPreferencesUtils.printBy("blutooth");
                                             updateData();
 
                                             break;
                                         case 1:
                                             if (!printBefore.equals("wifi")){
-                                                MainActivity.getInstace().runConnection();
+//                                                MainActivity.getInstace().runConnection();
                                                 sharedPreferencesUtils.printBy("wifi");
                                                 updateData();
                                             }
                                             break;
                                         case 2:
-                                            MainActivity.getInstace().stopSocket();
+//                                            MainActivity.getInstace().stopSocket();
                                             sharedPreferencesUtils.printBy("pos");
                                             updateData();
                                             break;

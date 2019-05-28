@@ -394,9 +394,10 @@ public class MainActivity extends AppCompatActivity {
             Log.e("gone -- ",sharedPreferencesUtils.getWelcomeText());
         }
 
+
         printSTRING = printSTRING + " _WESTERN_JAIPUR_ \n";
 
-        // Log.e("Print String",printSTRING);
+        Log.e("Print String",printSTRING);
 
         if (printSTRING.length() > 0) {
 

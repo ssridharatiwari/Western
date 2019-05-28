@@ -509,20 +509,29 @@ public class BluetoothPrinter {
 
 
     public void sendData(String text){
+        printFromBluthooth(text);
 
-        if (mmOutputStream == null){
-            findBT();
-        }
+        Log.e("text",text);
 
-        if (mmOutputStream != null){
-            text += "\n";
-            try {
-                mmOutputStream.write(text.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (mmOutputStream == null){
+//            findBT();
+//        }
+//
+//        if (mmOutputStream != null){
+//            text += "\n";
+//            try {
+//                mmOutputStream.write(text.getBytes());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
+
+
+    public  BluetoothAdapter btAdapter;
+    public  BluetoothDevice mBtDevice;
+    public  BluetoothPrinter myprinter;
+    String data = "";
 
     public void findWeg() {
 
@@ -574,34 +583,76 @@ public class BluetoothPrinter {
     public void printFromBluthooth(final String printStiring){
 
         data = printStiring;
-        showLoading("Printing");
 
         if (myprinter != null  ) {
             printByPrinter(printStiring);
             return;
         }
 
-        final Handler handler = new Handler();
-        final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @SuppressLint("LongLogTag")
-            @Override
-            public void run() {
+        if (mmDevice == null) {
+            findBT();
+        }
+        myprinter = new BluetoothPrinter(mmDevice);
+        printByPrinter(printStiring);
 
-//               // dismiss();
-
-                if (mmDevice == null) {
-                   findBT();
-                }else{
-
-                }
-
-            }
-
-        }, 1);
+//        final Handler handler = new Handler();
+//        final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
+//            @RequiresApi(api = Build.VERSION_CODES.M)
+//            @SuppressLint("LongLogTag")
+//            @Override
+//            public void run() {
+//
+//
+//
+//                if (mmDevice == null) {
+//                   findBT();
+//                }else{
+//
+//                }
+//                myprinter = new BluetoothPrinter(mBtDevice);
+//                printByPrinter(printStiring);
+//            }
+//
+//        }, 1);
     }
 
 
+
+
+
+
+    public void printByPrinter( final String str){
+
+
+        if (myprinter.isConnected()) {
+            myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
+            myprinter.printText(str);
+//            myprinter.addNewLine();
+//            myprinter.addNewLine();
+            myprinter.finish();
+
+            Log.e("Already connected",myprinter.getDevice().getName());
+        } else {
+            Log.e("new connection stiring", str);
+            myprinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
+                @Override
+                public void onConnected() {
+
+                    myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
+                    myprinter.printText(str);
+                    myprinter.addNewLine();
+                    myprinter.addNewLine();
+                    myprinter.finish();
+
+                    Log.e("after connected",myprinter.getDevice().getName());
+                }
+
+                public void onFailed() {
+                    Log.d("BluetoothPrinter", "Conection failed");
+                }
+            });
+        }
+    }
 
 
 }

@@ -501,27 +501,27 @@ public class Fragment_SingleReport extends Fragment {
                     startActivity(sentIntent);
                 } else if (options[item].equals("Print Report")) {
 
+                    print(printString);
 
-
-                    String[] items = printString.split("\n");
-                    if (items.length > 25) {
-                        int index = 0;
-                        String data = "";
-
-                        for (String str : items){
-
-                            data = data + "\n" + str;
-                            if (index%25 == 0){
-                                print(data);
-                            }else{
-                                data = "";
-                            }
-
-                            index ++;
-                        }
-                    }else{
-                        print(printString);
-                    }
+//                    String[] items = printString.split("\n");
+//                    if (items.length > 25) {
+//                        int index = 0;
+//                        String data = "";
+//
+//                        for (String str : items){
+//
+//                            data = data + "\n" + str;
+//                            if (index%25 == 0){
+//                                print(data);
+//                            }else{
+//                                data = "";
+//                            }
+//
+//                            index ++;
+//                        }
+//                    }else{
+//                        print(printString);
+//                    }
 
                 }
             }

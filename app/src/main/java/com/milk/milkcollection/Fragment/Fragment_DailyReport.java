@@ -439,7 +439,7 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
 
 
     private void shareDialog() {
-        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Report","Print Summery"};
+        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Summery"};
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Send Report");
         adb.setItems(options, new DialogInterface.OnClickListener() {
@@ -482,16 +482,16 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
                     sentIntent.setType("text/plain");
                     startActivity(sentIntent);
                 }
-                else if (options[item].equals("Print Report")) {
-
+                else if (options[item].equals("Print Summery")) {
                   print(message);
                 }
-                else if (options[item].equals("Print Report")) {
-                    if (DailyReportList.size()>0) {
-                        print(getSummery());
-                    }
-
-                }
+//                else if (options[item].equals("Print Report")) {
+//
+//                    if (DailyReportList.size()>0) {
+//                        print(getSummery());
+//                    }
+//
+//                }
             }
         });
         adb.show();
