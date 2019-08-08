@@ -465,11 +465,12 @@ public class BluetoothPrinter {
         Log.e("device name", mmDevice.getName());
         if (mmInputStream != null) {
 
-            int bufferSize=1024;
-            final byte[] buffer=new byte[bufferSize];
-            int bytress = 0;
-
             try {
+
+                int bufferSize=1024;
+                final byte[] buffer=new byte[bufferSize];
+                int bytress = 0;
+
                 bytress = mmInputStream.read(buffer);
                 inputString = new String(buffer, 0, bytress);
                 Log.e("input string",BluetoothPrinter.getInstace().inputString);
@@ -488,7 +489,7 @@ public class BluetoothPrinter {
                             mystring = String.valueOf(Float.parseFloat(mystring) / 100);
                         }
 
-                        if (Float.valueOf(mystring.toString()) < 0){
+                        if (Float.valueOf(mystring.toString()) < 0) {
                             return "0";
                         }
                         return MainActivity.twoDecimal(mystring);

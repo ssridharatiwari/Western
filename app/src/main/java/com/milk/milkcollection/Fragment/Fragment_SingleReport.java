@@ -406,9 +406,8 @@ public class Fragment_SingleReport extends Fragment {
                 String titlename = sharedPreferencesUtils.getTitle();
 
                 printString =  titlename +  "\nMember Ladger\n"+memberNameReal + " " +  membername+"\nDT:"+startdate+" to DT:"+enddate+"\n" ;
-                printString =  printString +  MainActivity.lineBreak() + "Date   Qty  Fat  "+MainActivity.instace.rateString()+"  Amt".toUpperCase();
-
-                printString = alldata + "\n" + MainActivity.lineBreak() + "Total Wgt : "
+                printString = printString +  MainActivity.lineBreak() + "Date   Qty  Fat  "+MainActivity.instace.rateString()+"  Amt".toUpperCase();
+                printString = printString + "\n" + alldata + "\n" + MainActivity.lineBreak() + "Total Wgt : "
                         + MainActivity.twoDecimalFloatToString(weightsize)+" Kg" +"\nTotal Amt : "
                         + MainActivity.twoDecimalFloatToString(amountsize)+"Rs";
 

@@ -144,6 +144,10 @@ public class Fragment_home extends Fragment {
         mobile_self = sharedPreferencesUtils.getMobile();
         toolbartitle.setText(titlename);
 
+
+
+        verifyDetailApi();
+
         et_snf.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -345,10 +349,11 @@ public class Fragment_home extends Fragment {
         });
 
 
+
         getCurrentCollection();
         setTextsAccordingRate();
 
-        verifyDetailApi();
+
         checkDefaultSnf();
         downloadFile();
 
@@ -989,10 +994,10 @@ public class Fragment_home extends Fragment {
         if (MainActivity.getInstace().userID().toString().length() == 0 && MainActivity.getInstace().userID().toString().equals("0")) {
             exit(0);
         }
-
+        Log.e("user-",MainActivity.getInstace().userID().toString());
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = AppUrl.mainUrl + "uid=" + MainActivity.instace.userID() + "&action=6&android_id=10" + PinActivity.getInstace().AndroidID;
+        String url = AppUrl.mainUrl + "uid=" + MainActivity.instace.userID() + "&action=6&android_id=" + PinActivity.getInstace().AndroidID;
 
         Log.e("final ulr", url);
 
@@ -1000,6 +1005,7 @@ public class Fragment_home extends Fragment {
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+
 
                         try {
                             Log.e("resonce", response);
