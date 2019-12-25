@@ -382,22 +382,64 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     public void print(String  string) {
-        printMainMethod(string);
+
+
+        instace.printMainMethod(string);
+//        String[] items  = string.split("\n");
+//        if ( items.length>25){
+//
+//            final ArrayList<String> mylist = new ArrayList<String>();
+//            String check = "";
+//            for (int i = 0; i < items.length; i++) {
+//                check = check + "\n" + items[i];
+//                if (i%25==0){
+//                    mylist.add(check);
+//                    check = "";
+//                }
+//            }
+//
+//            mylist.add(check);
+//            recursiveMethod(0,mylist);
+//
+//        }else{
+//            instace.printMainMethod(string);
+//        }
+
      }
+
+    public void recursiveMethod(final int count, final ArrayList mylist){
+
+         Handler handler = new Handler();
+         final int finalI = count;
+         if (count < mylist.size()){
+             handler.postDelayed(new Runnable() {
+                 @Override
+                 public void run() {
+
+                     String toPrint = (String) mylist.get(finalI);
+                     if (finalI==mylist.size()-1){
+                         toPrint = toPrint + " _WESTERN_JAIPUR_ \n";
+                     }
+                     instace.printMainMethod(toPrint);
+                     recursiveMethod(count+1,mylist);
+                 }
+             }, 1000);
+         }
+
+
+     }
+
 
     public void printMainMethod(String  printSTRING) {
 
         if (sharedPreferencesUtils.getWelcomeText().length() > 0) {
             printSTRING = printSTRING + "\n " + sharedPreferencesUtils.getWelcomeText();
-            Log.e("gone -- ",printSTRING);
-            Log.e("gone -- ",sharedPreferencesUtils.getWelcomeText());
+//            Log.e("gone -- ",printSTRING);
+//            Log.e("gone -- ",sharedPreferencesUtils.getWelcomeText());
         }
-
-
-        printSTRING = printSTRING + " _WESTERN_JAIPUR_ \n";
-
-        Log.e("Print String",printSTRING);
 
         if (printSTRING.length() > 0) {
 
@@ -435,9 +477,6 @@ public class MainActivity extends AppCompatActivity {
                 }
         }
     }
-
-
-
 
 
 

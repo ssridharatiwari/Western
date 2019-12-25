@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -48,6 +49,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.IllegalFormatCodePointException;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 import static com.milk.milkcollection.Activity.MainActivity.instace;
@@ -518,6 +520,7 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
 
 
     private void print(String printString){
+
         MainActivity.getInstace().print(printString);
     }
 
