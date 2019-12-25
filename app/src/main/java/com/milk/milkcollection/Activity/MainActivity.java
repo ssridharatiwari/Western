@@ -80,7 +80,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     public  static String ruppe = "₹";
-    public  static String Version = "41.0";
+    public  static String Version = "42.0";
 
     private ArrayList<String> categories;
     private DrawerLayout mDrawerLayout;
@@ -385,7 +385,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void print(String  string) {
-
 
         instace.printMainMethod(string);
 //        String[] items  = string.split("\n");

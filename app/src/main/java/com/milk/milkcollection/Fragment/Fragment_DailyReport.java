@@ -520,7 +520,6 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
 
 
     private void print(String printString){
-
         MainActivity.getInstace().print(printString);
     }
 
