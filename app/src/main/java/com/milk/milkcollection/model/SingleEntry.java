@@ -1,5 +1,7 @@
 package com.milk.milkcollection.model;
 
+import android.util.Log;
+
 import com.milk.milkcollection.Activity.MainActivity;
 
 public class SingleEntry {
@@ -108,8 +110,9 @@ public class SingleEntry {
 
     public String getSMS() {
 
-        String  message =   MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Date: " + date + "(" + sift + ")" + "\nCode: " + code +
-                "\nQTY=" + weight +  "\nRT " + rate + " AMT= " + amount ;
+        String  message =   MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Dt:" + date + "(" + sift + ")" +
+                "\nQT=" + weight +  "\nRT=" + rate + " AMT=" + amount ;
+
         return message;
     };
 

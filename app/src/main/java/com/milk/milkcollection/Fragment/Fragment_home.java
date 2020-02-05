@@ -515,8 +515,8 @@ public class Fragment_home extends Fragment {
                             strShipt = "Mor";
                         }
 
-                        message = titlename + "\n" + "Date: " + date + "(" + strShipt + ")" + "\nCode: " + code + "-" + member_name +
-                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT " + rateMain + " AMT= " + totalrupees + "";
+                        message = titlename + "\n" + "DT: " + date + "(" + strShipt + ")"  +
+                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT=" + rateMain + " AMT=" + totalrupees + "";
 
                         printString = "";
                         printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
