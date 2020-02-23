@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -48,7 +50,7 @@ public class FragmentPaymentReport extends Fragment {
     private Button startDateView,endDateView,btnsearch;
     private TextView searchweight,searchamount;
     ImageView iv_share;
-    String message="",membername="All";
+    String message="",membername="All",totalSummery="";
     int reportId;
     ArrayList<Integer> id_arrayList = new ArrayList<>();
     ArrayList<String>member_arrayList = new ArrayList<String>();
@@ -63,6 +65,7 @@ public class FragmentPaymentReport extends Fragment {
     private ArrayList<String>member_name;
     public TextView toolbartitle;
 
+    private AutoCompleteTextView acFrom,acTo;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,13 +79,14 @@ public class FragmentPaymentReport extends Fragment {
         toolbartitle = (TextView)getActivity().findViewById(R.id.titletool);
         toolbartitle.setText(getResources().getString(R.string.payment_report_text));
 
-///   --- Set Current date in date text Views
-
         MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
         startDateView.setText(AppString.getCurrentDate());
         endDateView.setText(AppString.getCurrentDate());
 
+        acFrom = (AutoCompleteTextView)  rootView.findViewById(R.id.codeFrom);
+        acTo = (AutoCompleteTextView)  rootView.findViewById(R.id.codeTo);
 
+        setAcData();
         iv_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,8 +112,6 @@ public class FragmentPaymentReport extends Fragment {
                 SearchSqlData();
                 Log.e("=-m-m-m--=", " " + GetAllData_arrayList);
                 sortByAtoZ(singleReportList, true, paymentReportAdapter, R.layout.listviewmember, savedmilk_listview);
-                //ArrayList<SingleReportAdapter>si = new SingleReportAdapter(getActivity(), R.layout.listviewmember, singleReportList)
-
             }
         });
 
@@ -146,20 +148,11 @@ public class FragmentPaymentReport extends Fragment {
                 alertBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-//                        Log.e("-=-=-ddd=-=", "ddddd");
-//                        milkDBHelpers.deleteReport(reportId);
-//                        paymentReportAdapter.remove((paymentReportAdapter.getItem(position)));
-//                        paymentReportAdapter.notifyDataSetChanged();\
+
                         dialog.cancel();
                     }
                 });
-//                alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.cancel();
-//                    }
-//                });
+
                 final AlertDialog alertDialog = alertBuilder.create();
                 alertDialog.show();
                 return true;
@@ -168,7 +161,28 @@ public class FragmentPaymentReport extends Fragment {
         return rootView;
     }
 
+    void setAcData(){
+
+
+        ArrayList<String> arryMebers = MainActivity.getInstace().milkDBHelpers.memberCodeAutoComplet();
+
+        if (arryMebers.size()> 0){
+            ArrayAdapter<String> adapter;
+            adapter = new ArrayAdapter<String>
+                    (getActivity(),android.R.layout.simple_list_item_1,arryMebers);
+            acFrom.setAdapter(adapter);
+            acTo.setAdapter(adapter);
+
+            acFrom.setText(arryMebers.get(0));
+            acTo.setText(arryMebers.get(arryMebers.size()-1));
+        }
+
+    }
+
+
     public void SearchSqlData(){
+
+
         id_arrayList.clear();
         member_arrayList.clear();
         weight_arrayList.clear();
@@ -177,9 +191,9 @@ public class FragmentPaymentReport extends Fragment {
         String startdate = startDateView.getText().toString();
         String enddate = endDateView.getText().toString();
         String startDate = startdate.replace("/", "");
-        Log.e("-=-=start date--=", startDate + " ;" + startdate);
+//        Log.e("-=-=start date--=", startDate + " ;" + startdate);
         String endDate = enddate.replace("/","");
-        Log.e("-=-=end date--=", endDate + " ;" + enddate);
+//        Log.e("-=-=end date--=", endDate + " ;" + enddate);
 
         message = startdate +"  to  "+enddate+"\n*******************************\nCode  Weight  Amount   Name";
 
@@ -199,84 +213,62 @@ public class FragmentPaymentReport extends Fragment {
             MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
             Cursor cursor;
-            memberCodeArrayList = new ArrayList<String>();
-            memberCodeArrayList = milkDBHelpers.searchMemberCode();
-            member_name= new ArrayList<>();
-            member_name= milkDBHelpers.SearchName();
-            float weightSize = 0,totalWeight = 0;
-            float amountSize = 0,totalAmount = 0;
+
+            float totalWeight = 0;
+            float totalAmount = 0;
             String memberCode="";
             DecimalFormat df = new DecimalFormat("#.##");
 
-            if(memberCodeArrayList.size()>0){
+            String query = "SELECT m.membername,m.membercode,SUM(ma.milkweight) as wgt,SUM(ma.totalamount) as amt FROM 'milk_amount' ma LEFT JOIN 'member' m ON m.membercode=ma.memberCode WHERE ma.date >= '" + startDate + "' AND ma.date <= '" + endDate + "' AND ma.memberCode >= '" + acFrom.getText().toString() + "' AND ma.memberCode <= '" + acTo.getText().toString() + "' GROUP BY ma.memberCode";
+            Log.e("qurry --",query);
+            cursor = sqLiteDatabase.rawQuery(query, null);
 
-                for(int i=0; i < memberCodeArrayList.size();i++)
-                {
-                    weightSize = weightSize*0;
-                    amountSize = amountSize*0;
-                    memberCode = memberCodeArrayList.get(i).toString();
-                    String name= member_name.get(i).toString();
+            if (cursor != null && cursor.moveToFirst()) {
 
-                    weight_arrayList.clear();
-                    totalamount_arrayList.clear();
+                while (cursor.isAfterLast() == false) {
 
-                    cursor = sqLiteDatabase.rawQuery("SELECT * FROM 'milk_amount' WHERE memberCode = '" + memberCodeArrayList.get(i).toString() + "' and date >= '" + startDate + "' and date <= '" + endDate + "'", null);
-                    if (cursor != null && cursor.moveToFirst()) {
-                        while (cursor.isAfterLast() == false) {
+                    String name =  cursor.getString(cursor.getColumnIndex("membername"));
+                    String code =  cursor.getString(cursor.getColumnIndex("membercode"));
+                    Float weight =  cursor.getFloat(cursor.getColumnIndex("wgt"));
+                    Float amount =  cursor.getFloat(cursor.getColumnIndex("amt"));
 
-                            weight_arrayList.add(cursor.getFloat(cursor.getColumnIndex("milkweight")));
-                            totalamount_arrayList.add(cursor.getFloat(cursor.getColumnIndex("totalamount")));
-                            cursor.moveToNext();
+                    totalWeight = totalWeight +  weight;
+                    totalAmount = totalAmount +  amount;
+
+                    PaymentReport paymentReport = new PaymentReport();
+                    paymentReport.setCode(code);
+                    paymentReport.setName(name);
+                    paymentReport.setWeight(MainActivity.twoDecimalFloatToString(weight));
+                    paymentReport.setAmount(MainActivity.twoDecimalFloatToString(amount));
+                    singleReportList.add(paymentReport);
 
 
+                    String wt = String.valueOf(MainActivity.twoDecimalFloatToString(weight)) ,
+                            amt = String.valueOf(MainActivity.twoDecimalFloatToString(amount));
 
-                        }
+                    try {
+                        String line = String.format("%6s %8s %-10s", wt, amt, name);
+                        message = message+ "\n" + memberCode + " " + line;
+                    } catch (Exception e) {
                     }
 
-                    for (int j = 0; j < weight_arrayList.size(); j++) {
+                    cursor.moveToNext();
 
-                        weightSize = weightSize + weight_arrayList.get(j);
-                        amountSize = amountSize + totalamount_arrayList.get(j);
-
-                        totalWeight = totalWeight + weight_arrayList.get(j);
-                        totalAmount = totalAmount + totalamount_arrayList.get(j);
-
-                        if(weight_arrayList.size()==(j+1)){
-                            PaymentReport paymentReport = new PaymentReport();
-                            paymentReport.setCode(memberCode);
-                            paymentReport.setName(name);
-                            paymentReport.setWeight(MainActivity.twoDecimalFloatToString(weightSize));
-                            paymentReport.setAmount(MainActivity.twoDecimalFloatToString(amountSize));
-                            singleReportList.add(paymentReport);
-                        }
-                    }
-
-                    searchweight.setText("Wgt:-" + (MainActivity.twoDecimalFloatToString(totalWeight)) + "Kg");
-                    searchamount.setText("Amt:-" + (MainActivity.twoDecimalFloatToString(totalAmount)) + "/-");
-
-                    if (  i > 1 && weightSize > 0)
-                    {
-                        String wt = String.valueOf(MainActivity.twoDecimalFloatToString(weightSize)) ,
-                                amt = String.valueOf(MainActivity.twoDecimalFloatToString(amountSize));
-
-                        try {
-                            String line = String.format("%6s %8s %-10s", wt, amt, name);
-                             message = message+ "\n" + memberCode + " " + line;
-                        } catch (Exception e) {
-                        }
-
-                    }
                 }
 
-                message = "Payment Report\n"+message+ "\n*******************************\n"+"Total weight  : "+ MainActivity.twoDecimalFloatToString( totalWeight)+"\n" + "Total Amount  : " +MainActivity.twoDecimalFloatToString(totalAmount) +" RS";
-
-                SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-
-                String titlename = sharedPreferencesUtils.getTitle();
-                message = titlename + "\n" + message;
+                searchweight.setText("Wgt:-" + (MainActivity.twoDecimalFloatToString(totalWeight)) + "Kg");
+                searchamount.setText("Amt:-" + (MainActivity.twoDecimalFloatToString(totalAmount)) + "/-");
 
             }
 
+            message = "Payment Report\n"+message+ "\n*******************************\n"+"Total weight  : "+ MainActivity.twoDecimalFloatToString( totalWeight)+"\n" + "Total Amount  : " +MainActivity.twoDecimalFloatToString(totalAmount) +" RS";
+
+            SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
+
+            String titlename = sharedPreferencesUtils.getTitle();
+            message = titlename + "\n" + message;
+
+            totalSummery = "";
         } catch (Exception e) {
 
         }

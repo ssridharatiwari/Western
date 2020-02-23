@@ -60,7 +60,7 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
     private ListView savedmilk_listview;
     private Button startDateView, btnsearch;
     private String sift = "";
-    String message = "";
+    String message = "",totalSummery="";
     ImageView iv_share;
     ArrayList<SingleEntry> DailyReportList = new ArrayList<>();
     private DailyReportAdapter dailyReportAdapter;
@@ -416,6 +416,9 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
             String titlename = sharedPreferencesUtils.getTitle();
             message = titlename + "\n" + message;
 
+            totalSummery = "Shift Report\n"+startdate+"  "+shifts+ "\n" + MainActivity.lineBreak() + "Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + MainActivity.twoDecimalFloatToString(avgFat) +
+            "\nAvarage SNF   :   " + MainActivity.twoDecimalFloatToString(avgSnf)+ "\nTotal Amount  :   " + MainActivity.twoDecimalFloatToString(amountTotal)  + "/-";
+
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
         }
@@ -441,7 +444,7 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
 
 
     private void shareDialog() {
-        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Summery"};
+        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Summery","Print Total Summery"};
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Send Report");
         adb.setItems(options, new DialogInterface.OnClickListener() {
@@ -487,6 +490,14 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
                 else if (options[item].equals("Print Summery")) {
                   print(message);
                 }
+                else if (options[item].equals("Print Total Summery")) {
+                    if (totalSummery.length() > 0){
+                        print(totalSummery);
+                        Log.e("total",totalSummery);
+                    }
+
+                }
+
 //                else if (options[item].equals("Print Report")) {
 //
 //                    if (DailyReportList.size()>0) {
