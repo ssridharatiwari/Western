@@ -247,9 +247,9 @@ public class FragmentPaymentReport extends Fragment {
                             amt = String.valueOf(MainActivity.twoDecimalFloatToString(amount));
 
                     try {
-                        String line = String.format("%6s %8s %-10s", wt, amt, name);
-                        message = message+ "\n" + memberCode + " " + line;
-                    } catch (Exception e) {
+                        String line = String.format("%6s %8s %-10s " , wt, amt, name);
+                        message = message+ "\n" + code + " " + line;
+                    }  catch (Exception e) {
                     }
 
                     cursor.moveToNext();
@@ -313,6 +313,7 @@ public class FragmentPaymentReport extends Fragment {
 
 
     private void shareDialog(){
+
         final CharSequence[] options = { "WhatsApp", "Mail","Other Share","Print Report"};
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Send Payment Report");
@@ -359,6 +360,7 @@ public class FragmentPaymentReport extends Fragment {
                     sentIntent.setType("text/plain");
                     startActivity(sentIntent);
 
+                    Log.e("",message);
                 }
 
                 else if (options[item].equals("Print Report")) {
