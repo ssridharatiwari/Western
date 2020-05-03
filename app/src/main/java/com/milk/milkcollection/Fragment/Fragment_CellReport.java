@@ -32,6 +32,7 @@ import com.milk.milkcollection.adapter.SingleReportAdapter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.SingleEntry;
 import com.milk.milkcollection.model.SingleReport;
 
@@ -142,8 +143,76 @@ public class Fragment_CellReport extends Fragment {
             }
         });
 
+        onclickAdapter();
         return rootView;
     }
+
+
+
+
+
+    void onclickAdapter(){
+
+        savedmilk_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Sales Report");
+                builder.setItems(new CharSequence[]
+                                { "Delete"},
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+
+                                switch (which) {
+                                    case 0:
+                                        deleteReport(position);
+                                        break;
+                                }
+                            }
+                        });
+                builder.create().show();
+
+            }
+        });
+
+    }
+
+    private void deleteReport( final int position){
+
+        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+        ArrayList<Integer> reportIdList = new ArrayList<>();
+        reportIdList = milkDBHelpers.reportId();
+        SingleEntry entry = singleReportList.get(position);
+
+        reportId = Integer.valueOf(entry.getID());
+
+        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+        alertBuilder.setMessage("Are You sure want to delete this entry.");
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+                Log.e("-=-=-ddd=-=", "ddddd");
+                milkDBHelpers.deleteSaleEntry(reportId);
+                singleResultAdapter.remove((singleResultAdapter.getItem(position)));
+                singleResultAdapter.notifyDataSetChanged();
+            }
+        });
+        alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        final AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+
+    }
+
 
 
     public void SearchSqlData(){

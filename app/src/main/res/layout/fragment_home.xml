@@ -111,17 +111,18 @@
             android:layout_height="40dp" />
 
         <Button
-            android:layout_weight=".5"
             android:id="@+id/btn_auto_manual"
-            android:text="Man"
-            android:textSize="18dp"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_weight=".5"
+            android:background="@color/gray"
             android:gravity="center"
+            android:text="Man"
             android:textAllCaps="false"
             android:textColor="@color/app_background"
-            android:layout_gravity="center"
-            android:background="@color/gray"
-            android:layout_width="0dp"
-            android:layout_height="35dp" />
+            android:textSize="18dp"
+            android:visibility="invisible" />
 
         <EditText
             android:layout_marginTop="2dp"

@@ -341,6 +341,15 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 	}
 
 
+	public void deleteSaleEntry(int reportId) {
+
+		String query = "DELETE FROM sell_data WHERE Id='" + reportId + "'";
+		SQLiteDatabase db = getWritableDatabase();
+		db.execSQL(query);
+		db.close();
+	}
+
+
 	public int getMember() {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String query = "select count(*) from " + "member";

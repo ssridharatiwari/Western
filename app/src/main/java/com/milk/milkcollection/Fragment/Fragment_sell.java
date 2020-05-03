@@ -1,8 +1,10 @@
 package com.milk.milkcollection.Fragment;
 
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -32,6 +34,7 @@ import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.DailyReport;
+import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.SingleEntry;
 
 import java.io.IOException;
@@ -111,6 +114,7 @@ public class Fragment_sell extends Fragment {
 
         setClickEvents();
         getCurrentDate();
+
         return rootView;
     }
 
@@ -205,6 +209,8 @@ public class Fragment_sell extends Fragment {
 
 
 
+
+
     private void printMethod() {
 
         isPrint = false;
@@ -262,8 +268,8 @@ public class Fragment_sell extends Fragment {
 
         if (weight.length() == 0)
             et_weight.setError("Weight is required!");
-        else if (Float.parseFloat(weight) >= 1000)
-            et_weight.setError("Weight limit 1 - 999");
+        else if (Float.parseFloat(weight) >= 100000000)
+            et_weight.setError("Weight limit 1 - 99999999");
         else if (totalrupees.equals("Total Rs/-")) {
             Toast.makeText(getActivity(), "Please create Total Rs/- ", Toast.LENGTH_LONG).show();
         } else {
