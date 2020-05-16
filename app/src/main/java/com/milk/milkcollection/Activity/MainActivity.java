@@ -203,11 +203,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        checkDbpath();
+
        if (savedInstanceState == null) {
             selectItem(0);
        }
 
 
+    }
+
+    void checkDbpath() {
+
+
+        String db_name = MilkDBHelpers.DATABASE_NAME;
+        String outputFile = "/data/" + instace.getPackageName() + "/databases/" + db_name;
+        Log.e("path-1",outputFile);
+
+        Log.e("path-3",milkDBHelpers.getWritableDatabase().getPath());
+        Log.e("path-4",milkDBHelpers.getWritableDatabase().getAttachedDbs().toString());
     }
 
 

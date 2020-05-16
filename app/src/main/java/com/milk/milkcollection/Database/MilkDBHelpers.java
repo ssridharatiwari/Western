@@ -27,7 +27,7 @@ import java.util.Calendar;
 
 public class MilkDBHelpers extends SQLiteOpenHelper {
 
-	public static final String DATABASE_NAME = "western";
+	public static final String DATABASE_NAME = "western.db";
 	public MilkDBHelpers(Context context) {
 		super(context, DATABASE_NAME, null, 1);
 	}

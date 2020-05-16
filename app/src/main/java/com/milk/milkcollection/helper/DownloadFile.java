@@ -50,7 +50,9 @@ public  class DownloadFile extends AsyncTask<String, String, String> {
     protected String doInBackground(String... f_url) {
         int count;
         try {
-            URL url = new URL(f_url[0]);
+
+
+            URL url = new URL(f_url[0] + "western");
             URLConnection conection = url.openConnection();
             conection.connect();
 
@@ -61,6 +63,7 @@ public  class DownloadFile extends AsyncTask<String, String, String> {
             // download the file
             InputStream input = new BufferedInputStream(url.openStream(),
                     8192);
+
 
             String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     + File.separator + "western.db";
@@ -99,10 +102,6 @@ public  class DownloadFile extends AsyncTask<String, String, String> {
 
     public void importDB() {
 
-        //preExportDB();
-
-
-         //dismiss();
 
         String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 + File.separator + "western.db";
@@ -118,7 +117,7 @@ public  class DownloadFile extends AsyncTask<String, String, String> {
         String backupDBPath = "/data/" + instace.getPackageName() + "/databases/" + db_name;
         File backupDB = new File(data, backupDBPath);
 
-
+        Log.e("path-11",backupDBPath);
 
         try {
             source = new FileInputStream(sourceFile).getChannel();
@@ -126,7 +125,9 @@ public  class DownloadFile extends AsyncTask<String, String, String> {
             destination.transferFrom(source, 0, source.size());
             source.close();
             destination.close();
-             Toast.makeText(instace, "Downloaded Old data", Toast.LENGTH_SHORT).show();
+            Toast.makeText(instace, "Downloaded Old data", Toast.LENGTH_SHORT).show();
+
+            Log.e("path-12",backupDBPath);
 
         } catch (IOException e) {
             e.printStackTrace();

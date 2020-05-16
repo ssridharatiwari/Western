@@ -1074,7 +1074,7 @@ public class Fragment_home extends Fragment {
         if (sharedPreferencesUtils.isDownloaded().equals("0")) {
             sharedPreferencesUtils.setIsDownloaded();
             MainActivity.instace.showLoading("Data Downloading...");
-            String url =   "http://wokosoftware.com/western/uploads/" + sharedPreferencesUtils.getUserID() + "/" + MilkDBHelpers.DATABASE_NAME;
+            String url =   "http://wokosoftware.com/western/uploads/" + sharedPreferencesUtils.getUserID() + "/" ;
             Log.e("url",url);
             new DownloadFile().execute(url);
         }
