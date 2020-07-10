@@ -45,6 +45,7 @@ import com.milk.milkcollection.helper.AppUrl;
 import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
+import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
 import java.util.Calendar;
@@ -293,12 +294,12 @@ public class Fragment_home extends Fragment {
         int memberlength = milkDBHelpers.getMember();
         String memberrecord = String.valueOf(memberlength);
         if (memberrecord != null) {
-            Log.e("-----member--------", memberrecord);
+            //Log.e("-----member--------", memberrecord);
         }
         int updatebhavlingth = milkDBHelpers.getupdatebhav();
         String bhavrecord = String.valueOf(updatebhavlingth);
         if (bhavrecord != null) {
-            Log.e("-------bhav------", bhavrecord);
+            //Log.e("-------bhav------", bhavrecord);
         }
 
         btn_ratesave = (Button) rootView.findViewById(R.id.btn_rate_home);
@@ -357,9 +358,10 @@ public class Fragment_home extends Fragment {
         checkDefaultSnf();
         downloadFile();
 
-
         return rootView;
     }
+
+
 
 
     private void rentryMethod(){

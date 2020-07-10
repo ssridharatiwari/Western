@@ -4,12 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.milk.milkcollection.Activity.MainActivity;
+import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.model.SingleEntry;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+
+import static com.milk.milkcollection.Activity.MainActivity.instace;
 
 
 public class FSSession {
@@ -96,6 +105,37 @@ public class FSSession {
 
     }
 
+
+    static public void importDB() {
+
+
+        String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + File.separator + "western.db";
+        File sourceFile = new File(outputFile);
+
+        File data = Environment.getDataDirectory();
+        FileChannel source = null;
+        FileChannel destination = null;
+
+        String db_name = MilkDBHelpers.DATABASE_NAME;
+        String backupDBPath =  "/data/" + instace.getPackageName() + "/databases/" + db_name;
+
+        File backupDB = new File(data, backupDBPath);
+
+
+
+        try {
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(backupDB).getChannel();
+            destination.transferFrom(source, 0, source.size());
+            source.close();
+            destination.close();
+            Toast.makeText(instace, "Downloaded Old data", Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 
