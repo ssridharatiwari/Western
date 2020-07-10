@@ -2,7 +2,6 @@
 <resources>
     
 
-    <string name="app_name">Milk Collection</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="verify_by_mobile_phone">Verify By Pin</string>
@@ -24,7 +23,7 @@
     <string name="code">कोड</string>
     <string name="weight">वजन</string>
     <string name="fat">फैट</string>
-    <string name="सनफ">सनफ</string>
+    <string name="snf">सनफ</string>
     <string name="save">सेव</string>
     <string name="print">प्रिन्ट</string>
     <string name="update">अपडेट</string>

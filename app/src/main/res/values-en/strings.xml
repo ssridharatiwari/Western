@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Milk Collection</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="verify_by_mobile_phone">Verify By Pin</string>
@@ -91,7 +91,7 @@
     <string name="change_print_method">Change Print Method</string>
     <string name="change_society_name">Change Society Name</string>
     <string name="change_comultive">Change Society Name</string>
-
+    <string name="change_default">फ़िक्स SNF</string>
 
 
     <string name="kgfat_rate">KG FAT KG SNF(SRS)</string>
