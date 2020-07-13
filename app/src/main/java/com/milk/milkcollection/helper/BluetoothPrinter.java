@@ -433,15 +433,30 @@ public class BluetoothPrinter {
             Log.e("bluetootsh detals", String.valueOf(pairedDevices));
             if (pairedDevices.size() > 0) {
                 for (BluetoothDevice device : pairedDevices) {
+                    Log.e("device",device.getName());
+                    Log.e("device",AppString.printerHC);
+
+                    Log.e("status",MainActivity.instace.sharedPreferencesUtils.getHC05());
                     if (device.getName().equals(AppString.printername)) {
                         mmDevice = device;
                         Log.e("device name", mmDevice.getName());
                         break;
                     }
+
+                    mmDevice = device;
+                    if ( MainActivity.instace.sharedPreferencesUtils.getHC05().equals("1") && device.getName().toLowerCase().equals(AppString.printerHC.toLowerCase()) ) {
+                        mmDevice = device;
+                        Log.e("device name--", mmDevice.getName());
+                    }
                 }
             }
 
             try {
+
+                if (mmDevice == null) {
+                    return;
+                }
+
                 UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
                 mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
                 mmSocket.connect();
@@ -511,21 +526,6 @@ public class BluetoothPrinter {
 
     public void sendData(String text){
         printFromBluthooth(text);
-
-        Log.e("text",text);
-
-//        if (mmOutputStream == null){
-//            findBT();
-//        }
-//
-//        if (mmOutputStream != null){
-//            text += "\n";
-//            try {
-//                mmOutputStream.write(text.getBytes());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
 
@@ -567,6 +567,7 @@ public class BluetoothPrinter {
 
 
         try {
+
             UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID "0000110E-0000-1000-8000-00805F9B34FB"
             mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
             mmSocket.connect();
@@ -596,25 +597,6 @@ public class BluetoothPrinter {
         myprinter = new BluetoothPrinter(mmDevice);
         printByPrinter(printStiring);
 
-//        final Handler handler = new Handler();
-//        final boolean bluetoothPrinter = handler.postDelayed(new Runnable() {
-//            @RequiresApi(api = Build.VERSION_CODES.M)
-//            @SuppressLint("LongLogTag")
-//            @Override
-//            public void run() {
-//
-//
-//
-//                if (mmDevice == null) {
-//                   findBT();
-//                }else{
-//
-//                }
-//                myprinter = new BluetoothPrinter(mBtDevice);
-//                printByPrinter(printStiring);
-//            }
-//
-//        }, 1);
     }
 
 
@@ -628,8 +610,6 @@ public class BluetoothPrinter {
         if (myprinter.isConnected()) {
             myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
             myprinter.printText(str);
-//            myprinter.addNewLine();
-//            myprinter.addNewLine();
             myprinter.finish();
 
             Log.e("Already connected",myprinter.getDevice().getName());

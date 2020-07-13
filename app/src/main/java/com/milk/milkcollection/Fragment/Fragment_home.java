@@ -1019,7 +1019,9 @@ public class Fragment_home extends Fragment {
 
                                 jsonObject = jsonObject.getJSONObject("details");
                                 String status = jsonObject.getString("status").toString();
+                                String hc_05 = jsonObject.getString("hc_05_enable").toString();
 
+                                sharedPreferencesUtils.setHC05(hc_05);
 
                                 if (!status.equals("")){
                                     MainActivity.instace.setStatus(status);

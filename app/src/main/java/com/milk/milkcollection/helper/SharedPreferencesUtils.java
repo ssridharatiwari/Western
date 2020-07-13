@@ -192,6 +192,19 @@ private Context _context;
     }
 
 
+    public void setHC05(String value) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("hc_05", value);
+        editor.commit();
+    }
+
+    public String getHC05() {
+        if(prefs.contains("hc_05"))
+            return prefs.getString("hc_05", "");
+        else
+            return "0";
+    }
+
 
 
     public void setUserId(String userId) {

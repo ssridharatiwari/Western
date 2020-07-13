@@ -11,6 +11,7 @@ import java.util.Calendar;
 public class AppString {
 
      public static String  printername =  "WEG_Mobile";
+    public static String  printerHC =  "HC-05";
      public static String  reentryTitle =  "आज इस सदस्य की एंट्री पहले से मौजूद है\nफिर से करना चाहते हैं";
 
 

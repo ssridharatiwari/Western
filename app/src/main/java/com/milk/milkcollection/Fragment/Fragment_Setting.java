@@ -84,7 +84,7 @@ public class Fragment_Setting extends Fragment {
         lblTitle.setText( sharedPreferencesUtils.getTitle());
 
         lblMobile.setText(sharedPreferencesUtils.getMobile());
-        lblVersion.setText("Version "+MainActivity.Version);
+        lblVersion.setText("Version "+ MainActivity.instace.getResources().getString(R.string.app_name));
 
 
         setValuses();
@@ -473,7 +473,7 @@ public class Fragment_Setting extends Fragment {
 
                 String value = edittext.getText().toString();
 
-                if (value.equals("2295")) {
+                if (value.equals("2048")) {
                     Fragment fragment = new SecureSetiing();
                     android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ft.replace(R.id.content_frame, fragment);
