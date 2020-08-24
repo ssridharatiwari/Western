@@ -76,22 +76,22 @@
             android:textSize="20dp"
             android:layout_width="0dp"
             android:layout_height="match_parent" />
+
         <EditText
-            android:layout_marginTop="2dp"
             android:id="@+id/et_code"
-            android:textSize="20dp"
-            android:inputType="numberDecimal"
-            android:layout_weight="1"
-            android:hint="@string/enter_code"
-            android:maxLength="4"
-            android:paddingLeft="10dp"
-            android:background="@drawable/rectangle"
-            android:layout_marginRight="20dp"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:imeOptions="actionNext"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="20dp"
             android:layout_marginBottom="2dp"
-            />
+            android:layout_weight="1"
+            android:background="@drawable/rectangle"
+            android:hint="@string/enter_code"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="4"
+            android:paddingLeft="10dp"
+            android:textSize="20dp" />
     </LinearLayout>
     <LinearLayout
         android:layout_weight="1"

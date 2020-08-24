@@ -462,7 +462,7 @@ public class Fragment_home extends Fragment {
         fat = et_fat.getText().toString();
         snf = et_snf.getText().toString();
 
-        String totalrupees = total.getText().toString();
+
 
         if(rateMain == 0) {
             if (rate.getText().toString().length() > 0){
@@ -482,20 +482,18 @@ public class Fragment_home extends Fragment {
             et_fat.setError("Fat is required!");
         else if (snf.length() == 0)
             et_snf.setError("Snf is required!");
-        else if (totalrupees.equals("Total Rs/-")) {
+        else if (total.getText().toString().equals("Total Rs/-")) {
             Toast.makeText(getActivity(), "Please create Total Rs/- ", Toast.LENGTH_LONG).show();
         } else {
             try {
 
 
                 SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
-
                 Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where membercode='" + code + "'", null);
 
                 if (cursor != null && cursor.moveToFirst()) {
 
                     while (cursor.isAfterLast() == false) {
-
 
                         Float currentweight = Float.parseFloat(weight);
                         Float currentfat = Float.parseFloat(fat);
@@ -518,7 +516,7 @@ public class Fragment_home extends Fragment {
                         }
 
                         message = titlename + "\n" + "DT: " + date + "(" + strShipt + ")"  +
-                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT=" + rateMain + " AMT=" + totalrupees + "";
+                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT=" + rateMain + " AMT=" + totalamount + "";
 
                         printString = "";
                         printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
@@ -526,29 +524,24 @@ public class Fragment_home extends Fragment {
                                 "\nDate: " + date +
                                 "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
                                 "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
-                                "\nFat: " + fat + "  "+MainActivity.instace.rateString()+": " + snf +
+                                "\nFat: " + fat + "  "+ MainActivity.instace.rateString() +": " + snf +
                                 "\nRate/Ltr: " + rateMain +
                                 "\nAmount:  Rs " + totalamount + "\n";
 
 
                         printString = printString + MainActivity.lineBreak();
-
                         myCode = code;
-
                         milkDBHelpers.AddMilk(code,weight, rateMain,
                                 totalamount, replaceDate,
                                 phone_number, sift, fat, fat_wt, snf, snf_wt, "", "", date);
 
-
                         resetValue();
 
-
                         et_code.requestFocus();
-                        Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateMain + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateMain + "\n" + "total amount :- " + totalamount, Toast.LENGTH_LONG).show();
                         cursor.moveToNext();
 
                         getCurrentCollection();
-
                         commulativeMethod();
 
                     }
@@ -735,7 +728,7 @@ public class Fragment_home extends Fragment {
                                 Log.e("--------value", String.valueOf(value));
 
                                 try {
-                                    snf = MainActivity.oneDecimalString(String.valueOf(value));
+                                    snf = MainActivity.twoDecimalString(String.valueOf(value));
                                     et_snf.setText(snf);
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -744,8 +737,8 @@ public class Fragment_home extends Fragment {
                             }
 
 
-                            fat = MainActivity.oneDecimalString(fat);
-                            snf = MainActivity.oneDecimalString(snf);
+                            fat = MainActivity.twoDecimalString(fat);
+                            snf = MainActivity.twoDecimalString(snf);
                             rateMain = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
 
                             if (rateMain == 0){
@@ -903,9 +896,7 @@ public class Fragment_home extends Fragment {
 
             public void afterTextChanged(Editable s) {
 
-
                 if (rate.getText().length() > 0) {
-
 
                     if (rate.getText().toString().equals("Rate/ltr")) {
                         return;

@@ -436,7 +436,6 @@ public class BluetoothPrinter {
                     Log.e("device",device.getName());
                     Log.e("device",AppString.printerHC);
 
-                    Log.e("status",MainActivity.instace.sharedPreferencesUtils.getHC05());
                     if (device.getName().equals(AppString.printername)) {
                         mmDevice = device;
                         Log.e("device name", mmDevice.getName());

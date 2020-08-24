@@ -111,7 +111,7 @@ public class SingleEntry {
     public String getSMS() {
 
         String  message =   MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Dt:" + date + "(" + sift + ")" +
-                "\nQT=" + weight +  "\nRT=" + rate + " AMT=" + amount ;
+                "\nQT=" + weight +  "\nRT=" + MainActivity.twoDecimal(rate) + " AMT=" + MainActivity.twoDecimal(amount) ;
 
         return message;
     };
@@ -124,7 +124,7 @@ public class SingleEntry {
                 "\nDate: " + datesave + " - " +sift +
                 "\nFat: " + fat + " ,  SNF: " + snf +
                 "\nLitre: " + MainActivity.twoDecimal(weight) + " L" +
-                "\nRate/Ltr: " + rate +
+                "\nRate/Ltr: " + MainActivity.twoDecimal(rate) +
                 "\nAmount:  Rs " + amount + "\n";
         printString = printString + "\n" + MainActivity.lineBreak();
 

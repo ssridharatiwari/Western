@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
     public  static String ruppe = "₹";
 
-
     private ArrayList<String> categories;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -100,11 +99,8 @@ public class MainActivity extends AppCompatActivity {
     public static Socket nsocket = new Socket();
     public static SocketAddress sockaddr;
 
-
     public static ProgressDialog progress;
-
     public String demoDate = "";
-
 
     public SharedPreferencesUtils sharedPreferencesUtils;
     public MilkDBHelpers milkDBHelpers;
@@ -456,12 +452,12 @@ public class MainActivity extends AppCompatActivity {
                 } else if (printBy.equals("blutooth")) {
 
                    printFromBluthooth(printSTRING+"\n\n");
-
-                } else {
+             }
+                 else {
                     PackageManager pm = instace.getPackageManager();
                     try {
 
-                        printSTRING = printSTRING + "\n";
+                        printSTRING = printSTRING + "\n\n\n";
                         Intent waIntent = new Intent(Intent.ACTION_SEND);
                         waIntent.setType("text/plain");
                         PackageInfo info = pm.getPackageInfo("com.fidelier.posprinterdriver", PackageManager.GET_META_DATA);
@@ -487,12 +483,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void printFromBluthooth(final String printStiring){
 
-        data = printStiring;
+        data =  printStiring ;
         showLoading("Printing");
-
         final Handler handler = new Handler();
 
-        BluetoothPrinter.getInstace().sendData(printStiring);
+        BluetoothPrinter.getInstace().sendData(data);
         dismiss();
         return;
     }
@@ -598,39 +593,38 @@ public class MainActivity extends AppCompatActivity {
 
     static public void sendTextSms(String message , String number) {
 
-
-
-            if (ActivityCompat.checkSelfPermission(instace, Manifest.permission.SEND_SMS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(instace,
-                        Manifest.permission.SEND_SMS)) {
-                } else {
-                    ActivityCompat.requestPermissions(instace, new String[]{Manifest.permission.SEND_SMS},
-                            instace.MY_PERMISSIONS_REQUEST_SEND_SMS);
-                }
+        Log.e("sms:",message);
+        if (ActivityCompat.checkSelfPermission(instace, Manifest.permission.SEND_SMS)
+            != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(instace,
+                    Manifest.permission.SEND_SMS)) {
             } else {
+                ActivityCompat.requestPermissions(instace, new String[]{Manifest.permission.SEND_SMS},
+                        instace.MY_PERMISSIONS_REQUEST_SEND_SMS);
+           }
+        } else {
 
-                try {
+            try {
 
-                    if (number.length() == 10) {
+                if (number.length() == 10) {
 
-                        SmsManager sms = SmsManager.getDefault();
-                        PendingIntent sentPI;
-                        String SENT = "SMS_SENT";
+                    SmsManager sms = SmsManager.getDefault();
+                    PendingIntent sentPI;
+                    String SENT = "SMS_SENT";
 
-                        sentPI = PendingIntent.getBroadcast(instace, 0,new Intent(SENT), 0);
+                    sentPI = PendingIntent.getBroadcast(instace, 0,new Intent(SENT), 0);
 
-                        ArrayList<String> msgArray = sms.divideMessage(message);
+                    ArrayList<String> msgArray = sms.divideMessage(message);
 
-                        sms.sendMultipartTextMessage(number, null,msgArray, null, null);
-                        Toast.makeText(instace, "SMS Sent", Toast.LENGTH_LONG).show();
-                    }
-
-                } catch (Exception e) {
-                    Toast.makeText(instace,"SMS failed, please try again.", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
+                    sms.sendMultipartTextMessage(number, null,msgArray, null, null);
+                    Toast.makeText(instace, "SMS Sent", Toast.LENGTH_LONG).show();
                 }
+
+            } catch (Exception e) {
+                Toast.makeText(instace,"SMS failed, please try again.", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
             }
+        }
     }
 
     static public void shareText(String shareText ) {
@@ -647,7 +641,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showLoading(String message){
-
         progress = new ProgressDialog(this);
         progress.setMessage(message);
         progress.setCancelable(false);

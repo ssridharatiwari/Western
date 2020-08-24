@@ -106,28 +106,23 @@ public class Fragment_Setting extends Fragment {
                     android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
                     builder.setTitle(messge + " Activeted" );
                     builder.setItems(new CharSequence[]
-                                    { "WEG_Mobile BT Printer", "Wift Printer", "Pos Printer", "Cancel"},
+                                    { "WEG/HC-05 BT Printer", "Wift Printer", "Pos Printer", "Cancel"},
 
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
 
                                     switch (which) {
                                         case 0:
-
-//                                            MainActivity.getInstace().stopSocket();
                                             sharedPreferencesUtils.printBy("blutooth");
                                             updateData();
-
                                             break;
                                         case 1:
-                                            if (!printBefore.equals("wifi")){
-//                                                MainActivity.getInstace().runConnection();
+                                            if (!printBefore.equals("wifi")) {
                                                 sharedPreferencesUtils.printBy("wifi");
                                                 updateData();
                                             }
                                             break;
                                         case 2:
-//                                            MainActivity.getInstace().stopSocket();
                                             sharedPreferencesUtils.printBy("pos");
                                             updateData();
                                             break;
