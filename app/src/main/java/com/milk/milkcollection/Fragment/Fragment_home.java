@@ -9,9 +9,11 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
@@ -177,24 +179,6 @@ public class Fragment_home extends Fragment {
         });
 
 
-        et_code.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-
-                if (et_code.getText().length() > 0) {
-                    getUserName();
-                }else{
-
-                    tv_code_holder.setText("Code");
-                    et_code.setError(null);
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
 
 
         et_weight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -358,8 +342,79 @@ public class Fragment_home extends Fragment {
         checkDefaultSnf();
         downloadFile();
 
+        changeTextMethds();
         return rootView;
     }
+
+
+
+    private void changeTextMethds(){
+
+        et_code.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                if (et_code.getText().length() > 0) {
+                    getUserName();
+                }else{
+
+                    tv_code_holder.setText("Code");
+                    et_code.setError(null);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
+        et_fat.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                if (comission.equals("-")) {
+                    createmilkvalue();
+                }
+                if (comission.equals("+")) {
+                    createmilkvalue();
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
+
+        et_snf.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                if (comission.equals("-")) {
+                    createmilkvalue();
+                }
+                if (comission.equals("+")) {
+                    createmilkvalue();
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
+        MainActivity.getInstace().createpdf();
+
+    }
+
+
+
 
 
 
@@ -736,9 +791,11 @@ public class Fragment_home extends Fragment {
 
                             }
 
+                            Log.e("fat pre 0 ----", String.valueOf((fat)));
+//                            fat = MainActivity.twoDecimalString(fat);
+//                            snf = MainActivity.twoDecimalString(snf);
+                            Log.e("fat pre 1 ----", String.valueOf((fat)));
 
-                            fat = MainActivity.twoDecimalString(fat);
-                            snf = MainActivity.twoDecimalString(snf);
                             rateMain = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
 
                             if (rateMain == 0){

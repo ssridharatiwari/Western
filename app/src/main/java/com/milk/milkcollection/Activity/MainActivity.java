@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,13 +14,22 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.pdf.PdfDocument;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 
+import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -57,10 +64,11 @@ import com.milk.milkcollection.Fragment.Fragment_Setting;
 import com.milk.milkcollection.Fragment.Fragment_home;
 import com.milk.milkcollection.Fragment.Fragment_sell;
 import com.milk.milkcollection.R;
-import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+
+import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -68,7 +76,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.FileChannel;
@@ -866,5 +873,143 @@ public class MainActivity extends AppCompatActivity {
             }
         }).show();
     }
+//
+//
+//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+//    public void createPdf() throws IOException {
+//
+//                String printAttributes = "hello";
+//                PrintedPdfDocument document = new PrintedPdfDocument(context,
+//                        printAttributes);
+//
+//        // start a page
+//                PdfDocument.Page page = document.startPage(0);
+//
+//        // draw something on the page
+//
+//        // finish the page
+//                document.finishPage(page);
+//
+//        // write the document content
+//                document.writeTo(getOutputStream());
+//
+//        //close the document
+//                document.close();
+//
+//    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void createpdf() {
+        Rect bounds = new Rect();
+        int pageWidth = 300;
+        int pageheight = 470;
+        int pathHeight = 2;
+
+        File tempFile = new File("/data/" +  MainActivity.getInstace().getPackageName()  + "hello..pdf");
+
+        String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + File.separator + "western.pdf";
+        File sourceFile = new File(outputFile);
+
+
+
+        final String fileName = "mypdf";
+        String file_name_path = "/pdfsdcard_location/" + fileName + ".pdf";
+        PdfDocument myPdfDocument = new PdfDocument();
+        Paint paint = new Paint();
+        Paint paint2 = new Paint();
+        Path path = new Path();
+        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageheight, 1).create();
+        PdfDocument.Page documentPage = myPdfDocument.startPage(myPageInfo);
+        Canvas canvas = documentPage.getCanvas();
+        int y = 25; // x = 10,
+        int x = 10;
+
+//        paint.getTextBounds(tv_title.getText().toString(), 0, tv_title.getText().toString().length(), bounds);
+        x = (canvas.getWidth() / 2) - (bounds.width() / 2);
+        canvas.drawText("hello", x, y, paint);
+
+//        paint.getTextBounds("20", 0, 50, bounds);
+        x = (canvas.getWidth() / 2) - (bounds.width() / 2);
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("jonny", x, y, paint);
+
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+//horizontal line
+        path.lineTo(pageWidth, pathHeight);
+        paint2.setColor(Color.GRAY);
+        paint2.setStyle(Paint.Style.STROKE);
+        path.moveTo(x, y);
+
+        canvas.drawLine(0, y, pageWidth, y, paint2);
+
+//blank space
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+        y += paint.descent() - paint.ascent();
+        x = 10;
+        canvas.drawText("i am ", x, y, paint);
+
+        y += paint.descent() - paint.ascent();
+        x = 10;
+        canvas.drawText("jaiopur", x, y, paint);
+
+//blank space
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+//horizontal line
+        path.lineTo(pageWidth, pathHeight);
+        paint2.setColor(Color.GRAY);
+        paint2.setStyle(Paint.Style.STROKE);
+        path.moveTo(x, y);
+        canvas.drawLine(0, y, pageWidth, y, paint2);
+
+//blank space
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+        Resources res = getResources();
+        Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.arrow_icon);
+        Bitmap b = (Bitmap.createScaledBitmap(bitmap, 100, 50, false));
+        canvas.drawBitmap(b, x, y, paint);
+        y += 25;
+        canvas.drawText(getString(R.string.app_name), 120, y, paint);
+
+
+        myPdfDocument.finishPage(documentPage);
+
+//        File file = new File(this.getExternalFilesDir(null).getAbsolutePath() + file_name_path);
+
+        try {
+            myPdfDocument.writeTo(new FileOutputStream(sourceFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        myPdfDocument.close();
+
+
+
+    }
+
+
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
+
+
 

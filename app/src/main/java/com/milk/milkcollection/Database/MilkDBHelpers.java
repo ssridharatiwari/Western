@@ -635,7 +635,10 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
     public String getRatePerLiter(String fat,String snf)
     {
 
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(MainActivity.instace);
+		Log.e("fat pre ----", String.valueOf((fat)));
+
+
+		SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(MainActivity.instace);
         String rateMethod =  sharedPreferencesUtils.getRateMethodCode();
 
         if (rateMethod.equals("1"))
@@ -699,7 +702,14 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
         else
         {
             DecimalFormat df = new DecimalFormat("#.##");
-            float rateltr_fat = ((Float.parseFloat(fat) * Float.parseFloat(kgfatrat)) / (100));
+
+			Log.e("fat pre ----", String.valueOf((fat)));
+
+
+			Log.e("fat ----", String.valueOf((Float.parseFloat(fat))));
+
+
+			float rateltr_fat = ((Float.parseFloat(fat) * Float.parseFloat(kgfatrat)) / (100));
             float rateltr_snf = (Float.parseFloat(snf) * Float.parseFloat(kgsnfrat)) / 100;
 
             if ("Less -".equals(comissionType)) {
