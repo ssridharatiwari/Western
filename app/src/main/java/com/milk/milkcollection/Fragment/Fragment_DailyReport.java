@@ -40,6 +40,7 @@ import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.helper.UploadFile;
 import com.milk.milkcollection.model.DailyReport;
 import com.milk.milkcollection.model.Member;
+import com.milk.milkcollection.model.PDFDaily;
 import com.milk.milkcollection.model.SingleEntry;
 
 import java.io.IOException;
@@ -60,13 +61,15 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
     private ListView savedmilk_listview;
     private Button startDateView, btnsearch;
     private String sift = "";
-    String message = "",totalSummery="";
+    String message = "",totalSummery="",tiltle,fileName;
+
     ImageView iv_share;
     ArrayList<SingleEntry> DailyReportList = new ArrayList<>();
     private DailyReportAdapter dailyReportAdapter;
     private int reportId = 0;
     Spinner spinr_ampm;
     String shifts;
+    PDFDaily pdfDaily = new PDFDaily();
 
      private AutoCompleteTextView acFrom,acTo;
 
@@ -350,8 +353,8 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
             float snf_wt = 0;
 
             message = "";
-
             if (cursor != null && cursor.moveToFirst()) {
+
                 while (cursor.isAfterLast() == false) {
 
                     SingleEntry entry = new SingleEntry();
@@ -384,11 +387,13 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
                             entry.getRate(),
                             entry.getAmount());
 
+
                     cursor.moveToNext();
                 }
             } else {
                 // Toast.makeText(getApplication(), "Not Found", Toast.LENGTH_LONG).show();
             }
+
 
 
             if (sift.equals("M")) {
@@ -397,9 +402,14 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
                 shifts = "Evening";
             }
 
-            message = "Shift Report\n"+startdate+"  "+shifts+ "\n" + MainActivity.lineBreak() +
-                    "Code Qty Fat " + MainActivity.getInstace().rateString() + "  Rate   AMT" + message;
+            // headre
+            String header = "Shift Report\n " +startdate+ "  "+shifts+ "\n" + MainActivity.lineBreak() ;
+            String header2 = "Code Qty Fat " + MainActivity.getInstace().rateString() + "  Rate   AMT" ;
 
+
+            message = header + header2 + message;
+
+            // set data
             float avgFat = fat_wt / weightTotal;
             float avgSnf = snf_wt / weightTotal;
 
@@ -408,16 +418,26 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
             daily_wight.setText(MainActivity.twoDecimalFloatToString(weightTotal) + " Kg");
             daily_amut.setText(MainActivity.twoDecimalFloatToString(amountTotal) + "/-");
 
-            message = message + "\n" + MainActivity.lineBreak()
+
+            String footer = MainActivity.lineBreak()
                     +"Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + MainActivity.twoDecimalFloatToString(avgFat) +
                     "\nAvarage SNF   :   " + MainActivity.twoDecimalFloatToString(avgSnf)+ "\nTotal Amount  :   " + MainActivity.twoDecimalFloatToString(amountTotal)  + "/-";
 
-            SharedPreferencesUtils  sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-            String titlename = sharedPreferencesUtils.getTitle();
-            message = titlename + "\n" + message;
+            message = message + "\n" + footer;
 
+            SharedPreferencesUtils  sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
+            tiltle = sharedPreferencesUtils.getTitle();
+            message = tiltle + "\n" + message;
+
+
+            fileName = "SessionReport-" + startDate + "-" + shifts + ".pdf";
             totalSummery = "Shift Report\n"+startdate+"  "+shifts+ "\n" + MainActivity.lineBreak() + "Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + MainActivity.twoDecimalFloatToString(avgFat) +
             "\nAvarage SNF   :   " + MainActivity.twoDecimalFloatToString(avgSnf)+ "\nTotal Amount  :   " + MainActivity.twoDecimalFloatToString(amountTotal)  + "/-";
+
+            pdfDaily.setAmounts(weightTotal, avgFat, avgSnf, amountTotal);
+            pdfDaily.setArray(DailyReportList);
+            pdfDaily.setData(tiltle,startdate,"Session Report",shifts,fileName);
+
 
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
@@ -444,10 +464,11 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
 
 
     private void shareDialog() {
-        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Summery","Print Total Summery"};
+        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Summery","Print Total Summery","Share Pdf"};
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Send Report");
         adb.setItems(options, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (options[item].equals("WhatsApp")) {
@@ -489,22 +510,21 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
                 }
                 else if (options[item].equals("Print Summery")) {
                   print(message);
+
+
                 }
                 else if (options[item].equals("Print Total Summery")) {
                     if (totalSummery.length() > 0){
                         print(totalSummery);
                         Log.e("total",totalSummery);
                     }
-
                 }
 
-//                else if (options[item].equals("Print Report")) {
-//
-//                    if (DailyReportList.size()>0) {
-//                        print(getSummery());
-//                    }
-//
-//                }
+                else if (options[item].equals("Share Pdf")) {
+                    instace.createSessionPdf(pdfDaily);
+                }
+
+
             }
         });
         adb.show();

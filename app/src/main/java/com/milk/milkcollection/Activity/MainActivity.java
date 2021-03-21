@@ -33,6 +33,7 @@ import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -67,6 +68,8 @@ import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+import com.milk.milkcollection.model.PDFDaily;
+import com.milk.milkcollection.model.SingleEntry;
 
 import org.w3c.dom.Document;
 
@@ -80,7 +83,9 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -105,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     public static OutputStream nos;
     public static Socket nsocket = new Socket();
     public static SocketAddress sockaddr;
+    public static String lineValue = "===========================";
 
     public static ProgressDialog progress;
     public String demoDate = "";
@@ -225,6 +231,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -517,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    static public String twoDecimalString(String  value) throws IOException {
+    static public String twoDecimalString(String  value)  {
         try {
             String newStr = value.replace(" ", "");
                 if (newStr.length()>0)
@@ -555,6 +563,7 @@ public class MainActivity extends AppCompatActivity {
     static public String lineBreak()  {
         return "===========================\n";
     }
+
 
 
     static public void sendWhatsApp(String message) {
@@ -900,24 +909,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void createpdf() {
+    public void createpdf(String data, Boolean share,String title,String fileName) {
         Rect bounds = new Rect();
-        int pageWidth = 300;
+        int pageWidth = 600;
         int pageheight = 470;
         int pathHeight = 2;
 
-        File tempFile = new File("/data/" +  MainActivity.getInstace().getPackageName()  + "hello..pdf");
 
         String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                + File.separator + "western.pdf";
+                + File.separator + fileName;
         File sourceFile = new File(outputFile);
 
-
-
-        final String fileName = "mypdf";
-        String file_name_path = "/pdfsdcard_location/" + fileName + ".pdf";
         PdfDocument myPdfDocument = new PdfDocument();
         Paint paint = new Paint();
+        paint.setTextSize(10);
+
         Paint paint2 = new Paint();
         Path path = new Path();
         PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageheight, 1).create();
@@ -927,38 +933,19 @@ public class MainActivity extends AppCompatActivity {
         int x = 10;
 
 //        paint.getTextBounds(tv_title.getText().toString(), 0, tv_title.getText().toString().length(), bounds);
-        x = (canvas.getWidth() / 2) - (bounds.width() / 2);
-        canvas.drawText("hello", x, y, paint);
 
-//        paint.getTextBounds("20", 0, 50, bounds);
-        x = (canvas.getWidth() / 2) - (bounds.width() / 2);
-        y += paint.descent() - paint.ascent();
-        canvas.drawText("jonny", x, y, paint);
+        Paint textPaint = new Paint();
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setTextSize(20);
 
-        y += paint.descent() - paint.ascent();
-        canvas.drawText("", x, y, paint);
+        int xPos = (canvas.getWidth() / 2);
+        if (title != null) {
+            canvas.drawText(title, xPos, y, textPaint);
+        }else{
+            canvas.drawText("", xPos, y, textPaint);
+        }
 
-//horizontal line
-        path.lineTo(pageWidth, pathHeight);
-        paint2.setColor(Color.GRAY);
-        paint2.setStyle(Paint.Style.STROKE);
-        path.moveTo(x, y);
 
-        canvas.drawLine(0, y, pageWidth, y, paint2);
-
-//blank space
-        y += paint.descent() - paint.ascent();
-        canvas.drawText("", x, y, paint);
-
-        y += paint.descent() - paint.ascent();
-        x = 10;
-        canvas.drawText("i am ", x, y, paint);
-
-        y += paint.descent() - paint.ascent();
-        x = 10;
-        canvas.drawText("jaiopur", x, y, paint);
-
-//blank space
         y += paint.descent() - paint.ascent();
         canvas.drawText("", x, y, paint);
 
@@ -969,21 +956,47 @@ public class MainActivity extends AppCompatActivity {
         path.moveTo(x, y);
         canvas.drawLine(0, y, pageWidth, y, paint2);
 
+
 //blank space
         y += paint.descent() - paint.ascent();
         canvas.drawText("", x, y, paint);
 
-        Resources res = getResources();
-        Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.arrow_icon);
-        Bitmap b = (Bitmap.createScaledBitmap(bitmap, 100, 50, false));
-        canvas.drawBitmap(b, x, y, paint);
+
+
+        String str = data;
+        List<String> elephantList = Arrays.asList(str.split("\n"));
+
+        for(String item : elephantList){
+
+            y += paint.descent() - paint.ascent();
+            x = 35;
+            if (item.equals(lineValue)) {
+                String line = "--------------------------------------------------------------------------------------------";
+                canvas.drawText(line, x, y, paint);
+            }else{
+                canvas.drawText(item, x, y, paint);
+            }
+
+        }
+
+        //horizontal line
+        path.lineTo(pageWidth, pathHeight);
+        paint2.setColor(Color.GRAY);
+        paint2.setStyle(Paint.Style.STROKE);
+
+        y += 20;
+
+        path.moveTo(x, y);
+        canvas.drawLine(0, y, pageWidth, y, paint2);
+
+        //blank space
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
         y += 25;
-        canvas.drawText(getString(R.string.app_name), 120, y, paint);
-
-
+        textPaint.setTextSize(8);
+        canvas.drawText("Western Electronics Group", xPos, y, textPaint);
         myPdfDocument.finishPage(documentPage);
-
-//        File file = new File(this.getExternalFilesDir(null).getAbsolutePath() + file_name_path);
 
         try {
             myPdfDocument.writeTo(new FileOutputStream(sourceFile));
@@ -993,10 +1006,31 @@ public class MainActivity extends AppCompatActivity {
 
         myPdfDocument.close();
 
+        if (share) {
+            shareFile(outputFile);
+        }
 
 
     }
 
+
+    public  void shareFile(String filepath){
+
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+        File fileWithinMyDir = new File(filepath);
+
+        Uri photoURI = FileProvider.getUriForFile(instace, instace.getApplicationContext().getPackageName() + ".provider", fileWithinMyDir);
+
+        if(fileWithinMyDir.exists()) {
+            intentShareFile.setType("application/pdf");
+//            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+filepath));
+            intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, photoURI);
+            intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Sharing File");
+            startActivity(Intent.createChooser(intentShareFile, "Sharing File"));
+        }
+
+    }
 
 
     public static boolean hasPermissions(Context context, String... permissions) {
@@ -1009,6 +1043,199 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+
+
+
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void createSessionPdf(PDFDaily pdfDaily) {
+        Rect bounds = new Rect();
+        int pageWidth = 600;
+        int pageheight = 470;
+        int pathHeight = 2;
+
+
+        String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + File.separator + pdfDaily.getFileName();
+        File sourceFile = new File(outputFile);
+
+        PdfDocument myPdfDocument = new PdfDocument();
+        Paint paint = new Paint();
+        paint.setTextSize(10);
+
+        Paint paint2 = new Paint();
+        Path path = new Path();
+        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageheight, 1).create();
+        PdfDocument.Page documentPage = myPdfDocument.startPage(myPageInfo);
+        Canvas canvas = documentPage.getCanvas();
+        int y = 25; // x = 10,
+        int x = 10;
+
+
+        Paint textPaint = new Paint();
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setTextSize(20);
+
+        int xPos = (canvas.getWidth() / 2);
+        if (pdfDaily.title != null) {
+            canvas.drawText(pdfDaily.getTitle(), xPos, y, textPaint);
+        }else{
+            canvas.drawText("", xPos, y, textPaint);
+        }
+
+
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+
+        String line = "-----------------------------------------------------------------------------------------------------------";
+
+//horizontal line
+        path.lineTo(pageWidth, pathHeight);
+        paint2.setColor(Color.GRAY);
+        paint2.setStyle(Paint.Style.STROKE);
+        path.moveTo(x, y);
+        canvas.drawLine(0, y, pageWidth, y, paint2);
+
+        x = 40;
+        y += paint.descent() - paint.ascent();
+        canvas.drawText(pdfDaily.getReportTitle(), x, y, paint);
+
+        y += paint.descent() - paint.ascent();
+        canvas.drawText( "Date : " + pdfDaily.getDate(), x, y, paint);
+        canvas.drawText( "Session : " + pdfDaily.shift, 150, y, paint);
+        y += paint.descent() - paint.ascent();
+        canvas.drawText( line, x, y, paint);
+//blank space
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+
+
+        Paint paintDisit = new Paint();
+        paintDisit.setTextSize(10);
+        paintDisit.setTextAlign(Paint.Align.RIGHT);
+        paintDisit.setStrokeWidth(40);
+
+        // headers
+
+        y += paint.descent() - paint.ascent();
+        x = 40;
+        canvas.drawText("SNo.", x,y, paint);
+
+        x += 40;
+        canvas.drawText("Code", x,y, paint);
+
+        x += 40;
+        canvas.drawText("Member Name", x,y, paint);
+
+        x += 130;
+        canvas.drawText("Qty", x,y, paintDisit);
+
+        x += 50;
+        canvas.drawText("Fat", x,y, paintDisit);
+
+        x += 50;
+        canvas.drawText(instace.rateString(), x,y, paintDisit);
+
+        x += 60;
+        canvas.drawText("Rate", x,y, paintDisit);
+
+        x += 60;
+        canvas.drawText("Amount", x,y, paintDisit);
+
+
+
+
+        int sNo = 1;
+        for(SingleEntry entry : pdfDaily.getReportList()){
+
+            y += paint.descent() - paint.ascent();
+            x = 40;
+            canvas.drawText(String.valueOf(sNo), x,y, paint);
+            sNo += 1;
+            x += 40;
+            canvas.drawText(entry.getCode(), x,y, paint);
+
+            x += 40;
+            canvas.drawText(instace.milkDBHelpers.getMemberNameByCode(entry.getCode()), x,y, paint);
+
+            x += 130;
+            canvas.drawText(entry.getWeight(), x,y, paintDisit);
+
+            x += 50;
+            canvas.drawText(entry.getfat(), x,y, paintDisit);
+
+            x += 50;
+            canvas.drawText(entry.getSnf(), x,y, paintDisit);
+
+            x += 50;
+            canvas.drawText( MainActivity.twoDecimalString(entry.getRate()) , x,y, paintDisit);
+
+            x += 60;
+            canvas.drawText( MainActivity.twoDecimalString(entry.getAmount()), x,y, paintDisit);
+
+//           "S.No.","Code","Member Name","Qty","Fat",MainActivity.getInstace().rateString(),"Rate","AMT"
+        }
+
+        x = 40;
+        y += paint.descent() - paint.ascent();
+        canvas.drawText( line, x, y, paint);
+
+        y += paint.descent() - paint.ascent();
+        canvas.drawText( "Total Weight : " + pdfDaily.getTotalWt(), x, y, paint);
+
+        y += paint.descent() - paint.ascent();
+        canvas.drawText( "Avg FAT : " + pdfDaily.getAvgFat(), x, y, paint);
+
+        y += paint.descent() - paint.ascent();
+        canvas.drawText( "AVG SNF : " + pdfDaily.getAvgSnf(), x, y, paint);
+
+        y += paint.descent() - paint.ascent();
+        canvas.drawText( "Total Amount : " + pdfDaily.getTotalAmt(), x, y, paint);
+
+
+
+
+
+
+        //horizontal line
+        path.lineTo(pageWidth, pathHeight);
+        paint2.setColor(Color.GRAY);
+        paint2.setStyle(Paint.Style.STROKE);
+
+        y += 20;
+
+        path.moveTo(x, y);
+        canvas.drawLine(0, y, pageWidth, y, paint2);
+
+        //blank space
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+        textPaint.setTextSize(8);
+        canvas.drawText("Western Electronics Group", xPos, y, textPaint);
+        myPdfDocument.finishPage(documentPage);
+
+        try {
+            myPdfDocument.writeTo(new FileOutputStream(sourceFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        myPdfDocument.close();
+
+//        if () {
+            shareFile(outputFile);
+//        }
+
+
+    }
+
+
+
 }
 
 

@@ -409,7 +409,6 @@ public class Fragment_home extends Fragment {
         });
 
 
-        MainActivity.getInstace().createpdf();
 
     }
 
@@ -782,12 +781,8 @@ public class Fragment_home extends Fragment {
                                 value = roundToHalf(value);
                                 Log.e("--------value", String.valueOf(value));
 
-                                try {
-                                    snf = MainActivity.twoDecimalString(String.valueOf(value));
-                                    et_snf.setText(snf);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                snf = MainActivity.twoDecimalString(String.valueOf(value));
+                                et_snf.setText(snf);
 
                             }
 

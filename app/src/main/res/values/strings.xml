@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Milk V2.2</string>
+    <string name="app_name" translatable="false">Milk V2.3</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="verify_by_mobile_phone">Verify By Pin</string>

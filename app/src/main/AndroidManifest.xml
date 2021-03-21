@@ -1,5 +1,6 @@
 <?xml version="1.1" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.milk.milkcollection">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -16,6 +17,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
 
+
     <application
         android:name=".application.AppApplication"
         android:allowBackup="true"
@@ -24,10 +26,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+
+
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+
         <!-- <activity android:name=".SClient" android:screenOrientation="portrait"> -->
         <activity
             android:name=".Activity.SplashActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,13 +52,14 @@
         </activity>
         <activity
             android:name=".Activity.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".Activity.PinActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <activity
             android:name=".Activity.New"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
     </application>
+
 
 </manifest>
