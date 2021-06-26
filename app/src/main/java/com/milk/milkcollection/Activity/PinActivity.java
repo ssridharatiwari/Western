@@ -423,7 +423,6 @@ public class PinActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = AppUrl.mainUrl + "android_id=" + AndroidID + "&action=2";
-
         Log.e("final ulr", url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
