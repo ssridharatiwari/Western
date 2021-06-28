@@ -786,14 +786,11 @@ public class Fragment_home extends Fragment {
 
                             }
 
-                            Log.e("fat pre 0 ----", String.valueOf((fat)));
-//                            fat = MainActivity.twoDecimalString(fat);
-//                            snf = MainActivity.twoDecimalString(snf);
-                            Log.e("fat pre 1 ----", String.valueOf((fat)));
-
                             rateMain = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
 
                             if (rateMain == 0){
+                                rate.setText("0.0");
+                                total.setText("0.0");
                                 Toast.makeText(getActivity(), "rate not found", Toast.LENGTH_LONG).show();
                             } else {
 
@@ -1054,16 +1051,31 @@ public class Fragment_home extends Fragment {
 
                         try {
                             Log.e("resonce", response);
+                            Log.e("resonce", String.valueOf(response.length()));
+
+
 
                             if (response.length() > 0) {
-
                                 JSONObject jsonObject = new JSONObject(response);
+                                String authStatus = jsonObject.getString("status");
 
+                                if (authStatus == "401"){
+                                    exit(0);
+                                }
 
                                 jsonObject = jsonObject.getJSONObject("details");
                                 String status = jsonObject.getString("status").toString();
-                                String hc_05 = jsonObject.getString("hc_05_enable").toString();
 
+                                String hc_05 = "0";
+                                try {
+                                     hc_05 = jsonObject.getString("hc_05_enable").toString();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    MainActivity.dismiss();
+                                }
+
+
+                                Log.e("should exit mobile app",status);
                                 sharedPreferencesUtils.setHC05(hc_05);
 
                                 if (!status.equals("")){
@@ -1089,6 +1101,9 @@ public class Fragment_home extends Fragment {
                                     sharedPreferencesUtils.setMobile("DEMO");
                                 }
                                 else {
+                                    Log.e("should exit mobile app", String.valueOf(jsonObject));
+                                    exit(1);
+
                                     exit(0);
                                 }
 
@@ -1096,10 +1111,8 @@ public class Fragment_home extends Fragment {
                               //   MainActivity.showToast("Network Error");
                             }
                         } catch (JSONException e) {
-
                             e.printStackTrace();
                             MainActivity.dismiss();
-
                         }
                     }
                 }, new com.android.volley.Response.ErrorListener() {

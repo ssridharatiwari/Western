@@ -12,11 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 public class AppUrl {
-        public static String mainUrl = "http://wokosoftware.com/western/index4.php?";
-
-
-
-
+        public static String mainUrl = "http://wokosoftware.com/western/index6.php?";
+//      public static String mainUrl = "http://192.168.29.160/wes/index4.php?";
 }
 
 

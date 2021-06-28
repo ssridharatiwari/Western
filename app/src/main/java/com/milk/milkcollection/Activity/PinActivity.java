@@ -83,7 +83,7 @@ public class PinActivity extends AppCompatActivity {
     EditText title, mobile, venderCode;
     String settitle;
     SharedPreferencesUtils sharedPreferencesUtils;
-    public String  mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "";
+    public String  mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "",loginStatus="",userStatus,userID;
 
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
 
@@ -136,6 +136,11 @@ public class PinActivity extends AppCompatActivity {
             btnVerify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mobile_string = mobile.getText().toString();
+                    if (mobile_string.length() < 10) {
+                        makeToast("mobile number required");
+                        return;
+                    }
 
                     showLoading("Wait...");
                     hideSoftKeyBoard();
@@ -335,11 +340,11 @@ public class PinActivity extends AppCompatActivity {
 
     private void startNewActivity(){
 
+        setStatus("1");
         startActivity(new Intent(PinActivity.this, MainActivity.class));
         sharedPreferencesUtils.setTitle(settitle);
         sharedPreferencesUtils.setMobile(mobile_string);
         sharedPreferencesUtils.printBy("blutooth");
-
         finish();
 
     }
@@ -412,17 +417,16 @@ public class PinActivity extends AppCompatActivity {
     private void verifyDetailApi(){
 
 
+
         if (!isNetworkConnected()){
             makeToast("Internet Required");
             progress.dismiss();
             return;
         }
-
-
         if (AndroidID.length() > 0) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = AppUrl.mainUrl + "android_id=" + AndroidID + "&action=2";
+        String url = AppUrl.mainUrl + "android_id=" + AndroidID + "&action=2&mobile=" + mobile_string;
         Log.e("final ulr", url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -432,11 +436,9 @@ public class PinActivity extends AppCompatActivity {
 
                         try {
                             Log.e("resonce", response);
-
                             if (response.length() > 0) {
 
                                 JSONObject jsonObject = new JSONObject(response);
-
                                 String jsonStatus = jsonObject.getString("status").toString();
 
                                 if (jsonStatus.equals("401")){
@@ -448,16 +450,17 @@ public class PinActivity extends AppCompatActivity {
 
                                     jsonObject = jsonObject.getJSONObject("details");
 
-                                    String userStatus = jsonObject.getString("status").toString();
-                                    if (!userStatus.equals("")){
-                                        setStatus(userStatus);
-                                    }
+                                    userStatus = jsonObject.getString("status").toString();
+                                    loginStatus = jsonObject.getString("login_status_1").toString();
+//                                    if (!userStatus.equals("")){
+//                                        setStatus(userStatus);
+//                                    }
 
 
 
                                     if (userStatus.equals("1")){
 
-                                        String userID = jsonObject.getString("id").toString();
+                                        userID = jsonObject.getString("id").toString();
 
                                         if (userID != "") {
                                             sharedPreferencesUtils.setUserId(userID);
@@ -472,8 +475,8 @@ public class PinActivity extends AppCompatActivity {
                                         String vid = jsonObject.getString("vender_id").toString();
                                         String vphone = jsonObject.getString("vphone").toString();
                                         setVender(vname,vphone,vid);
-                                        startNewActivity();
 
+                                        startNewActivity();
 
                                     }else if (userStatus.equals("2")){
 
@@ -517,6 +520,34 @@ public class PinActivity extends AppCompatActivity {
     }
     }
 
+    private  void customDialog(){
+
+        String message = "Login";
+        if (loginStatus.equals("0")) {
+            message = "Login status pending. contact western";
+        }
+
+        new AlertDialog.Builder(PinActivity.this)
+            .setTitle("Start Application")
+            .setMessage(message)
+
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                 if (loginStatus.equals("1") && userStatus.equals("1")){
+                     changeLoginStaus();
+                     startNewActivity();
+                 }else{
+                     verifyDetailApi();
+                 }
+                }
+            })
+
+            .setNegativeButton(android.R.string.no, null)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show();
+    }
+
+
 
     public void setStatus (String status){
 
@@ -533,6 +564,41 @@ public class PinActivity extends AppCompatActivity {
 
     }
 
+
+    public void changeLoginStaus(){
+
+
+            if (!isNetworkConnected()){
+                makeToast("Internet Required");
+                progress.dismiss();
+                return;
+            }
+
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url = AppUrl.mainUrl + "action=12&user_id=" + userID;
+            Log.e("final ulr", url);
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            progress.dismiss();
+
+                                Log.e("resonce", response);
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    progress.dismiss();
+                    makeToast("Detail sending failed : network or server error");
+                    // Log.e("Not working ", error.getMessage());
+                }
+            });
+            queue.add(stringRequest);
+
+            progress.dismiss();
+
+    }
 
 
 
@@ -664,12 +730,6 @@ public class PinActivity extends AppCompatActivity {
 
     }
 
-
-    String userID = "";
-
-
-
-
     private void verifyOLDUSER(){
 
 
@@ -677,6 +737,8 @@ public class PinActivity extends AppCompatActivity {
             makeToast("Internet Required");
             return;
         }
+
+
 
         showLoading("Wait...");
 

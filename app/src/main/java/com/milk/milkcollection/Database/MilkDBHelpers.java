@@ -632,8 +632,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
 
 
-    public String getRatePerLiter(String fat,String snf)
-    {
+    public String getRatePerLiter(String fat,String snf) throws IOException {
 
 		Log.e("fat pre ----", String.valueOf((fat)));
 
@@ -726,14 +725,17 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
         }
         else if (rateMethod.equals("2")){
 
+        	SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 
+			fat = MainActivity.oneDecimalString(fat);
+			snf = MainActivity.oneDecimalString(snf);
 
-            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-
-            Cursor cursor = sqLiteDatabase.rawQuery("Select * From 'ratechart' WHERE fat ='" + fat + "' and snf ='" + snf + "'", null);
+			String query  = "Select * From 'ratechart' WHERE fat =" + fat + " and snf =" + snf + "";
+            Log.e("quey",query);
+            Cursor cursor = sqLiteDatabase.rawQuery(query, null);
 
             if (cursor != null && cursor.moveToFirst()) {
-
+				Log.e("rates",String.valueOf(cursor.getString(cursor.getColumnIndex("rate"))));
                 return  (String.valueOf(cursor.getString(cursor.getColumnIndex("rate"))));
             }
             else{
@@ -742,7 +744,8 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
             }
         }else if (rateMethod.equals("3")){
 
-
+			fat = MainActivity.oneDecimalString(fat);
+			snf = MainActivity.oneDecimalString(snf);
 
 			SQLiteDatabase sqLiteDatabase = getReadableDatabase();
             Cursor cursor = sqLiteDatabase.rawQuery("Select * From 'ratechartclr' WHERE fat ='" + fat + "' and snf ='" + snf + "'", null);
