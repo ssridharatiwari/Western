@@ -127,10 +127,6 @@ public class Fragment_Excel extends Fragment {
 
         SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(MainActivity.instace);
         rateMethod =  sharedPreferencesUtils.getRateMethodCode();
-
-
-
-
         btn_select.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -138,10 +134,6 @@ public class Fragment_Excel extends Fragment {
                 callIntent();
             }
         });
-
-
-
-
         btn_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -407,34 +399,36 @@ public class Fragment_Excel extends Fragment {
                             cursor.moveToNext();
                         }
                     }else{
-                        MainActivity.showToast("No data found");
+                        MainActivity.showToast("No fatsnf data found");
                     }
 
                 }else{
 
                     milkDBHelpers = new MilkDBHelpers(getActivity());
                     SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
+
+
+                    fat = MainActivity.oneDecimalString(fat);
+                    snf = MainActivity.oneDecimalString(snf);
+
                     Cursor cursor = sqLiteDatabase.rawQuery("Select * From 'ratechartclr' WHERE fat ='" + fat + "' and snf ='" + snf + "'", null);
-                    cursor.moveToFirst();
 
-                    if (cursor != null) {
-                        while (cursor.isAfterLast() == false) {
 
-                            txt_rate.setText(cursor.getString(cursor.getColumnIndex("rate")));
-                            et_rate.setText(cursor.getString(cursor.getColumnIndex("rate")));
-                            id_rate = cursor.getString(cursor.getColumnIndex("Id"));
+                    if (cursor != null && cursor.moveToFirst()) {
+                           String rate = (String.valueOf(cursor.getString(cursor.getColumnIndex("rate"))));
+                        et_rate.setText(cursor.getString(cursor.getColumnIndex("rate")));
+                        id_rate = cursor.getString(cursor.getColumnIndex("Id"));
 
-                            btn_save.setVisibility(View.VISIBLE);
-                            text_temp.setVisibility(View.VISIBLE);
-                            et_rate.setVisibility(View.VISIBLE);
-                            cursor.moveToNext();
-                        }
+                        et_rate.setVisibility(View.VISIBLE);
+                        btn_save.setVisibility(View.VISIBLE);
+                        text_temp.setVisibility(View.VISIBLE);
                     } else {
-                        MainActivity.showToast("No data found");
+                        MainActivity.showToast("No clr data found");
                     }
                 }
 
         } catch (Exception e) {
+            Log.e("error",e.getLocalizedMessage());
                 Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
         }
     }
@@ -770,6 +764,7 @@ class FilePath {
      * @param uri
      * @return path of the selected image file from gallery
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static String getPath(final Context context, final Uri uri) {
 
         // check here to KITKAT or new version

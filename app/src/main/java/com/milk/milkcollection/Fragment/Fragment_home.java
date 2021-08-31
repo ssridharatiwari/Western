@@ -770,20 +770,9 @@ public class Fragment_home extends Fragment {
             else if (snf.length() == 0)
                 et_snf.setError("Snf is required!");
             else {
-
-                        try
-                        {
-
-
+                        try {
                             if (sharedPreferencesUtils.getRateMethodCode().equals("3")){
-                                double value = Double.parseDouble(snf);
-
-                                value = roundToHalf(value);
-                                Log.e("--------value", String.valueOf(value));
-
-                                snf = MainActivity.twoDecimalString(String.valueOf(value));
-                                et_snf.setText(snf);
-
+                                snf = MainActivity.twoDecimalString(String.valueOf(snf));
                             }
 
                             rateMain = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
