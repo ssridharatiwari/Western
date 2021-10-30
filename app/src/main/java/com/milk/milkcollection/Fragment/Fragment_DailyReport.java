@@ -384,8 +384,8 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
                             entry.getWeight(),
                             entry.getfat(),
                             entry.getSnf(),
-                            entry.getRate(),
-                            entry.getAmount());
+                            MainActivity.twoDecimalString(entry.getRate()),
+                            MainActivity.twoDecimalString(entry.getAmount()));
 
 
                     cursor.moveToNext();
@@ -464,6 +464,7 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
 
 
     private void shareDialog() {
+
         final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Summery","Print Total Summery","Share Pdf"};
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Send Report");
@@ -510,8 +511,6 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
                 }
                 else if (options[item].equals("Print Summery")) {
                   print(message);
-
-
                 }
                 else if (options[item].equals("Print Total Summery")) {
                     if (totalSummery.length() > 0){
@@ -521,7 +520,7 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
                 }
 
                 else if (options[item].equals("Share Pdf")) {
-                    instace.createSessionPdf(pdfDaily);
+                    pdfDaily.createSessionPdf(pdfDaily);
                 }
 
 
@@ -537,23 +536,19 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
             return "";
         }
 
-        String titlename = MainActivity.getInstace().sharedPreferencesUtils.getTitle();
+        String titleName = MainActivity.getInstace().sharedPreferencesUtils.getTitle();
 
-        String summery = titlename + "\nShift Report\n"+startDateView.getText()+"  "+shifts+ "\n" + MainActivity.lineBreak() +
+        String summery = titleName + "\nShift Report\n"+startDateView.getText()+"  "+shifts+ "\n" + MainActivity.lineBreak() +
                          "\nTotal Milk Weight : " + daily_wight.getText() +
                          "\nAvg Fat : " + daily_fat.getText() +
                          "\nAvg " + MainActivity.getInstace().rateString()+ ": " + daily_fat.getText() +
                          "\nTotal Amount : " + daily_amut.getText();
-
-
         return  summery;
     }
-
 
     private void print(String printString){
         MainActivity.getInstace().print(printString);
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void uploadFile() {

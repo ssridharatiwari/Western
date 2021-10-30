@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,6 +35,7 @@ import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.Member;
+import com.milk.milkcollection.model.PDFMermberReport;
 import com.milk.milkcollection.model.SingleEntry;
 
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ public class Fragment_SingleReport extends Fragment {
 
     List<String> arrayPrints = new ArrayList<>();
 
+    PDFMermberReport report = new PDFMermberReport();
 
     public Fragment_SingleReport() {
     }
@@ -394,12 +398,8 @@ public class Fragment_SingleReport extends Fragment {
                     }
                 }
 
-
-
                 searchweight.setText("Wgt:- "+MainActivity.twoDecimalFloatToString(weightsize)+" Kg");
                 searchamount.setText("Amt:- "+MainActivity.twoDecimalFloatToString(amountsize)+" /-");
-
-
                 printString = "";
 
                 SharedPreferencesUtils  sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
@@ -411,13 +411,9 @@ public class Fragment_SingleReport extends Fragment {
                         + MainActivity.twoDecimalFloatToString(weightsize)+" Kg" +"\nTotal Amt : "
                         + MainActivity.twoDecimalFloatToString(amountsize)+"Rs";
 
-
-
-
-
-
-
-
+                report.setData(title,"Member Ladger", memberNameReal, membername, startdate, enddate);
+                report.setAmounts(weightsize,amountsize);
+                report.setArray(singleReportList);
 
 
             } catch (Exception e) {
@@ -461,10 +457,11 @@ public class Fragment_SingleReport extends Fragment {
 
 
     private void shareDialog() {
-        final CharSequence[] options = { "WhatsApp", "Mail","Other Share","Print Report" };
+        final CharSequence[] options = { "WhatsApp", "Mail","Other Share","Print Report" ,"Share PDF" };
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Send Report");
         adb.setItems(options, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(DialogInterface dialog, int item) {
 
@@ -499,29 +496,9 @@ public class Fragment_SingleReport extends Fragment {
                     sentIntent.setType("text/plain");
                     startActivity(sentIntent);
                 } else if (options[item].equals("Print Report")) {
-
                     print(printString);
-
-//                    String[] items = printString.split("\n");
-//                    if (items.length > 25) {
-//                        int index = 0;
-//                        String data = "";
-//
-//                        for (String str : items){
-//
-//                            data = data + "\n" + str;
-//                            if (index%25 == 0){
-//                                print(data);
-//                            }else{
-//                                data = "";
-//                            }
-//
-//                            index ++;
-//                        }
-//                    }else{
-//                        print(printString);
-//                    }
-
+                } else if (options[item].equals("Share PDF")) {
+                    report.createSessionPdf(report);
                 }
             }
         });

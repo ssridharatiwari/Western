@@ -1,18 +1,14 @@
 package com.milk.milkcollection.model;
 
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.pdf.PdfDocument;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.milk.milkcollection.Activity.MainActivity;
 
@@ -21,70 +17,61 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by Er. Arjun on 06-03-2016.
- */
-public class PDFDaily {
+
+public class PDFMermberReport {
 
     public ArrayList<SingleEntry> reportList = new ArrayList<>();
-    public String date  = "";
-    public String shift  = "";
+    public String dateStart  = "";
+    public String dateEnd  = "";
     public String title = "";
+    public String member = "";
+    public String code = "";
     public String reportTitle = "";
     public String fileName = "";
-    public String rate = "";
     public String totalWt = "0";
-    public String avgFat = "0";
-    public String avgSnf = "0";
     public String totalAmt = "0";
 
-    public PDFDaily(){}
+    public PDFMermberReport(){}
 
 
-    public  void setAmounts(Float wt, Float snf,Float fat, Float totalAmt) {
+    public  void setAmounts(Float wt, Float totalAmt) {
 
         try {
             this.totalWt = (MainActivity.twoDecimalFloatToString(wt));
-            this.avgFat = (MainActivity.twoDecimalFloatToString(fat));
-            this.avgSnf = (MainActivity.twoDecimalFloatToString(snf));
             this.totalAmt = (MainActivity.twoDecimalFloatToString(totalAmt));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void setData(String title, String date, String reportTitle,String shift,String fileName) {
+    public void setData(String title, String reportTitle,String member,String code, String dateStart, String dateEnd) {
         this.title = title;
-        this.date = date;
         this.reportTitle = reportTitle;
-        this.shift = shift;
-        this.fileName = fileName;
+        this.member = member;
+        this.code = code;
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
     }
 
     public void setArray(ArrayList<SingleEntry> array){
         this.reportList = array;
     }
-
     public  String getFileName(){ return  fileName; }
     public  ArrayList<SingleEntry> getReportList(){ return  reportList; }
-    public  String getDate(){ return  date; }
     public  String getTitle(){ return  title; }
     public  String getReportTitle(){ return  reportTitle; }
     public  String getTotalWt(){ return  totalWt; }
-    public  String getAvgSnf(){ return  avgSnf; }
-    public  String getAvgFat(){ return  avgFat; }
     public  String getTotalAmt(){ return  totalAmt; }
-    public  String getShift(){ return  shift; }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void createSessionPdf(PDFDaily pdfDaily) {
+    public void createSessionPdf(PDFMermberReport pdfDaily) {
             Rect bounds = new Rect();
             int pageWidth = 600;
             int pageheight = 200 + 11 * pdfDaily.getReportList().size();
             int pathHeight = 2;
 
             String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    + File.separator + pdfDaily.getFileName();
+                    + File.separator + "mermber-report.pdf";
             File sourceFile = new File(outputFile);
 
             PdfDocument myPdfDocument = new PdfDocument();
@@ -125,13 +112,17 @@ public class PDFDaily {
             canvas.drawText(pdfDaily.getReportTitle(), x, y, paint);
 
             y += paint.descent() - paint.ascent();
-            canvas.drawText( "Date : " + pdfDaily.getDate(), x, y, paint);
-            canvas.drawText( "Session : " + pdfDaily.shift, 150, y, paint);
+            canvas.drawText(pdfDaily.member , x, y, paint);
+
+            y += paint.descent() - paint.ascent();
+            canvas.drawText("code  : " + pdfDaily.code, x, y, paint);
+
+            y += paint.descent() - paint.ascent();
+            canvas.drawText( "Date : " + pdfDaily.dateStart +  "    to    " + pdfDaily.dateEnd, x, y, paint);
+
             y += paint.descent() - paint.ascent();
             canvas.drawLine(0, y, pageWidth, y, paint2);
             //blank space
-            y += paint.descent() - paint.ascent();
-            canvas.drawText("", x, y, paint);
 
             Paint paintDisit = new Paint();
             paintDisit.setTextSize(10);
@@ -142,58 +133,46 @@ public class PDFDaily {
 
             y += paint.descent() - paint.ascent();
             x = 40;
-            canvas.drawText("SNo.", x,y, paint);
+            canvas.drawText("Date", x,y, paint);
 
-            x += 40;
-            canvas.drawText("Code", x,y, paint);
+            x += 70;
+            canvas.drawText("Qty", x,y, paint);
 
-            x += 40;
-            canvas.drawText("Member Name", x,y, paint);
+            x += 60;
+            canvas.drawText("Fat", x,y, paint);
 
-            x += 140;
-            canvas.drawText("Qty", x,y, paintDisit);
-
-            x += 50;
-            canvas.drawText("Fat", x,y, paintDisit);
-
-            x += 50;
-            canvas.drawText(MainActivity.instace.rateString(), x,y, paintDisit);
+            x += 60;
+            canvas.drawText("Snf", x,y, paintDisit);
 
             x += 60;
             canvas.drawText("Rate", x,y, paintDisit);
 
-            x += 60;
-            canvas.drawText("Amount", x,y, paintDisit);
+            x += 70;
+            canvas.drawText("Amt", x,y, paintDisit);
 
-            int sNo = 1;
+
+
             for(SingleEntry entry : pdfDaily.getReportList()){
 
                 y += paint.descent() - paint.ascent();
                 x = 40;
-                canvas.drawText(String.valueOf(sNo), x,y, paint);
-                sNo += 1;
-                x += 40;
-                canvas.drawText(entry.getCode(), x,y, paint);
+                canvas.drawText(String.valueOf(entry.getDatesave()), x,y, paint);
 
-                x += 40;
-                canvas.drawText(MainActivity.instace.milkDBHelpers.getMemberNameByCode(entry.getCode()), x,y, paint);
+                x += 70;
+                canvas.drawText(entry.getWeight(), x,y, paint);
 
-                x += 140;
-                canvas.drawText(entry.getWeight(), x,y, paintDisit);
+                x += 60;
+                canvas.drawText(entry.getfat(), x,y, paint);
 
-                x += 50;
-                canvas.drawText(entry.getfat(), x,y, paintDisit);
-
-                x += 50;
+                x += 60;
                 canvas.drawText(entry.getSnf(), x,y, paintDisit);
 
                 x += 60;
-                canvas.drawText( MainActivity.twoDecimalString(entry.getRate()) , x,y, paintDisit);
+                canvas.drawText( MainActivity.twoDecimal( entry.getRate()), x,y, paintDisit);
 
-                x += 60;
-                canvas.drawText( MainActivity.twoDecimalString(entry.getAmount()), x,y, paintDisit);
+                x += 70;
+                canvas.drawText(MainActivity.twoDecimal( entry.getAmount()), x,y, paintDisit);
             }
-
 
 
             x = 40;
@@ -204,17 +183,10 @@ public class PDFDaily {
             canvas.drawText( "Total Weight : " + pdfDaily.getTotalWt(), x, y, paint);
 
             y += paint.descent() - paint.ascent();
-            canvas.drawText( "Avg FAT : " + pdfDaily.getAvgFat(), x, y, paint);
-
-            y += paint.descent() - paint.ascent();
-            canvas.drawText( "AVG SNF : " + pdfDaily.getAvgSnf(), x, y, paint);
-
-            y += paint.descent() - paint.ascent();
             canvas.drawText( "Total Amount : " + pdfDaily.getTotalAmt(), x, y, paint);
 
 
-
-            //horizontal line
+            // horizontal line
             path.lineTo(pageWidth, pathHeight);
             paint2.setColor(Color.GRAY);
             paint2.setStyle(Paint.Style.STROKE);
@@ -231,7 +203,6 @@ public class PDFDaily {
             textPaint.setTextSize(8);
             canvas.drawText("Western Electronics Group", xPos, y, textPaint);
             myPdfDocument.finishPage(documentPage);
-
 
             try {
                 myPdfDocument.writeTo(new FileOutputStream(sourceFile));

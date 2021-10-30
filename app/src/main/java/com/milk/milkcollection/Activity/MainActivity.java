@@ -394,33 +394,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
     public void print(String  string) {
 
-        instace.printMainMethod(string);
-//        String[] items  = string.split("\n");
-//        if ( items.length>25){
-//
-//            final ArrayList<String> mylist = new ArrayList<String>();
-//            String check = "";
-//            for (int i = 0; i < items.length; i++) {
-//                check = check + "\n" + items[i];
-//                if (i%25==0){
-//                    mylist.add(check);
-//                    check = "";
-//                }
-//            }
-//
-//            mylist.add(check);
-//            recursiveMethod(0,mylist);
-//
-//        }else{
-//            instace.printMainMethod(string);
-//        }
+        String  printBy = sharedPreferencesUtils.getprintBy();
+        if (printBy.equals("blutooth")) {
+            String[] items  = string.split("\n");
 
-     }
+            int splitValue = 25;
+            if (items.length>splitValue){
+
+                final ArrayList<String> mylist = new ArrayList<String>();
+                String check = "";
+                for (int i = 0; i < items.length; i++) {
+                    check = check + "\n" + items[i];
+                    if (i%splitValue==0 && i>0) {
+                        mylist.add(check);
+                        check = "";
+                    }
+                }
+                mylist.add(check);
+                printFromBluthooth(" \n");
+                recursiveMethod(0,mylist);
+
+            }else{
+                instace.printMainMethod(string);
+            }
+
+        }else{
+            instace.printMainMethod(string);
+        }
+
+    }
+
+
 
     public void recursiveMethod(final int count, final ArrayList mylist){
 
@@ -430,27 +436,25 @@ public class MainActivity extends AppCompatActivity {
              handler.postDelayed(new Runnable() {
                  @Override
                  public void run() {
-
-                     String toPrint = (String) mylist.get(finalI);
-                     if (finalI==mylist.size()-1){
-                         toPrint = toPrint + " _WESTERN_JAIPUR_ \n";
-                     }
-                     instace.printMainMethod(toPrint);
-                     recursiveMethod(count+1,mylist);
+                 String toPrint = (String) mylist.get(finalI);
+                 if (finalI==mylist.size()-1){
+                     toPrint = toPrint + " \n_WESTERN_JAIPUR_ \n\n";
                  }
-             }, 1000);
+                 printFromBluthooth(toPrint);
+                 recursiveMethod(count+1,mylist);
+                 }
+             }, 4000);
          }
 
 
      }
 
 
+
     public void printMainMethod(String  printSTRING) {
 
         if (sharedPreferencesUtils.getWelcomeText().length() > 0) {
             printSTRING = printSTRING + "\n " + sharedPreferencesUtils.getWelcomeText();
-//            Log.e("gone -- ",printSTRING);
-//            Log.e("gone -- ",sharedPreferencesUtils.getWelcomeText());
         }
 
         if (printSTRING.length() > 0) {
@@ -463,9 +467,7 @@ public class MainActivity extends AppCompatActivity {
              if (printBy.equals("wifi")) {
 
 
-
-                } else if (printBy.equals("blutooth")) {
-
+             } else if (printBy.equals("blutooth")) {
                    printFromBluthooth(printSTRING+"\n\n");
              }
                  else {
@@ -489,6 +491,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         }
     }
+
 
 
 
@@ -1043,197 +1046,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
-
-
-
-
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void createSessionPdf(PDFDaily pdfDaily) {
-        Rect bounds = new Rect();
-        int pageWidth = 600;
-        int pageheight = 470;
-        int pathHeight = 2;
-
-
-        String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                + File.separator + pdfDaily.getFileName();
-        File sourceFile = new File(outputFile);
-
-        PdfDocument myPdfDocument = new PdfDocument();
-        Paint paint = new Paint();
-        paint.setTextSize(10);
-
-        Paint paint2 = new Paint();
-        Path path = new Path();
-        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageheight, 1).create();
-        PdfDocument.Page documentPage = myPdfDocument.startPage(myPageInfo);
-        Canvas canvas = documentPage.getCanvas();
-        int y = 25; // x = 10,
-        int x = 10;
-
-
-        Paint textPaint = new Paint();
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setTextSize(20);
-
-        int xPos = (canvas.getWidth() / 2);
-        if (pdfDaily.title != null) {
-            canvas.drawText(pdfDaily.getTitle(), xPos, y, textPaint);
-        }else{
-            canvas.drawText("", xPos, y, textPaint);
-        }
-
-
-        y += paint.descent() - paint.ascent();
-        canvas.drawText("", x, y, paint);
-
-
-        String line = "-----------------------------------------------------------------------------------------------------------";
-
-//horizontal line
-        path.lineTo(pageWidth, pathHeight);
-        paint2.setColor(Color.GRAY);
-        paint2.setStyle(Paint.Style.STROKE);
-        path.moveTo(x, y);
-        canvas.drawLine(0, y, pageWidth, y, paint2);
-
-        x = 40;
-        y += paint.descent() - paint.ascent();
-        canvas.drawText(pdfDaily.getReportTitle(), x, y, paint);
-
-        y += paint.descent() - paint.ascent();
-        canvas.drawText( "Date : " + pdfDaily.getDate(), x, y, paint);
-        canvas.drawText( "Session : " + pdfDaily.shift, 150, y, paint);
-        y += paint.descent() - paint.ascent();
-        canvas.drawText( line, x, y, paint);
-//blank space
-        y += paint.descent() - paint.ascent();
-        canvas.drawText("", x, y, paint);
-
-
-
-        Paint paintDisit = new Paint();
-        paintDisit.setTextSize(10);
-        paintDisit.setTextAlign(Paint.Align.RIGHT);
-        paintDisit.setStrokeWidth(40);
-
-        // headers
-
-        y += paint.descent() - paint.ascent();
-        x = 40;
-        canvas.drawText("SNo.", x,y, paint);
-
-        x += 40;
-        canvas.drawText("Code", x,y, paint);
-
-        x += 40;
-        canvas.drawText("Member Name", x,y, paint);
-
-        x += 130;
-        canvas.drawText("Qty", x,y, paintDisit);
-
-        x += 50;
-        canvas.drawText("Fat", x,y, paintDisit);
-
-        x += 50;
-        canvas.drawText(instace.rateString(), x,y, paintDisit);
-
-        x += 60;
-        canvas.drawText("Rate", x,y, paintDisit);
-
-        x += 60;
-        canvas.drawText("Amount", x,y, paintDisit);
-
-
-
-
-        int sNo = 1;
-        for(SingleEntry entry : pdfDaily.getReportList()){
-
-            y += paint.descent() - paint.ascent();
-            x = 40;
-            canvas.drawText(String.valueOf(sNo), x,y, paint);
-            sNo += 1;
-            x += 40;
-            canvas.drawText(entry.getCode(), x,y, paint);
-
-            x += 40;
-            canvas.drawText(instace.milkDBHelpers.getMemberNameByCode(entry.getCode()), x,y, paint);
-
-            x += 130;
-            canvas.drawText(entry.getWeight(), x,y, paintDisit);
-
-            x += 50;
-            canvas.drawText(entry.getfat(), x,y, paintDisit);
-
-            x += 50;
-            canvas.drawText(entry.getSnf(), x,y, paintDisit);
-
-            x += 50;
-            canvas.drawText( MainActivity.twoDecimalString(entry.getRate()) , x,y, paintDisit);
-
-            x += 60;
-            canvas.drawText( MainActivity.twoDecimalString(entry.getAmount()), x,y, paintDisit);
-
-//           "S.No.","Code","Member Name","Qty","Fat",MainActivity.getInstace().rateString(),"Rate","AMT"
-        }
-
-        x = 40;
-        y += paint.descent() - paint.ascent();
-        canvas.drawText( line, x, y, paint);
-
-        y += paint.descent() - paint.ascent();
-        canvas.drawText( "Total Weight : " + pdfDaily.getTotalWt(), x, y, paint);
-
-        y += paint.descent() - paint.ascent();
-        canvas.drawText( "Avg FAT : " + pdfDaily.getAvgFat(), x, y, paint);
-
-        y += paint.descent() - paint.ascent();
-        canvas.drawText( "AVG SNF : " + pdfDaily.getAvgSnf(), x, y, paint);
-
-        y += paint.descent() - paint.ascent();
-        canvas.drawText( "Total Amount : " + pdfDaily.getTotalAmt(), x, y, paint);
-
-
-
-
-
-
-        //horizontal line
-        path.lineTo(pageWidth, pathHeight);
-        paint2.setColor(Color.GRAY);
-        paint2.setStyle(Paint.Style.STROKE);
-
-        y += 20;
-
-        path.moveTo(x, y);
-        canvas.drawLine(0, y, pageWidth, y, paint2);
-
-        //blank space
-        y += paint.descent() - paint.ascent();
-        canvas.drawText("", x, y, paint);
-
-        textPaint.setTextSize(8);
-        canvas.drawText("Western Electronics Group", xPos, y, textPaint);
-        myPdfDocument.finishPage(documentPage);
-
-        try {
-            myPdfDocument.writeTo(new FileOutputStream(sourceFile));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        myPdfDocument.close();
-
-//        if () {
-            shareFile(outputFile);
-//        }
-
-
-    }
-
 
 
 }
