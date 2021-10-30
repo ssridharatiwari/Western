@@ -9,7 +9,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,7 @@ import com.milk.milkcollection.adapter.PaymentReportAdapter;
 import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+import com.milk.milkcollection.model.PDFPaymentReport;
 import com.milk.milkcollection.model.PaymentReport;
 
 import java.io.IOException;
@@ -64,6 +67,7 @@ public class FragmentPaymentReport extends Fragment {
     private ArrayList<String> memberCodeArrayList;
     private ArrayList<String>member_name;
     public TextView toolbartitle;
+    PDFPaymentReport report = new PDFPaymentReport();
 
     private AutoCompleteTextView acFrom,acTo;
     @Override
@@ -253,22 +257,22 @@ public class FragmentPaymentReport extends Fragment {
                     }
 
                     cursor.moveToNext();
-
                 }
-
                 searchweight.setText("Wgt:-" + (MainActivity.twoDecimalFloatToString(totalWeight)) + "Kg");
                 searchamount.setText("Amt:-" + (MainActivity.twoDecimalFloatToString(totalAmount)) + "/-");
-
             }
 
             message = "Payment Report\n"+message+ "\n*******************************\n"+"Total weight  : "+ MainActivity.twoDecimalFloatToString( totalWeight)+"\n" + "Total Amount  : " +MainActivity.twoDecimalFloatToString(totalAmount) +" RS";
-
             SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-
             String titlename = sharedPreferencesUtils.getTitle();
             message = titlename + "\n" + message;
-
             totalSummery = "";
+
+            report.setAmounts(totalWeight,totalAmount);
+            report.setArray(singleReportList);
+            report.setData(titlename,"",startdate,enddate);
+            return;
+
         } catch (Exception e) {
 
         }
@@ -314,10 +318,11 @@ public class FragmentPaymentReport extends Fragment {
 
     private void shareDialog(){
 
-        final CharSequence[] options = { "WhatsApp", "Mail","Other Share","Print Report"};
+        final CharSequence[] options = { "WhatsApp", "Mail","Other Share","Print Report","Share PDF"};
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Send Payment Report");
         adb.setItems(options, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (options[item].equals("WhatsApp")) {
@@ -361,11 +366,10 @@ public class FragmentPaymentReport extends Fragment {
                     startActivity(sentIntent);
 
                     Log.e("",message);
-                }
-
-                else if (options[item].equals("Print Report")) {
-
-                 print(message);
+                } else if (options[item].equals("Print Report")) {
+                    print(message);
+                } else if (options[item].equals("Share PDF")) {
+                    report.createSessionPdf(report);
                 }
             }
         });
