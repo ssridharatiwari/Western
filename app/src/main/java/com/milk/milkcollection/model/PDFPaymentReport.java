@@ -63,7 +63,8 @@ public class PDFPaymentReport {
     public void createSessionPdf(PDFPaymentReport pdfDaily) {
             Rect bounds = new Rect();
             int pageWidth = 600;
-            int pageheight = 200 + 11 * pdfDaily.getReportList().size();
+            int yspace = 16;
+            int pageheight = 200 + yspace * pdfDaily.getReportList().size();
             int pathHeight = 2;
 
             String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -94,7 +95,7 @@ public class PDFPaymentReport {
                 canvas.drawText("", xPos, y, textPaint);
             }
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText("", x, y, paint);
 
 
@@ -105,13 +106,13 @@ public class PDFPaymentReport {
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
             x = 40;
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText("Payment Report", x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Date : " + pdfDaily.dateStart +  "    to    " + pdfDaily.dateEnd, x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
 
@@ -122,7 +123,7 @@ public class PDFPaymentReport {
 
             // headers
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             x = 40;
             canvas.drawText("code", x,y, paint);
 
@@ -140,7 +141,7 @@ public class PDFPaymentReport {
             for(PaymentReport entry : pdfDaily.getReportList()){
 
                 x = 40;
-                y += paint.descent() - paint.ascent();
+                y += yspace;
                 canvas.drawText(String.valueOf(entry.getCode()), x,y, paint);
 
                 x += 50;
@@ -156,13 +157,13 @@ public class PDFPaymentReport {
 
 
             x = 40;
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Total Weight : " + pdfDaily.getTotalWt(), x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Total Amount : " + pdfDaily.getTotalAmt(), x, y, paint);
 
 
@@ -177,7 +178,7 @@ public class PDFPaymentReport {
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
             //blank space
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText("", x, y, paint);
 
             textPaint.setTextSize(8);

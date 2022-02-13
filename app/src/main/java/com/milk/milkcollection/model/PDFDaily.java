@@ -80,7 +80,8 @@ public class PDFDaily {
     public void createSessionPdf(PDFDaily pdfDaily) {
             Rect bounds = new Rect();
             int pageWidth = 600;
-            int pageheight = 200 + 11 * pdfDaily.getReportList().size();
+            int yspace = 16;
+            int pageheight = 200 + yspace * pdfDaily.getReportList().size();
             int pathHeight = 2;
 
             String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -110,7 +111,7 @@ public class PDFDaily {
                 canvas.drawText("", xPos, y, textPaint);
             }
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText("", x, y, paint);
 
             //horizontal line
@@ -121,16 +122,16 @@ public class PDFDaily {
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
             x = 40;
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText(pdfDaily.getReportTitle(), x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Date : " + pdfDaily.getDate(), x, y, paint);
             canvas.drawText( "Session : " + pdfDaily.shift, 150, y, paint);
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawLine(0, y, pageWidth, y, paint2);
             //blank space
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText("", x, y, paint);
 
             Paint paintDisit = new Paint();
@@ -140,7 +141,7 @@ public class PDFDaily {
 
             // headers
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             x = 40;
             canvas.drawText("SNo.", x,y, paint);
 
@@ -168,7 +169,7 @@ public class PDFDaily {
             int sNo = 1;
             for(SingleEntry entry : pdfDaily.getReportList()){
 
-                y += paint.descent() - paint.ascent();
+                y += yspace;
                 x = 40;
                 canvas.drawText(String.valueOf(sNo), x,y, paint);
                 sNo += 1;
@@ -197,19 +198,19 @@ public class PDFDaily {
 
 
             x = 40;
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Total Weight : " + pdfDaily.getTotalWt(), x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Avg FAT : " + pdfDaily.getAvgFat(), x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "AVG SNF : " + pdfDaily.getAvgSnf(), x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Total Amount : " + pdfDaily.getTotalAmt(), x, y, paint);
 
 
@@ -225,7 +226,7 @@ public class PDFDaily {
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
             //blank space
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText("", x, y, paint);
 
             textPaint.setTextSize(8);

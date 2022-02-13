@@ -67,7 +67,8 @@ public class PDFMermberReport {
     public void createSessionPdf(PDFMermberReport pdfDaily) {
             Rect bounds = new Rect();
             int pageWidth = 600;
-            int pageheight = 200 + 11 * pdfDaily.getReportList().size();
+            int yspace = 16;
+            int pageheight = 200 + yspace * pdfDaily.getReportList().size();
             int pathHeight = 2;
 
             String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -97,7 +98,7 @@ public class PDFMermberReport {
                 canvas.drawText("", xPos, y, textPaint);
             }
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText("", x, y, paint);
 
             //horizontal line
@@ -108,19 +109,19 @@ public class PDFMermberReport {
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
             x = 40;
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText(pdfDaily.getReportTitle(), x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText(pdfDaily.member , x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText("code  : " + pdfDaily.code, x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Date : " + pdfDaily.dateStart +  "    to    " + pdfDaily.dateEnd, x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawLine(0, y, pageWidth, y, paint2);
             //blank space
 
@@ -131,7 +132,7 @@ public class PDFMermberReport {
 
             // headers
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             x = 40;
             canvas.drawText("Date", x,y, paint);
 
@@ -154,7 +155,7 @@ public class PDFMermberReport {
 
             for(SingleEntry entry : pdfDaily.getReportList()){
 
-                y += paint.descent() - paint.ascent();
+                y += yspace;
                 x = 40;
                 canvas.drawText(String.valueOf(entry.getDatesave()), x,y, paint);
 
@@ -176,13 +177,13 @@ public class PDFMermberReport {
 
 
             x = 40;
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Total Weight : " + pdfDaily.getTotalWt(), x, y, paint);
 
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText( "Total Amount : " + pdfDaily.getTotalAmt(), x, y, paint);
 
 
@@ -197,7 +198,7 @@ public class PDFMermberReport {
             canvas.drawLine(0, y, pageWidth, y, paint2);
 
             //blank space
-            y += paint.descent() - paint.ascent();
+            y += yspace;
             canvas.drawText("", x, y, paint);
 
             textPaint.setTextSize(8);

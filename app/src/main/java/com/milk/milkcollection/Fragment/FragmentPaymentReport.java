@@ -354,17 +354,12 @@ public class FragmentPaymentReport extends Fragment {
                     email.putExtra(Intent.EXTRA_TEXT, message);
                     // need this to prompts email client only
                     email.setType("message/rfc822");
-
                     startActivity(Intent.createChooser(email, "Choose an Email client"));
-
-
                 } else if (options[item].equals("Other Share")) {
-
                     Intent sentIntent = new Intent(Intent.ACTION_SEND);
                     sentIntent.putExtra(Intent.EXTRA_TEXT, message);
                     sentIntent.setType("text/plain");
                     startActivity(sentIntent);
-
                     Log.e("",message);
                 } else if (options[item].equals("Print Report")) {
                     print(message);
