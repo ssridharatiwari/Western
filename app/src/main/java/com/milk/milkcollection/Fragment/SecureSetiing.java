@@ -43,7 +43,7 @@ public class SecureSetiing extends Fragment {
     private static final int GALLERY_KITKAT_INTENT_CALLED = 0;
 
     SharedPreferencesUtils sharedPreferencesUtils;
-    Switch switchManual;
+    Switch switchManual,push_weight;
     EditText welcomeText;
     public SecureSetiing() {}
 
@@ -57,6 +57,7 @@ public class SecureSetiing extends Fragment {
 
 
         switchManual = (Switch)rootView.findViewById(R.id.switch_manual_rate);
+        push_weight = (Switch)rootView.findViewById(R.id.push_weight);
         welcomeText = (EditText) rootView.findViewById(R.id.welcometext);
 
         welcomeText.setText(sharedPreferencesUtils.getWelcomeText());
@@ -87,7 +88,6 @@ public class SecureSetiing extends Fragment {
         switchManual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String statusSwitch1, statusSwitch2;
                 if (switchManual.isChecked()){
                     sharedPreferencesUtils.setManualRate(true);
                     MainActivity.makeToast("on");
@@ -97,6 +97,30 @@ public class SecureSetiing extends Fragment {
                 }
             }
         });
+
+        push_weight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (push_weight.isChecked()){
+                    sharedPreferencesUtils.setPushWeight(true);
+                    MainActivity.makeToast("on");
+                }else{
+                    sharedPreferencesUtils.setPushWeight(false);
+                    MainActivity.makeToast("off");
+                }
+
+                Log.e("push weight ", String.valueOf(sharedPreferencesUtils.isPushWeight()));
+
+            }
+        });
+
+
+        if (sharedPreferencesUtils.isPushWeight()){
+            push_weight.setChecked(true);
+        }else{
+            push_weight.setChecked(false);
+        }
+
 
 
         if (sharedPreferencesUtils.isManualRate()){

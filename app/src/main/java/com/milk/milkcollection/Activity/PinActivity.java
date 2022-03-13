@@ -452,11 +452,6 @@ public class PinActivity extends AppCompatActivity {
 
                                     userStatus = jsonObject.getString("status").toString();
                                     loginStatus = jsonObject.getString("login_status_1").toString();
-//                                    if (!userStatus.equals("")){
-//                                        setStatus(userStatus);
-//                                    }
-
-
 
                                     if (userStatus.equals("1")){
 

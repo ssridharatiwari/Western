@@ -53,8 +53,50 @@
 
 
 
+
+
         </LinearLayout>
 
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+
+            >
+
+
+            <TextView
+
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:text="Push weight,fat,snf"
+                android:textSize="17dp"/>
+
+
+            <Switch
+                android:id="@+id/push_weight"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:checked="false"
+
+                />
+
+
+
+
+
+        </LinearLayout>
 
         <TextView
 

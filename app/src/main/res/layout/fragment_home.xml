@@ -103,11 +103,10 @@
         <TextView
             android:text="@string/weight"
             android:gravity="center_vertical"
-            android:layout_weight=".5"
+            android:layout_weight=".7"
             android:layout_marginLeft="18dp"
             android:textSize="20dp"
             android:layout_width="0dp"
-
             android:layout_height="40dp" />
 
         <Button
@@ -115,14 +114,14 @@
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_gravity="center"
-            android:layout_weight=".5"
-            android:background="@color/gray"
+            android:layout_weight=".3"
+            android:background="@drawable/button_blue"
             android:gravity="center"
-            android:text="Man"
+            android:text="Send"
             android:textAllCaps="false"
             android:textColor="@color/app_background"
-            android:textSize="18dp"
-            android:visibility="invisible" />
+            android:textSize="16dp"
+            android:visibility="visible" />
 
         <EditText
             android:layout_marginTop="2dp"
@@ -149,12 +148,28 @@
 
         <TextView
             android:text="@string/fat"
-            android:layout_weight="1"
+            android:layout_weight="0.7"
             android:gravity="center_vertical"
             android:layout_marginLeft="20dp"
             android:textSize="20dp"
             android:layout_width="0dp"
             android:layout_height="40dp" />
+
+        <Button
+            android:id="@+id/btn_push_fat"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_weight=".3"
+            android:background="@drawable/button_blue"
+            android:gravity="center"
+            android:text="Send"
+            android:textAllCaps="false"
+            android:textColor="@color/app_background"
+            android:textSize="16dp"
+            android:visibility="visible" />
+
+
         <EditText
             android:layout_marginTop="2dp"
             android:id="@+id/fat"
@@ -169,6 +184,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="2dp" />
+
     </LinearLayout>
 
 

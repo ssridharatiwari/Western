@@ -358,6 +358,20 @@ private Context _context;
         editor.commit();
     }
 
+    public void setPushWeight(boolean isManual) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("push_weight", isManual);
+        editor.commit();
+    }
+
+    public boolean isPushWeight() {
+        if(prefs.contains("push_weight"))
+            return prefs.getBoolean("push_weight", false);
+        else
+            return false;
+    }
+
+
 
 
 

@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     public CharSequence mTitle;
     Toolbar toolbar;
     public TextView toolbartitle;
-    public ImageView toolbariv_home;
+    public ImageView toolbariv_home,toolbar_print;
     FSSession fsSession;
 
 
@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
         toolbartitle = (TextView) findViewById(R.id.titletool);
         toolbariv_home = (ImageView) findViewById(R.id.iv_home);
+        toolbar_print = (ImageView) findViewById(R.id.iv_print);
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -209,6 +210,13 @@ public class MainActivity extends AppCompatActivity {
                     ft.addToBackStack(null);
                     ft.commit();
                 }
+            }
+        });
+
+        toolbar_print.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               print("Test paper\nWelcome to\nWestern Electronics Group\n");
             }
         });
 

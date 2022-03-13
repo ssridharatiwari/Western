@@ -62,7 +62,7 @@ import static java.lang.System.exit;
 public class Fragment_home extends Fragment {
 
     ArrayAdapter<String> adapter;
-    Button btn_ratesave, btn_pss,btn_auto_manual;
+    Button btn_ratesave, btn_pss,btn_auto_manual,btn_push_fat;
     LinearLayout createrate,todayDetailLL;
     EditText et_weight, et_fat, et_snf, et_code,rate;
     TextView  total, btnrate, btntotal, tv_datepicker, tv_code_holder,lbl_avgFat,
@@ -135,7 +135,7 @@ public class Fragment_home extends Fragment {
         tv_datepicker = (TextView) rootView.findViewById(R.id.tv_date);
         btn_pss = (Button) rootView.findViewById(R.id.btn_pss);
         btn_auto_manual = (Button) rootView.findViewById(R.id.btn_auto_manual);
-
+        btn_push_fat = (Button) rootView.findViewById(R.id.btn_push_fat);
 
         sp_shift = (Spinner) rootView.findViewById(R.id.sp_shift);
         switchManual = (Switch)rootView.findViewById(R.id.switch_manual);
@@ -310,34 +310,72 @@ public class Fragment_home extends Fragment {
             }
         });
 
-//        btn_auto_manual.setVisibility(View.INVISIBLE);
         btn_auto_manual.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
-                Log.e("isaut", String.valueOf(isAuto));
-                if (MainActivity.getInstace().isAutoBt == false){
 
-                    MainActivity.getInstace().isAutoBt = true;
-                    startFindBt();
-                    btn_auto_manual.setBackgroundColor(R.color.green);
-                    btn_auto_manual.setText("Auto");
+                String wtt =  instace.twoDecimal(String.valueOf(et_weight.getText()));
 
-                }else {
-                    btn_auto_manual.setBackgroundColor(R.color.gray);
-                    btn_auto_manual.setText("Man");
-                    MainActivity.getInstace().isAutoBt = false;
+                if (wtt.length() == 4){
+                    wtt = "000" + wtt;
+                }else if (wtt.length() == 5){
+                    wtt = "00" + wtt;
+                }else if (wtt.length() == 6){
+                    wtt = "0" + wtt;
                 }
-                Log.e("isaut", String.valueOf(isAuto));
+
+                instace.print("$" + wtt);
+
+
+
+//                if (MainActivity.getInstace().isAutoBt == false){
+//                    MainActivity.getInstace().isAutoBt = true;
+//                    startFindBt();
+//                    btn_auto_manual.setBackgroundColor(R.color.green);
+//                    btn_auto_manual.setText("Auto");
+//                }else {
+//                    btn_auto_manual.setBackgroundColor(R.color.gray);
+//                    btn_auto_manual.setText("Man");
+//                    MainActivity.getInstace().isAutoBt = false;
+//                }
 
             }
         });
 
+        btn_push_fat.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View v) {
 
+                String ft = String.valueOf(et_fat.getText());
+                String snf1 = String.valueOf(et_snf.getText());
+                ft = instace.twoDecimal(ft);
+                snf1 = instace.twoDecimal(snf1);
+
+                if (ft.length() < 5) {
+                    ft = "0" + ft;
+                }
+                if (snf1.length() < 5) {
+                    snf1 = "0" + snf1;
+                }
+
+                instace.print("#" + ft + " " + snf1);
+            }
+        });
+
+
+        Log.e("push weight ", String.valueOf(sharedPreferencesUtils.isPushWeight()));
+        if (sharedPreferencesUtils.isPushWeight()){
+            btn_push_fat.setVisibility(View.VISIBLE);
+            btn_auto_manual.setVisibility(View.VISIBLE);
+        }else{
+            btn_push_fat.setVisibility(View.INVISIBLE);
+            btn_auto_manual.setVisibility(View.INVISIBLE);
+        }
 
         getCurrentCollection();
         setTextsAccordingRate();
-
 
         checkDefaultSnf();
         downloadFile();

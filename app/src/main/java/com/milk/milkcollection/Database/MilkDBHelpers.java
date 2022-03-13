@@ -48,6 +48,9 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,"+ AppString.milk.number +" text," +
 				"sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
 		a.execSQL("create table sell_data(Id Integer primary Key Autoincrement,weight text,rate text,amount text,date text,sift text,fat text,snf text,dateSave text)");
+
+//		a.execSQL("ALTER TABLE updatebhav ADD COLUMN cmf text;");
+
 	}
 
 	@Override
@@ -278,6 +281,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("comitionliter", comition_liter);
 		values.put("allfatsaf", allfatsnfdata);
 		values.put("commissionType", type);
+//		values.put("commissionType", type);
 
         db.insert("updatebhav", null, values);
 		db.close();
