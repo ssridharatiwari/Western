@@ -16,6 +16,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 
@@ -27,10 +28,10 @@ import java.util.Calendar;
 
 public class Fragment_CreateBhav extends Fragment {
     ProgressDialog dialog;
-    private EditText from_fat,to_fat,from_snf,to_snf,kg_fat_rat,kg_snf_rat,comition_liter;
+    private EditText from_fat,to_fat,from_snf,to_snf,kg_fat_rat,kg_snf_rat,comition_liter,cmfund;
     private Button btnchangevalue;
     String fromfat,tofat,fromsnf,tosnf,kgfatrat,kgsnfrat,comitionliter;
-   // MilkDBHelpers milkDBHelpers;
+
     String date,commissionType;
     RadioGroup radioGroup;
 
@@ -52,6 +53,7 @@ public class Fragment_CreateBhav extends Fragment {
         kg_fat_rat=(EditText)rootView.findViewById(R.id.kg_fat_rat);
         kg_snf_rat=(EditText)rootView.findViewById(R.id.kg_snf_rat);
         comition_liter =(EditText)rootView.findViewById(R.id.comition);
+        cmfund =(EditText)rootView.findViewById(R.id.cm_fund);
         radioGroup =(RadioGroup)rootView.findViewById(R.id.radioGroup);
 
         btnchangevalue =(Button)rootView.findViewById(R.id.btn_change_value);
@@ -62,10 +64,13 @@ public class Fragment_CreateBhav extends Fragment {
             }
         });
 
+        cmfund.setText(MainActivity.instace.sharedPreferencesUtils.getCMF());
+
         return rootView;
     }
 
     private void SaveBhav(){
+
         fromfat=from_fat.getText().toString();
         tofat = to_fat.getText().toString();
         fromsnf = from_snf.getText().toString();
@@ -73,6 +78,7 @@ public class Fragment_CreateBhav extends Fragment {
         kgfatrat = kg_fat_rat.getText().toString();
         kgsnfrat = kg_snf_rat.getText().toString();
         comitionliter=comition_liter.getText().toString();
+
         if( fromfat.length() == 0 )
             from_fat.setError( " From Fat is required!" );
         else if(tofat.length() == 0)
@@ -89,18 +95,6 @@ public class Fragment_CreateBhav extends Fragment {
             comition_liter.setError( "Comition/liter is required!" );
         else {
             checkFatSnfRange();
-            /*milkDBHelpers=  new MilkDBHelpers(getActivity());
-            String allfatsnf = "Fromfat :- "+fromfat+"; "+"Tofat :- "+tofat+"; "+"KgFatRat :- "+kgfatrat+"\n"+"Fromsnf :- "+fromsnf+"; "+"Tosnf :- "+tosnf +"; "+"KgSnfRat :-"+kgsnfrat+"\n" +"Comition :-"+comitionliter+"; "+date;
-            milkDBHelpers.changebhav(Float.parseFloat(fromfat),Float.parseFloat(tofat), fromsnf, tosnf, kgfatrat, kgsnfrat, comitionliter, allfatsnf);
-            Toast.makeText(getActivity(),  allfatsnf, Toast.LENGTH_LONG).show();
-            Log.e("-=-=Fat Snf-=-",allfatsnf);
-            from_fat.setText("");
-            to_fat.setText("");
-            from_snf.setText("");
-            to_snf.setText("");
-            kg_fat_rat.setText("");
-            kg_snf_rat.setText("");
-            comition_liter.setText("");*/
         }
     }
 
@@ -109,11 +103,7 @@ public class Fragment_CreateBhav extends Fragment {
         try {
             MilkDBHelpers   milkDBHelpers=  new MilkDBHelpers(getActivity());
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
-//            Log.e("-=-=Ffff-=-",fromfat);
-//            Log.e("-=-=Fff-=-",tofat);
-//            Log.e("-=-=sss-=-",fromsnf);
-//            Log.e("-=-=sss-=-",tosnf);
-//            Log.e("-=-=type-=-",radioGroup.getCheckedRadioButtonId()+"");
+
             Cursor cursor = sqLiteDatabase.rawQuery(" SELECT * FROM 'updatebhav' WHERE fromfat = '" + fromfat + "' and tofat='" + tofat + "'and fromsnf='" + fromsnf + "'and tosnf='" + tosnf + "'" , null);
 
             if (cursor != null && cursor.moveToFirst()) {
@@ -124,12 +114,13 @@ public class Fragment_CreateBhav extends Fragment {
                 }
             } else{
                 String type = ((RadioButton) radioGroup.findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
-                Log.e("TYPE", "checkFatSnfRange: "+type );
 
-                Log.e("-=-=not-=-","nnnooott");
+                String cmf = String.valueOf(cmfund.getText());
+
+
                 milkDBHelpers=  new MilkDBHelpers(getActivity());
                 String allfatsnf = "Fromfat :- "+fromfat+"; "+"Tofat :- "+tofat+"; "+"KgFatRat :- "+kgfatrat+"\n"+"Fromsnf :- "+fromsnf+"; "+"Tosnf :- "+tosnf +"; "+"KgSnfRat :-"+kgsnfrat+"\n" +"Comition :- "+type+comitionliter+"; "+date;
-                milkDBHelpers.changebhav(fromfat,tofat, fromsnf, tosnf, kgfatrat, kgsnfrat, comitionliter, allfatsnf,type);
+                milkDBHelpers.changebhav(fromfat,tofat, fromsnf, tosnf, kgfatrat, kgsnfrat, comitionliter, allfatsnf,type, cmf);
                 Toast.makeText(getActivity(),  allfatsnf, Toast.LENGTH_LONG).show();
                 Log.e("-=-=Fat Snf-=-",allfatsnf);
                 from_fat.setText("");
@@ -139,6 +130,7 @@ public class Fragment_CreateBhav extends Fragment {
                 kg_fat_rat.setText("");
                 kg_snf_rat.setText("");
                 comition_liter.setText("");
+
             }
 
         } catch (Exception e) {

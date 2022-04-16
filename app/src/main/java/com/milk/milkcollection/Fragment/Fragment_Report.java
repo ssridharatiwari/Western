@@ -15,7 +15,7 @@ import com.milk.milkcollection.R;
  */
 public class Fragment_Report extends Fragment {
 
-    private Button btn_singlememberreport,btn_dailymemberreport,btn_pay_report,btn_sell_report,btn_socity_report,btnLossProfit;
+    private Button btn_singlememberreport,btn_dailymemberreport,btn_pay_report,btn_sell_report,btn_socity_report,btnLossProfit,btn_cm_report;
     public TextView toolbartitle;
 
 
@@ -29,6 +29,7 @@ public class Fragment_Report extends Fragment {
         btn_singlememberreport=(Button)rootView.findViewById(R.id.btn_singlememberreport);
         btn_dailymemberreport=(Button)rootView.findViewById(R.id.btn_dailymemberreport);
         btn_pay_report=(Button)rootView.findViewById(R.id.btn_pay_report);
+        btn_cm_report=(Button)rootView.findViewById(R.id.btn_cm_report);
         btn_sell_report=(Button)rootView.findViewById(R.id.btn_sell_report);
         btn_socity_report=(Button)rootView.findViewById(R.id.btn_socity_report);
         btnLossProfit=(Button)rootView.findViewById(R.id.btn_sell_loss);
@@ -64,6 +65,20 @@ public class Fragment_Report extends Fragment {
                 ft.commit();
             }
         });
+
+        btn_cm_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                toolbartitle.setText(getResources().getString(R.string.payment_report_text));
+                Fragment fragment = new FragmentCMPaymentReport();
+                android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.addToBackStack("home");
+                ft.commit();
+            }
+        });
+
 
         btn_dailymemberreport.setOnClickListener(new View.OnClickListener() {
             @Override

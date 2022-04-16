@@ -48,9 +48,6 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,"+ AppString.milk.number +" text," +
 				"sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
 		a.execSQL("create table sell_data(Id Integer primary Key Autoincrement,weight text,rate text,amount text,date text,sift text,fat text,snf text,dateSave text)");
-
-//		a.execSQL("ALTER TABLE updatebhav ADD COLUMN cmf text;");
-
 	}
 
 	@Override
@@ -59,6 +56,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
 		onCreate(a);
 
+		a.execSQL("ALTER TABLE updatebhav ADD COLUMN cmf text;");
 	}
 
 	@Override
@@ -85,6 +83,9 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
                         String number, String sift, String fat, Float fat_wt, String snf, Float snt_wt,
                         String message, String printString, String dateSave) {
 
+		Log.e("message - ", message);
+		Log.e("printString - ", printString);
+
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
         values.put("memberCode",memberCode);
@@ -101,10 +102,9 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("dailyInformation",printString);
 		values.put("dateSave",dateSave);
 
+
         db.insert("milk_amount", null, values);
-
-
-		db.close(); // Closing database connection
+		db.close();
     }
 
 
@@ -267,7 +267,7 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
 	public void changebhav(String from_fat, String to_fat, String from_snf, String to_snf,
 						   String kgfat_rat, String kgsnf_rat, String comition_liter,
-						   String allfatsnfdata, String type) {
+						   String allfatsnfdata, String type , String cmf) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -281,7 +281,8 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 		values.put("comitionliter", comition_liter);
 		values.put("allfatsaf", allfatsnfdata);
 		values.put("commissionType", type);
-//		values.put("commissionType", type);
+
+		MainActivity.instace.sharedPreferencesUtils.setCMF(cmf);
 
         db.insert("updatebhav", null, values);
 		db.close();

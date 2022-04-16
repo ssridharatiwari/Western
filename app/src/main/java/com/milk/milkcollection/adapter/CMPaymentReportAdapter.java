@@ -16,20 +16,20 @@ import java.util.List;
 /**
  * Created by Er. Arjun on 06-03-2016.
  */
-public class PaymentReportAdapter extends ArrayAdapter<PaymentReport> {
+public class CMPaymentReportAdapter extends ArrayAdapter<PaymentReport> {
     Activity context;
     PaymentReport paymentReport;
 
 
-    public PaymentReportAdapter(Activity context, int resourceId,
-                                List<PaymentReport> items) {
+    public CMPaymentReportAdapter(Activity context, int resourceId,
+                                  List<PaymentReport> items) {
         super(context, resourceId, items);
         this.context = context;
     }
 
     /*private view holder class*/
     private class ViewHolder {
-        TextView txtcode,txtweight,txtamount, textname;;
+        TextView txtcode,txtweight,txt_cm_fund,txtamount, txt_dairy_amount;
     }
 
 
@@ -40,23 +40,23 @@ public class PaymentReportAdapter extends ArrayAdapter<PaymentReport> {
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.payment_report_listview, null);
+            convertView = mInflater.inflate(R.layout.cm_payment_report_listview, null);
             holder = new ViewHolder();
             holder.txtcode = (TextView) convertView.findViewById(R.id.lv_payment_code);
             holder.txtweight = (TextView) convertView.findViewById(R.id.lv_payment_weight);
             holder.txtamount = (TextView) convertView.findViewById(R.id.lv_payment_amount);
-            holder.textname=(TextView)convertView.findViewById(R.id.lv_name);
+            holder.txt_cm_fund = (TextView) convertView.findViewById(R.id.lv_paymet_cm);
+            holder.txt_dairy_amount=(TextView)convertView.findViewById(R.id.lv_payment_dairy_amount);
             convertView.setTag(holder);
         } else
             holder = (ViewHolder) convertView.getTag();
 
         if(paymentReport.getCode()!=null) {
             holder.txtcode.setText(paymentReport.getCode());
-            if (paymentReport.getName() == ""){
-                holder.textname.setText(paymentReport.getName());
-            }else{
-                holder.textname.setText(paymentReport.cmfund);
-            }
+
+            holder.txt_cm_fund.setText(paymentReport.cmfund);
+            holder.txt_dairy_amount.setText(paymentReport.getAmount());
+
             holder.txtweight.setText(MainActivity.twoDecimal(paymentReport.getWeight()) );
             holder.txtamount.setText(MainActivity.twoDecimal(paymentReport.getAmount())  );
         }

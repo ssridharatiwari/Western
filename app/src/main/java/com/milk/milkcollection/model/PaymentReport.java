@@ -4,7 +4,7 @@ package com.milk.milkcollection.model;
  * Created by Er. Arjun on 06-03-2016.
  */
 public class PaymentReport {
-    String code,weight,amount,name;
+    public String code,weight,amount,name,cmfund,total;
 
     public PaymentReport(){}
 

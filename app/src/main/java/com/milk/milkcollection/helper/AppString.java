@@ -38,6 +38,8 @@ public class AppString {
           public static String  fat_wt =  "fat_wt";
           public static String  snf =  "snf";
           public static String  snf_wt =  "snf_wt";
+          public static String  cmf =  "allInformation";
+          public static String  message =  "message";
           public static String  info =  "allInformation";
           public static String  dateSave =  "dateSave";
           public static String  info2 =  "dailyInformation";

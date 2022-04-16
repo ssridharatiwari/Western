@@ -371,6 +371,22 @@ private Context _context;
             return false;
     }
 
+    public void setCMF(String cmf) {
+        SharedPreferences.Editor editor = prefs.edit();
+        if (cmf.equals("")) {
+            cmf = "0";
+        }
+        editor.putString("cm_fund", cmf);
+        editor.commit();
+    }
+
+    public String getCMF() {
+        if(prefs.contains("cm_fund"))
+            return prefs.getString("cm_fund","0");
+        else
+            return "0";
+    }
+
 
 
 

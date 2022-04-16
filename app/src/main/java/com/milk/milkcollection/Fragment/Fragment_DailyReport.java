@@ -370,6 +370,7 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
                     entry.setSnf(cursor.getString(cursor.getColumnIndex(AppString.milk.snf)));
                     entry.setFatWt(cursor.getString(cursor.getColumnIndex(AppString.milk.fat_wt)));
                     entry.setSnfWt(cursor.getString(cursor.getColumnIndex(AppString.milk.snf_wt)));
+                    entry.setCMF(cursor.getString(cursor.getColumnIndex(AppString.milk.cmf)));
                     DailyReportList.add(entry);
 
                     weightTotal = weightTotal + Float.valueOf(entry.getWeight());

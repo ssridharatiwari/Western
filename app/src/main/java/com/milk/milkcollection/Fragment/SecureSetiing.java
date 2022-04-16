@@ -44,7 +44,7 @@ public class SecureSetiing extends Fragment {
 
     SharedPreferencesUtils sharedPreferencesUtils;
     Switch switchManual,push_weight;
-    EditText welcomeText;
+    EditText welcomeText,cumfund;
     public SecureSetiing() {}
 
 
@@ -59,22 +59,38 @@ public class SecureSetiing extends Fragment {
         switchManual = (Switch)rootView.findViewById(R.id.switch_manual_rate);
         push_weight = (Switch)rootView.findViewById(R.id.push_weight);
         welcomeText = (EditText) rootView.findViewById(R.id.welcometext);
+        cumfund = (EditText) rootView.findViewById(R.id.cm_fund_txt);
 
         welcomeText.setText(sharedPreferencesUtils.getWelcomeText());
-
-
-
-
+        cumfund.setText(sharedPreferencesUtils.getCMF());
 
         welcomeText.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
-
                 if (welcomeText.getText().length() > 0) {
-                   sharedPreferencesUtils.setWelcomeText(welcomeText.getText().toString());
+                    sharedPreferencesUtils.setWelcomeText(welcomeText.getText().toString());
+                } else{
+
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
+
+
+        cumfund.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                if (cumfund.getText().length() > 0) {
+                    sharedPreferencesUtils.setCMF(cumfund.getText().toString());
                 }else{
-
-
+                    sharedPreferencesUtils.setCMF("0");
                 }
             }
 
@@ -83,7 +99,6 @@ public class SecureSetiing extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-
 
         switchManual.setOnClickListener(new View.OnClickListener() {
             @Override

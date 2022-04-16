@@ -49,6 +49,7 @@ import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+import com.milk.milkcollection.model.SingleEntry;
 
 import java.util.Calendar;
 import org.json.JSONException;
@@ -328,7 +329,6 @@ public class Fragment_home extends Fragment {
                 instace.print("$" + wtt);
 
 
-
 //                if (MainActivity.getInstace().isAutoBt == false){
 //                    MainActivity.getInstace().isAutoBt = true;
 //                    startFindBt();
@@ -595,41 +595,42 @@ public class Fragment_home extends Fragment {
                         Float snf_wt = currentsnf * currentweight;
 
                         phone_number = cursor.getString(3);
-                        String member_name = (String)tv_code_holder.getText();
 
                         weight = MainActivity.twoDecimal(weight);
                         fat = MainActivity.twoDecimal(fat);
                         snf = MainActivity.twoDecimal(snf);
                         Float totalamount = currentweight *  rateMain;
+                        String cmf = sharedPreferencesUtils.getCMF();
+                        float cmffloat = Float.parseFloat(cmf) * Float.parseFloat(weight);
+                        cmf =  String.valueOf(cmffloat);
 
-                        String strShipt = "Eve";
-                        if (sift.equals("M")){
-                            strShipt = "Mor";
-                        }
+                        SingleEntry entry = new SingleEntry();
+                        entry.setCMF(cmf);
+                        entry.setCode(code);
+                        entry.setRate(String.valueOf(rateMain));
+                        entry.setAmount(String.valueOf(totalamount));
+                        entry.setSift(sift);
+                        entry.setDatesave(date);
+                        entry.setDate(replaceDate);
+                        entry.setWeight(weight);
+                        entry.setFat(fat);
+                        entry.setSnf(snf);
+                        entry.setFatWt(String.valueOf(fat_wt));
+                        entry.setSnfWt(String.valueOf(snf_wt));
+                        entry.title = titlename;
+                        entry.memberName = (String)tv_code_holder.getText();
+                        printString = entry.getPrintMassge();
+                        message = entry.getSMS();
 
-                        message = titlename + "\n" + "DT: " + date + "(" + strShipt + ")"  +
-                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT=" + rateMain + " AMT=" + totalamount + "";
 
-                        printString = "";
-                        printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
-                                "Name: " + member_name + "(" + code + ")" +
-                                "\nDate: " + date +
-                                "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
-                                "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
-                                "\nFat: " + fat + "  "+ MainActivity.instace.rateString() +": " + snf +
-                                "\nRate/Ltr: " + rateMain +
-                                "\nAmount:  Rs " + totalamount + "\n";
-
-
-                        printString = printString + MainActivity.lineBreak();
                         myCode = code;
                         milkDBHelpers.AddMilk(code,weight, rateMain,
                                 totalamount, replaceDate,
-                                phone_number, sift, fat, fat_wt, snf, snf_wt, "", "", date);
+                                phone_number, sift, fat, fat_wt, snf, snf_wt, cmf, "", date);
 
                         resetValue();
-
                         et_code.requestFocus();
+
                         Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateMain + "\n" + "total amount :- " + totalamount, Toast.LENGTH_LONG).show();
                         cursor.moveToNext();
 

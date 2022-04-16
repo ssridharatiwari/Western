@@ -360,6 +360,7 @@ public class Fragment_SingleReport extends Fragment {
                         entry.setSnf(cursor.getString(cursor.getColumnIndex(AppString.milk.snf)));
                         entry.setFatWt(cursor.getString(cursor.getColumnIndex(AppString.milk.fat_wt)));
                         entry.setSnfWt(cursor.getString(cursor.getColumnIndex(AppString.milk.snf_wt)));
+                        entry.setCMF(cursor.getString(cursor.getColumnIndex(AppString.milk.cmf)));
                         singleReportList.add(entry);
 
 

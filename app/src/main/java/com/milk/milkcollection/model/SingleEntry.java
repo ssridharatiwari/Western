@@ -8,7 +8,8 @@ public class SingleEntry {
 
 
 
-    String id,code,date,sift,weight,rate,amount,fat,snf,datesave,fatWt,snfWt,mobie;
+   public String id,code,date,sift,weight,rate,amount,fat,snf,datesave,fatWt,snfWt,mobie, cmf="0",memberName="",memberMobile="",title="",selfNumber="";
+
 
     public SingleEntry(){}
 
@@ -106,30 +107,61 @@ public class SingleEntry {
         this.mobie = mobie;
     }
 
+    public String getCmf() {
+        return cmf;
+    }
+    public void setCMF(String cmf) {
+        this.cmf = cmf;
+    }
 
 
     public String getSMS() {
 
         String  message =   MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Dt:" + date + "(" + sift + ")" +
-                "\nQT=" + weight +  "\nRT=" + MainActivity.twoDecimal(rate) + " AMT=" + MainActivity.twoDecimal(amount) ;
+                "\nQT=" + weight +  "\nRT=" + MainActivity.twoDecimal(rate) + " AMT=" + MainActivity.twoDecimal(amount);
 
+        if (Float.parseFloat(cmf) > 0) {
+            message = message + " CM Fund= " + cmf;
+        }
         return message;
     };
 
 
     public String getPrintMassge(){
 
-        String printString = MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + MainActivity.getInstace().sharedPreferencesUtils.getMobile() + "\n" + MainActivity.lineBreak() +
-                "\nName: " + MainActivity.getInstace().milkDBHelpers.getMemberNameByCode(code) + "(" + code + ")" +
-                "\nDate: " + datesave + " - " +sift +
-                "\nFat: " + fat + " ,  SNF: " + snf +
-                "\nLitre: " + MainActivity.twoDecimal(weight) + " L" +
-                "\nRate/Ltr: " + MainActivity.twoDecimal(rate) +
-                "\nAmount:  Rs " + amount + "\n";
-        printString = printString + "\n" + MainActivity.lineBreak();
 
+        if (title.equals("")) {
+            title = MainActivity.getInstace().sharedPreferencesUtils.getTitle();
+        }
+
+        if (selfNumber.equals("")) {
+            selfNumber = MainActivity.getInstace().sharedPreferencesUtils.getMobile();
+        }
+
+        if (memberName.equals("")) {
+            Log.e("code",code);
+            memberName = MainActivity.getInstace().milkDBHelpers.getMemberNameByCode(code);
+        }
+
+        String printString = title + "\n" +
+                            selfNumber + "\n" + MainActivity.lineBreak() +
+                            "\nName: " + memberName + "(" + code + ")" +
+                            "\nDate: " + datesave + " - " +sift +
+                            "\nFat: " + fat + " , SNF: " + snf +
+                            "\nLitre: " + MainActivity.twoDecimal(weight) + " L" +
+                            "\nRate/Ltr: " + MainActivity.twoDecimal(rate) +
+                            "\nAmount: Rs " + amount;
+
+        if (Float.parseFloat(cmf) > 0) {
+            printString = printString +  "\nCM Fund: Rs " + cmf;
+            printString = printString +  "\nTotal: Rs " + (Float.parseFloat(cmf) + Float.parseFloat(amount));
+        }
+
+        Log.e("print",printString );
+
+        printString = printString + "\n\n" + MainActivity.lineBreak();
         return printString;
-        //return "sanjay";
+
     }
 
 }
