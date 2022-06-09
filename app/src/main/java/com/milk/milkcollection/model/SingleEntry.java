@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.milk.milkcollection.Activity.MainActivity;
 
+import java.io.IOException;
+
 public class SingleEntry {
 
 
@@ -121,7 +123,11 @@ public class SingleEntry {
                 "\nQT=" + weight +  "\nRT=" + MainActivity.twoDecimal(rate) + " AMT=" + MainActivity.twoDecimal(amount);
 
         if (Float.parseFloat(cmf) > 0) {
-            message = message + " CM Fund= " + cmf;
+            try {
+                message = message + " CM Fund= " + cmf + " Total: " + MainActivity.twoDecimalFloatToString(Float.valueOf(cmf) + Float.valueOf(amount));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return message;
     };

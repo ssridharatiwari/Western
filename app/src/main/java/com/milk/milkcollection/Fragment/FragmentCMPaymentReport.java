@@ -243,10 +243,10 @@ public class FragmentCMPaymentReport extends Fragment {
                     totalWeight = totalWeight +  weight;
                     totalAmount = totalAmount +  amount;
 
-
+                    Float ttl = cmfund + amount;
                     PaymentReport paymentReport = new PaymentReport();
                     paymentReport.setCode(code);
-                    paymentReport.total = (MainActivity.oneDecimalFloatToString(cmfund + amount));;
+                    paymentReport.total = (MainActivity.oneDecimalFloatToString(ttl));
                     paymentReport.cmfund = (MainActivity.oneDecimalFloatToString(cmfund));;
                     paymentReport.setWeight(MainActivity.oneDecimalFloatToString(weight));
                     paymentReport.setAmount(MainActivity.oneDecimalFloatToString(amount));
@@ -261,8 +261,8 @@ public class FragmentCMPaymentReport extends Fragment {
 
                     cursor.moveToNext();
                 }
-                searchweight.setText("Wgt:-" + (MainActivity.twoDecimalFloatToString(totalWeight)) + "Kg");
-                searchamount.setText("Amt:-" + (MainActivity.twoDecimalFloatToString(totalAmount)) + "/-");
+                searchweight.setText("Wgt: " + (MainActivity.twoDecimalFloatToString(totalWeight)) + "Kg");
+                searchamount.setText("Dairy Amt: " + (MainActivity.twoDecimalFloatToString(totalAmount)) + "/-");
             }
 
             message = "Payment Report\n"+message+ "\n*******************************\n"+"Total weight  : "+

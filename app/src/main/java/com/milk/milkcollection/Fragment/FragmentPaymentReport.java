@@ -195,9 +195,9 @@ public class FragmentPaymentReport extends Fragment {
         String startdate = startDateView.getText().toString();
         String enddate = endDateView.getText().toString();
         String startDate = startdate.replace("/", "");
-//        Log.e("-=-=start date--=", startDate + " ;" + startdate);
+
         String endDate = enddate.replace("/","");
-//        Log.e("-=-=end date--=", endDate + " ;" + enddate);
+
 
         message = startdate +"  to  "+enddate+"\n*******************************\nCode  Weight  Amount   Name";
 
@@ -224,7 +224,7 @@ public class FragmentPaymentReport extends Fragment {
             DecimalFormat df = new DecimalFormat("#.##");
 
             String query = "SELECT m.membername,m.membercode,SUM(ma.milkweight) as wgt,SUM(ma.totalamount) as amt FROM 'milk_amount' ma LEFT JOIN 'member' m ON m.membercode=ma.memberCode WHERE ma.date >= '" + startDate + "' AND ma.date <= '" + endDate + "' AND ma.memberCode >= '" + acFrom.getText().toString() + "' AND ma.memberCode <= '" + acTo.getText().toString() + "' GROUP BY ma.memberCode";
-            Log.e("qurry --",query);
+
             cursor = sqLiteDatabase.rawQuery(query, null);
 
             if (cursor != null && cursor.moveToFirst()) {

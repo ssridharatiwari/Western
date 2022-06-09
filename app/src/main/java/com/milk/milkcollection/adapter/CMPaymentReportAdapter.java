@@ -58,7 +58,7 @@ public class CMPaymentReportAdapter extends ArrayAdapter<PaymentReport> {
             holder.txt_dairy_amount.setText(paymentReport.getAmount());
 
             holder.txtweight.setText(MainActivity.twoDecimal(paymentReport.getWeight()) );
-            holder.txtamount.setText(MainActivity.twoDecimal(paymentReport.getAmount())  );
+            holder.txtamount.setText(MainActivity.twoDecimal(paymentReport.total)  );
         }
         return convertView;
     }
