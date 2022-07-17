@@ -607,8 +607,9 @@ public class Fragment_home extends Fragment {
                             strShipt = "Mor";
                         }
 
-                        message = titlename + "\n" + "DT: " + date + "(" + strShipt + ")"  +
-                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT=" + rateMain + " AMT=" + totalamount + "";
+                        message = titlename + "\n" + "DT: " + date + "(" + strShipt + "), Code: " + code +
+                                "\nQTY=" + weight + ", FT=" + fat + ", "
+                                + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT=" + rateMain + " AMT=" + MainActivity.oneDecimalFloatToString(totalamount) + "";
 
                         printString = "";
                         printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
@@ -618,7 +619,7 @@ public class Fragment_home extends Fragment {
                                 "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
                                 "\nFat: " + fat + "  "+ MainActivity.instace.rateString() +": " + snf +
                                 "\nRate/Ltr: " + rateMain +
-                                "\nAmount:  Rs " + totalamount + "\n";
+                                "\nAmount:  Rs " + MainActivity.oneDecimalFloatToString(totalamount) + "\n";
 
 
                         printString = printString + MainActivity.lineBreak();

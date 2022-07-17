@@ -110,9 +110,12 @@ public class SingleEntry {
 
     public String getSMS() {
 
-        String  message =   MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Dt:" + date + "(" + sift + ")" +
-                "\nQT=" + weight +  "\nRT=" + MainActivity.twoDecimal(rate) + " AMT=" + MainActivity.twoDecimal(amount) ;
 
+
+        String  message = MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Dt:" + date + "(" + sift + ")" +
+                MainActivity.getInstace().milkDBHelpers.getMemberNameByCode(code) + "(" + code + ")\n" +
+                "\nFat: " + fat + " ,  SNF: " + snf +
+                "\nQT=" + weight +  "\nRT=" + MainActivity.twoDecimal(rate) + " AMT=" + MainActivity.twoDecimal(amount);
         return message;
     };
 
