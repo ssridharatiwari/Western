@@ -53,9 +53,9 @@ public class PaymentReportAdapter extends ArrayAdapter<PaymentReport> {
         if(paymentReport.getCode()!=null) {
             holder.txtcode.setText(paymentReport.getCode());
             if (paymentReport.getName() == ""){
-                holder.textname.setText(paymentReport.getName());
-            }else{
                 holder.textname.setText(paymentReport.cmfund);
+            }else{
+                holder.textname.setText(paymentReport.getName());
             }
             holder.txtweight.setText(MainActivity.twoDecimal(paymentReport.getWeight()) );
             holder.txtamount.setText(MainActivity.twoDecimal(paymentReport.getAmount())  );

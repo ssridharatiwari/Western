@@ -119,7 +119,9 @@ public class SingleEntry {
 
     public String getSMS() {
 
-        String  message =   MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Dt:" + date + "(" + sift + ")" +
+        String  message = MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Dt:" + date + "(" + sift + ")\n" +
+                MainActivity.getInstace().milkDBHelpers.getMemberNameByCode(code) + "(" + code + ")" +
+                "\nFt: " + fat + " , Snf: " + snf +
                 "\nQT=" + weight +  "\nRT=" + MainActivity.twoDecimal(rate) + " AMT=" + MainActivity.twoDecimal(amount);
 
         if (Float.parseFloat(cmf) > 0) {

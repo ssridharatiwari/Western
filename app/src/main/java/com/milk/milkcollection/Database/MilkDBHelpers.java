@@ -639,9 +639,6 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
 
     public String getRatePerLiter(String fat,String snf) throws IOException {
 
-		Log.e("fat pre ----", String.valueOf((fat)));
-
-
 		SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(MainActivity.instace);
         String rateMethod =  sharedPreferencesUtils.getRateMethodCode();
 
@@ -689,7 +686,6 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
             String comType = commissionTypeList.get(i).toString();
 
             if (Float.parseFloat(tofff) >= Float.parseFloat(fat) && Float.parseFloat(fromfff) <= Float.parseFloat(fat) && Float.parseFloat(tosss) >= Float.parseFloat(snf) && Float.parseFloat(fromsss) <= Float.parseFloat(snf)) {
-
                 kgfatrat = kgFatrat;
                 kgsnfrat = kgSnfRat;
                 comition = comLtr;
@@ -697,38 +693,36 @@ public class MilkDBHelpers extends SQLiteOpenHelper {
             }
         }
 
-        Float rateperltrr;
+			Float rateperltrr;
 
-        if (KgFatRatList.equals(""))
-        {
-             return "0";
-        }
-        else
-        {
-            DecimalFormat df = new DecimalFormat("#.##");
-
-			Log.e("fat pre ----", String.valueOf((fat)));
-
-
-			Log.e("fat ----", String.valueOf((Float.parseFloat(fat))));
-
-
-			float rateltr_fat = ((Float.parseFloat(fat) * Float.parseFloat(kgfatrat)) / (100));
-            float rateltr_snf = (Float.parseFloat(snf) * Float.parseFloat(kgsnfrat)) / 100;
-
-            if ("Less -".equals(comissionType)) {
-                 rateperltrr = rateltr_fat + rateltr_snf - Float.parseFloat(comition);
-
-            } else {
-                 rateperltrr = rateltr_fat + rateltr_snf + Float.parseFloat(comition);
-            }
+			if (KgFatRatList.equals(""))
+			{
+				 return "0";
+			}
+			else
+			{
+				DecimalFormat df = new DecimalFormat("#.##");
 
 
 
-            return  String.valueOf(rateperltrr);
-        }
-        }
-        else if (rateMethod.equals("2")){
+
+				Log.e("fat ----", String.valueOf((Float.parseFloat(fat))));
+
+
+				float rateltr_fat = ((Float.parseFloat(fat) * Float.parseFloat(kgfatrat)) / (100));
+				float rateltr_snf = (Float.parseFloat(snf) * Float.parseFloat(kgsnfrat)) / 100;
+
+				if ("Less -".equals(comissionType)) {
+					 rateperltrr = rateltr_fat + rateltr_snf - Float.parseFloat(comition);
+
+				} else {
+					 rateperltrr = rateltr_fat + rateltr_snf + Float.parseFloat(comition);
+				}
+
+				Log.e("rateperltrr --- ",String.valueOf(rateperltrr));
+				return  String.valueOf(rateperltrr);
+			}
+        } else if (rateMethod.equals("2")){
 
         	SQLiteDatabase sqLiteDatabase = getReadableDatabase();
 

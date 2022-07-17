@@ -40,7 +40,7 @@
             android:id="@+id/sp_shift"
             android:layout_weight="1.29"
             android:layout_marginLeft="0dp"
-            
+
             android:layout_width="wrap_content"
             android:layout_height="35dp" />
 
@@ -256,7 +256,7 @@
             android:textSize="20dp"
             android:layout_weight="1"
             android:paddingLeft="10dp"
-            android:maxLength="4"
+            android:maxLength="6"
             android:hint="rate"
             android:inputType="numberDecimal"
 
@@ -275,7 +275,7 @@
 
         <TextView
             android:id="@+id/click_total"
-            android:text="@string/total_rt"
+            android:text="@string/total_amount"
             android:layout_weight="1"
             android:layout_marginLeft="20dp"
             android:textSize="20dp"
@@ -285,7 +285,7 @@
         <TextView
             android:id="@+id/total"
             android:textSize="20dp"
-            android:text="@string/total_rt"
+            android:text="@string/total_amount"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:hint="Total Amount"

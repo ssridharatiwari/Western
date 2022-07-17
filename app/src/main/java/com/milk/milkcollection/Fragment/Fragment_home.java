@@ -621,6 +621,23 @@ public class Fragment_home extends Fragment {
                         entry.memberName = (String)tv_code_holder.getText();
                         printString = entry.getPrintMassge();
                         message = entry.getSMS();
+                        printString = entry.getPrintMassge();
+
+                        String strShipt = "Eve";
+                        if (sift.equals("M")){
+                            strShipt = "Mor";
+                        }
+
+
+//                        printString = "";
+//                        printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
+//                                "Name: " + member_name + "(" + code + ")" +
+//                                "\nDate: " + date +
+//                                "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
+//                                "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
+//                                "\nFat: " + fat + "  "+ MainActivity.instace.rateString() +": " + snf +
+//                                "\nRate/Ltr: " + rateMain +
+//                                "\nAmount:  Rs " + MainActivity.oneDecimalFloatToString(totalamount) + "\n";
 
 
                         myCode = code;
@@ -766,7 +783,6 @@ public class Fragment_home extends Fragment {
 
     private void resetValue() {
 
-
         rateMain = Float.valueOf(0);
         total.setText("Total Amount");
         rate.setText("");
@@ -814,6 +830,7 @@ public class Fragment_home extends Fragment {
                                 snf = MainActivity.twoDecimalString(String.valueOf(snf));
                             }
 
+
                             rateMain = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
 
                             if (rateMain == 0){
@@ -822,7 +839,7 @@ public class Fragment_home extends Fragment {
                                 Toast.makeText(getActivity(), "rate not found", Toast.LENGTH_LONG).show();
                             } else {
 
-                                rate.setText(String.valueOf(rateMain));
+                                rate.setText(MainActivity.twoDecimalFloatToString(rateMain));
                                 float totalRate = Float.parseFloat(rate.getText().toString()) * Float.parseFloat(weight);
                                 totalrs = (int) totalRate;
                                 total.setText( MainActivity.twoDecimalFloatToString(totalRate));

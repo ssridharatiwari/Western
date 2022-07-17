@@ -105,8 +105,6 @@ public class FragmentPaymentReport extends Fragment {
         savedmilk_listview.setEmptyView(rootView.findViewById(R.id.empty_saved_list));
         savedmilk_listview.setOnCreateContextMenuListener(this);
 
-
-
         btnsearch = (Button)rootView.findViewById(R.id.btn_searchimage);
         btnsearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +112,7 @@ public class FragmentPaymentReport extends Fragment {
                 message = "";
                 singleReportList.clear();
                 SearchSqlData();
-                Log.e("=-m-m-m--=", " " + GetAllData_arrayList);
+
                 sortByAtoZ(singleReportList, true, paymentReportAdapter, R.layout.listviewmember, savedmilk_listview);
             }
         });
@@ -176,7 +174,6 @@ public class FragmentPaymentReport extends Fragment {
                     (getActivity(),android.R.layout.simple_list_item_1,arryMebers);
             acFrom.setAdapter(adapter);
             acTo.setAdapter(adapter);
-
             acFrom.setText(arryMebers.get(0));
             acTo.setText(arryMebers.get(arryMebers.size()-1));
         }
@@ -223,7 +220,8 @@ public class FragmentPaymentReport extends Fragment {
             String memberCode="";
             DecimalFormat df = new DecimalFormat("#.##");
 
-            String query = "SELECT m.membername,m.membercode,SUM(ma.milkweight) as wgt,SUM(ma.totalamount) as amt FROM 'milk_amount' ma LEFT JOIN 'member' m ON m.membercode=ma.memberCode WHERE ma.date >= '" + startDate + "' AND ma.date <= '" + endDate + "' AND ma.memberCode >= '" + acFrom.getText().toString() + "' AND ma.memberCode <= '" + acTo.getText().toString() + "' GROUP BY ma.memberCode";
+            String query = "SELECT m.membername,ma.memberCode,SUM(ma.milkweight) as wgt,SUM(ma.totalamount) as amt FROM 'milk_amount' ma " +
+                    "LEFT JOIN 'member' m ON m.membercode=ma.memberCode WHERE ma.date >= '" + startDate + "' AND ma.date <= '" + endDate + "' AND ma.memberCode >= '" + acFrom.getText().toString() + "' AND ma.memberCode <= '" + acTo.getText().toString() + "' GROUP BY ma.memberCode";
 
             cursor = sqLiteDatabase.rawQuery(query, null);
 
@@ -231,10 +229,10 @@ public class FragmentPaymentReport extends Fragment {
 
                 while (cursor.isAfterLast() == false) {
 
-                    String name =  cursor.getString(cursor.getColumnIndex("membername"));
-                    String code =  cursor.getString(cursor.getColumnIndex("membercode"));
-                    Float weight =  cursor.getFloat(cursor.getColumnIndex("wgt"));
-                    Float amount =  cursor.getFloat(cursor.getColumnIndex("amt"));
+                    String code = cursor.getString(cursor.getColumnIndex("memberCode"));
+                    String name = cursor.getString(cursor.getColumnIndex("membername"));
+                    Float weight = cursor.getFloat(cursor.getColumnIndex("wgt"));
+                    Float amount = cursor.getFloat(cursor.getColumnIndex("amt"));
 
                     totalWeight = totalWeight +  weight;
                     totalAmount = totalAmount +  amount;
@@ -249,7 +247,6 @@ public class FragmentPaymentReport extends Fragment {
 
                     String wt = String.valueOf(MainActivity.twoDecimalFloatToString(weight)) ,
                             amt = String.valueOf(MainActivity.twoDecimalFloatToString(amount));
-
                     try {
                         String line = String.format("%6s %8s %-10s " , wt, amt, name);
                         message = message+ "\n" + code + " " + line;
