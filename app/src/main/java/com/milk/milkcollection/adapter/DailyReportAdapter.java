@@ -6,20 +6,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.R;
-import com.milk.milkcollection.model.DailyReport;
+import com.milk.milkcollection.model.SingleEntry;
+
+import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by Er. Arjun on 02-03-2016.
  */
-public class DailyReportAdapter  extends ArrayAdapter<DailyReport> {
+public class DailyReportAdapter  extends ArrayAdapter<SingleEntry> {
     Activity context;
-    DailyReport dailyReport;
+    SingleEntry dailyReport;
 
 
     public DailyReportAdapter(Activity context, int resourceId,
-                             List<DailyReport> items) {
+                             List<SingleEntry> items) {
         super(context, resourceId, items);
         this.context = context;
     }
@@ -51,11 +55,11 @@ public class DailyReportAdapter  extends ArrayAdapter<DailyReport> {
 
             holder.txtSno.setText(String.valueOf(position+1)+ ".");
             holder.txtcode.setText(dailyReport.getCode());
-            holder.txtweight.setText(dailyReport.getWeight());
-            holder.txtfat.setText(dailyReport.getFat());
-            holder.txtsnf.setText(dailyReport.getSnf());
-            holder.txtrate.setText(dailyReport.getRate());
-            holder.txtamount.setText(dailyReport.getAmount());
+            holder.txtweight.setText( MainActivity.twoDecimal(dailyReport.getWeight()) );
+            holder.txtfat.setText( MainActivity.twoDecimal(dailyReport.getfat())  );
+            holder.txtsnf.setText( MainActivity.twoDecimal(dailyReport.getSnf())  );
+            holder.txtrate.setText(MainActivity.twoDecimal(dailyReport.getRate()) );
+            holder.txtamount.setText( MainActivity.twoDecimal(dailyReport.getAmount()) );
         }
         return convertView;
     }

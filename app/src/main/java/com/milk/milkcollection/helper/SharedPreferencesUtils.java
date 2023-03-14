@@ -192,6 +192,19 @@ private Context _context;
     }
 
 
+    public void setHC05(String value) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("hc_05", value);
+        editor.commit();
+    }
+
+    public String getHC05() {
+        if(prefs.contains("hc_05"))
+            return prefs.getString("hc_05", "");
+        else
+            return "0";
+    }
+
 
 
     public void setUserId(String userId) {
@@ -297,4 +310,134 @@ private Context _context;
         else
             return "0";
     }
+
+
+
+    public void setSaveSms(String data) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("savesms", data);
+        editor.commit();
+    }
+
+
+    public String getSaveSms() {
+        if(prefs.contains("savesms"))
+            return prefs.getString("savesms", "0");
+        else
+            return "0";
+    }
+
+
+    public void setSavePrint(String data) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("saveprint", data);
+        editor.commit();
+    }
+
+
+    public String getSavePrint() {
+        if(prefs.contains("saveprint"))
+            return prefs.getString("saveprint", "0");
+        else
+            return "0";
+    }
+
+
+
+    public boolean isManualRate() {
+        if(prefs.contains("isManualRate"))
+            return prefs.getBoolean("isManualRate", false);
+        else
+            return false;
+    }
+
+
+    public void setManualRate(boolean isManual) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("isManualRate", isManual);
+        editor.commit();
+    }
+
+    public void setPushWeight(boolean isManual) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("push_weight", isManual);
+        editor.commit();
+    }
+
+    public boolean isPushWeight() {
+        if(prefs.contains("push_weight"))
+            return prefs.getBoolean("push_weight", false);
+        else
+            return false;
+    }
+
+    public void setCMF(String cmf) {
+        SharedPreferences.Editor editor = prefs.edit();
+        if (cmf.equals("")) {
+            cmf = "0";
+        }
+        editor.putString("cm_fund", cmf);
+        editor.commit();
+    }
+
+    public String getCMF() {
+        if(prefs.contains("cm_fund"))
+            return prefs.getString("cm_fund","0");
+        else
+            return "0";
+    }
+
+
+
+
+
+    public void setWelcomeText(String str) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("welcomeText", str);
+        editor.commit();
+    }
+
+
+    public String getWelcomeText() {
+        if(prefs.contains("welcomeText"))
+            return prefs.getString("welcomeText", "");
+        else
+            return "";
+    }
+
+
+
+
+    public void setVenderName(String str) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("vender_name", str);
+        editor.commit();
+    }
+
+
+    public String getVenderName() {
+        if(prefs.contains("vender_name"))
+            return prefs.getString("vender_name", "");
+        else
+            return "";
+    }
+
+
+
+    public void setVPhone(String str) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("vender_phone", str);
+        editor.commit();
+    }
+
+
+    public String getVPhone() {
+        if(prefs.contains("vender_phone"))
+            return prefs.getString("vender_phone", "");
+        else
+            return "";
+    }
+
+
+
 }

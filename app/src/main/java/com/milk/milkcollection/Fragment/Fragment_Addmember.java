@@ -19,6 +19,7 @@ import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.adapter.ShowmemberAdapter;
+import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.ShowMember;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class Fragment_Addmember extends Fragment {
     ImageView imgShare;
     ListView memberList;
     ShowmemberAdapter dataAdapter;
-    ArrayList<ShowMember> arraymemberList;
+    ArrayList<Member> arraymemberList;
 
     public Fragment_Addmember() {}
 
@@ -191,14 +192,12 @@ getPrintStrng();
 
     private void makeCorrectCode(){
 
-        if (membercode.length() > 0)
-        {
-            if( membercode.length() == 1 )
-            {
+        membercode = String.valueOf(Integer.valueOf(membercode));
+
+        if (membercode.length() > 0) {
+            if(membercode.length() == 1) {
                 membercode = "00"+membercode;
-            }
-            else if( membercode.length() == 2 )
-            {
+            }else if( membercode.length() == 2 ){
                 membercode = "0"+membercode;
             }
         }
@@ -219,8 +218,7 @@ getPrintStrng();
 
                     String AllEntity = membername + "    " + membercode + "     " + membermobile;
 
-                    Log.e("memberId", AllEntity);
-
+                    // Log.e("memberId", AllEntity);
 
                     milkDBHelpers=  new MilkDBHelpers(getActivity());
                     milkDBHelpers.updateMember(memberId,membername, membercode, membermobile, AllEntity);
@@ -279,7 +277,7 @@ getPrintStrng();
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
         date = String.valueOf(day)+"/"+String.valueOf(month+1)+"/"+String.valueOf(year);
-        Log.e("-=-=date--=", date);
+        // Log.e("-=-=date--=", date);
     }
 
     // validating name
@@ -292,15 +290,16 @@ getPrintStrng();
 
     String printString = "";
 
+
     private void getPrintStrng() {
 
         printString = String.format("%4s %-10s %10s " , "Code" , "Name" , "Mobile");
 
         for (int i = 0; i< arraymemberList.size() ;i++) {
-            ShowMember member = arraymemberList.get(i);
+            Member member = arraymemberList.get(i);
 
-            String name =  member.getMember_name();
-            String mobile =  member.getMember_contact();
+            String name =  member.getName();
+            String mobile =  member.getMobile();
 
             if (name.length() > 10){
                 name = name.substring(0,10);
@@ -309,29 +308,8 @@ getPrintStrng();
                 mobile = "--";
             }
 
-            printString = printString + "\n" + String.format("%4s %-10s %-10s " , member.getMember_code() ,name, member.getMember_contact());
-
+            printString = printString + "\n" + String.format("%4s %-10s %-10s " , member.getCode() ,name, mobile);
         }
-
     }
 
-
-    private void update(){
-      /*  public void updateroute(int id,String routelatitude,String routelongitude,String routedetails,String time,String weekday,String routeinformation,String routename,String startpoint,String endpoint)
-        {
-            SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-
-            ContentValues values = new ContentValues();
-            values.put("set_Latitude",routelatitude);
-            values.put("set_longitude",routelongitude);
-            values.put("set_routedetail",routedetails);
-            values.put("set_time",time);
-            values.put("set_weekday",weekday);
-            values.put("routeinformation",routeinformation);
-            values.put("set_routename", routename);
-            values.put("start_point",startpoint);
-            values.put("end_point", endpoint);
-            sqLiteDatabase.update("set_route", values,"Sr"+"="+id, null);
-        }*/
-    }
 }

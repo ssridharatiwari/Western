@@ -1,22 +1,21 @@
 package com.milk.milkcollection.Fragment;
-
-
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
+import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.RequiresApi;
-import android.telephony.SmsManager;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,62 +29,32 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonObject;
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Activity.PinActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
-import com.milk.milkcollection.SClient;
-import com.milk.milkcollection.application.AppApplication;
 import com.milk.milkcollection.helper.AppString;
+import com.milk.milkcollection.helper.AppUrl;
+import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
+import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
-import com.milk.milkcollection.myutility;
-import com.milk.milkcollection.retrofit.HttpServerBackend;
-import com.milk.milkcollection.retrofit.RestAdapter;
+import com.milk.milkcollection.model.SingleEntry;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.UnknownHostException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-
-import java.io.OutputStream;
-
-import android.bluetooth.BluetoothSocket;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
-
-import retrofit2.Call;
-import retrofit2.Response;
-
 import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
 import static com.milk.milkcollection.Activity.MainActivity.instace;
 import static java.lang.System.exit;
@@ -94,33 +63,46 @@ import static java.lang.System.exit;
 public class Fragment_home extends Fragment {
 
     ArrayAdapter<String> adapter;
-    Button btn_ratesave, btn_message, btn_print, btn_pss;
+    Button btn_ratesave, btn_pss,btn_auto_manual,btn_push_fat;
     LinearLayout createrate,todayDetailLL;
-    EditText et_weight, et_fat, et_snf, et_code;
-    TextView rate, total, btnrate, btntotal, tv_datepicker, tv_code_holder,lbl_avgFat,
+    EditText et_weight, et_fat, et_snf, et_code,rate;
+    TextView  total, btnrate, btntotal, tv_datepicker, tv_code_holder,lbl_avgFat,
             lbl_avgSnf,lbl_wgt,lbl_amt,lbl_SeriolNo,lbl_snf_home,lbl_snf_avg,toolbartitle;
     String weight, fat, snf, code , myCode;
     String phone_number, message, sift, printString, titlename, mobile_self,comission;
-    float rateperltr;
+
     Spinner sp_shift;
     int  totalrs, tagCode;
     ProgressDialog dialog;
     MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
     SharedPreferencesUtils sharedPreferencesUtils;
 
-    Boolean isSMSSemd = false,isPrint;
+    Float rateMain = Float.valueOf((float) 0.0);
+    Switch switchManual;
+    Boolean isSMSSemd = false,isPrint,isAuto=false;
+
+
 
     public Fragment_home() {
+
     }
 
-    byte FONT_TYPE;
 
 
+    @SuppressLint("ValidFragment")
+    public Fragment_home(ArrayAdapter<String> adapter) {
+        this.adapter = adapter;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+
+        rootView.playSoundEffect(android.view.SoundEffectConstants.CLICK);
         comission = "+";
 
         toolbartitle = (TextView) getActivity().findViewById(R.id.titletool);
@@ -145,17 +127,19 @@ public class Fragment_home extends Fragment {
         et_fat = (EditText) rootView.findViewById(R.id.fat);
         et_snf = (EditText) rootView.findViewById(R.id.snf);
         et_code = (EditText) rootView.findViewById(R.id.et_code);
-        rate = (TextView) rootView.findViewById(R.id.rate);
+        rate = (EditText) rootView.findViewById(R.id.rate);
         tv_code_holder = (TextView) rootView.findViewById(R.id.tv_code_holder);
         total = (TextView) rootView.findViewById(R.id.total);
         btnrate = (TextView) rootView.findViewById(R.id.click_rate);
         btntotal = (TextView) rootView.findViewById(R.id.click_total);
+        btntotal = (TextView) rootView.findViewById(R.id.click_total);
         tv_datepicker = (TextView) rootView.findViewById(R.id.tv_date);
-        btn_message = (Button) rootView.findViewById(R.id.btn_messsag);
-        btn_print = (Button) rootView.findViewById(R.id.btn_print);
         btn_pss = (Button) rootView.findViewById(R.id.btn_pss);
+        btn_auto_manual = (Button) rootView.findViewById(R.id.btn_auto_manual);
+        btn_push_fat = (Button) rootView.findViewById(R.id.btn_push_fat);
 
         sp_shift = (Spinner) rootView.findViewById(R.id.sp_shift);
+        switchManual = (Switch)rootView.findViewById(R.id.switch_manual);
 
         sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
         milkDBHelpers=  new MilkDBHelpers(getActivity());
@@ -163,6 +147,10 @@ public class Fragment_home extends Fragment {
         titlename = sharedPreferencesUtils.getTitle();
         mobile_self = sharedPreferencesUtils.getMobile();
         toolbartitle.setText(titlename);
+
+
+
+        verifyDetailApi();
 
         et_snf.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -192,24 +180,6 @@ public class Fragment_home extends Fragment {
         });
 
 
-        et_code.addTextChangedListener(new TextWatcher() {
-
-            public void afterTextChanged(Editable s) {
-
-                if (et_code.getText().length() > 0) {
-                    getUserName();
-                }else{
-
-                    tv_code_holder.setText("Code");
-                    et_code.setError(null);
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
 
 
         et_weight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -249,7 +219,7 @@ public class Fragment_home extends Fragment {
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
+                //--  *  --// TODO Auto-generated method stub
             }
         });
 
@@ -280,6 +250,7 @@ public class Fragment_home extends Fragment {
         });
 
 
+
         todayDetailLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -308,22 +279,31 @@ public class Fragment_home extends Fragment {
         int memberlength = milkDBHelpers.getMember();
         String memberrecord = String.valueOf(memberlength);
         if (memberrecord != null) {
-            Log.e("-----member--------", memberrecord);
+            //Log.e("-----member--------", memberrecord);
         }
         int updatebhavlingth = milkDBHelpers.getupdatebhav();
         String bhavrecord = String.valueOf(updatebhavlingth);
         if (bhavrecord != null) {
-            Log.e("-------bhav------", bhavrecord);
+            //Log.e("-------bhav------", bhavrecord);
         }
 
         btn_ratesave = (Button) rootView.findViewById(R.id.btn_rate_home);
-
         btn_ratesave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                isPrint = true;
-                isSMSSemd = true;
+
+                if (sharedPreferencesUtils.getSavePrint().equals("1")){
+                    isPrint = true;
+                }else{
+                    isPrint = false;
+                }
+                if (sharedPreferencesUtils.getSaveSms().equals("1")){
+                    isSMSSemd = true;
+                }else{
+                    isSMSSemd = false;
+                }
+
                 if (funSaveEntry() == true) {
 
                 }
@@ -331,39 +311,149 @@ public class Fragment_home extends Fragment {
             }
         });
 
-        btn_print.setOnClickListener(new View.OnClickListener() {
+        btn_auto_manual.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
 
-                isPrint = true;
+                String wtt =  instace.twoDecimal(String.valueOf(et_weight.getText()));
 
-                if (funSaveEntry() == true) {
-
+                if (wtt.length() == 4){
+                    wtt = "000" + wtt;
+                }else if (wtt.length() == 5){
+                    wtt = "00" + wtt;
+                }else if (wtt.length() == 6){
+                    wtt = "0" + wtt;
                 }
+
+                instace.print("$" + wtt);
+
+
+//                if (MainActivity.getInstace().isAutoBt == false){
+//                    MainActivity.getInstace().isAutoBt = true;
+//                    startFindBt();
+//                    btn_auto_manual.setBackgroundColor(R.color.green);
+//                    btn_auto_manual.setText("Auto");
+//                }else {
+//                    btn_auto_manual.setBackgroundColor(R.color.gray);
+//                    btn_auto_manual.setText("Man");
+//                    MainActivity.getInstace().isAutoBt = false;
+//                }
+
             }
         });
 
-        btn_message.setOnClickListener(new View.OnClickListener() {
+        btn_push_fat.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View v) {
 
-                isSMSSemd = true;
+                String ft = String.valueOf(et_fat.getText());
+                String snf1 = String.valueOf(et_snf.getText());
+                ft = instace.twoDecimal(ft);
+                snf1 = instace.twoDecimal(snf1);
 
-                if (funSaveEntry()==true){
-
+                if (ft.length() < 5) {
+                    ft = "0" + ft;
                 }
+                if (snf1.length() < 5) {
+                    snf1 = "0" + snf1;
+                }
+
+                instace.print("#" + ft + " " + snf1);
             }
         });
+
+
+        Log.e("push weight ", String.valueOf(sharedPreferencesUtils.isPushWeight()));
+        if (sharedPreferencesUtils.isPushWeight()){
+            btn_push_fat.setVisibility(View.VISIBLE);
+            btn_auto_manual.setVisibility(View.VISIBLE);
+        }else{
+            btn_push_fat.setVisibility(View.INVISIBLE);
+            btn_auto_manual.setVisibility(View.INVISIBLE);
+        }
 
         getCurrentCollection();
         setTextsAccordingRate();
 
-        verifyDetailApi();
         checkDefaultSnf();
         downloadFile();
 
+        changeTextMethds();
         return rootView;
     }
+
+
+
+    private void changeTextMethds(){
+
+        et_code.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                if (et_code.getText().length() > 0) {
+                    getUserName();
+                }else{
+
+                    tv_code_holder.setText("Code");
+                    et_code.setError(null);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
+        et_fat.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                if (comission.equals("-")) {
+                    createmilkvalue();
+                }
+                if (comission.equals("+")) {
+                    createmilkvalue();
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
+
+        et_snf.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                if (comission.equals("-")) {
+                    createmilkvalue();
+                }
+                if (comission.equals("+")) {
+                    createmilkvalue();
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
+
+    }
+
+
+
+
+
 
 
     private void rentryMethod(){
@@ -400,12 +490,7 @@ public class Fragment_home extends Fragment {
 
         isPrint = false;
         try {
-            try {
-                MainActivity.print(printString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            MainActivity.getInstace().print(printString);
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Print failed, please try again.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
@@ -419,6 +504,10 @@ public class Fragment_home extends Fragment {
             et_code.setError("Code is required!");
             return  false;
         } else {
+
+            code = String.valueOf(Integer.valueOf(code));
+            //MainActivity.makeToast(code);
+
             if (code.length() == 1) {
                 code = "00" + code;
                 SaveAllData();
@@ -465,90 +554,104 @@ public class Fragment_home extends Fragment {
         fat = et_fat.getText().toString();
         snf = et_snf.getText().toString();
 
-        String totalrupees = total.getText().toString();
-        String rateliter = rate.getText().toString();
 
-        if (rateliter.equals("00.00")) {
-            Toast.makeText(getActivity(), "Amount Not Found", Toast.LENGTH_LONG).show();
+
+        if(rateMain == 0) {
+            if (rate.getText().toString().length() > 0){
+                if (Float.parseFloat(rate.getText().toString()) > 0.0) {
+                    rateMain =  Float.parseFloat(rate.getText().toString());
+                }
+            }
+        }
+
+        if (rateMain == 0) {
+            Toast.makeText(getActivity(), "Rate Amount Not Found", Toast.LENGTH_LONG).show();
         } else if (weight.length() == 0)
             et_weight.setError("Weight is required!");
-        else if (Float.parseFloat(weight) >= 1000)
-            et_weight.setError("Weight limit 1 - 999");
+        else if (Float.parseFloat(weight) >= 10000)
+            et_weight.setError("Weight limit 1 - 9999");
         else if (fat.length() == 0)
             et_fat.setError("Fat is required!");
         else if (snf.length() == 0)
             et_snf.setError("Snf is required!");
-        else if (totalrupees.equals("Total Rs/-")) {
+        else if (total.getText().toString().equals("Total Rs/-")) {
             Toast.makeText(getActivity(), "Please create Total Rs/- ", Toast.LENGTH_LONG).show();
         } else {
             try {
 
 
                 SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
-
                 Cursor cursor = sqLiteDatabase.rawQuery("Select * From member where membercode='" + code + "'", null);
 
                 if (cursor != null && cursor.moveToFirst()) {
 
                     while (cursor.isAfterLast() == false) {
 
-                        Float rateperliter = Float.valueOf(rateliter);
                         Float currentweight = Float.parseFloat(weight);
                         Float currentfat = Float.parseFloat(fat);
                         Float currentsnf = Float.parseFloat(snf);
+
                         Float fat_wt = currentfat * currentweight;
                         Float snf_wt = currentsnf * currentweight;
+
                         phone_number = cursor.getString(3);
-                        String member_name = (String)tv_code_holder.getText();
-                        Float totalamount = Float.parseFloat(totalrupees);
-                        DecimalFormat df = new DecimalFormat("#.##");
-                        fat = String.valueOf(df.format(Float.parseFloat(fat)));
-                        snf = String.valueOf(df.format(Float.parseFloat(snf)));
-                        weight = String.valueOf(df.format(Float.parseFloat(weight)));
 
+                        weight = MainActivity.twoDecimal(weight);
+                        fat = MainActivity.twoDecimal(fat);
+                        snf = MainActivity.twoDecimal(snf);
+                        Float totalamount = currentweight *  rateMain;
+                        String cmf = sharedPreferencesUtils.getCMF();
+                        float cmffloat = Float.parseFloat(cmf) * Float.parseFloat(weight);
+                        cmf =  String.valueOf(cmffloat);
 
+                        SingleEntry entry = new SingleEntry();
+                        entry.setCMF(cmf);
+                        entry.setCode(code);
+                        entry.setRate(String.valueOf(rateMain));
+                        entry.setAmount(String.valueOf(totalamount));
+                        entry.setSift(sift);
+                        entry.setDatesave(date);
+                        entry.setDate(replaceDate);
+                        entry.setWeight(weight);
+                        entry.setFat(fat);
+                        entry.setSnf(snf);
+                        entry.setFatWt(String.valueOf(fat_wt));
+                        entry.setSnfWt(String.valueOf(snf_wt));
+                        entry.title = titlename;
+                        entry.memberName = (String)tv_code_holder.getText();
+                        printString = entry.getPrintMassge();
+                        message = entry.getSMS();
+                        printString = entry.getPrintMassge();
 
                         String strShipt = "Eve";
                         if (sift.equals("M")){
                             strShipt = "Mor";
                         }
 
-                        message = titlename + "\n" + "Date: " + date + "(" + strShipt + ")" + "\nCode: " + code + "-" + member_name +
-                                "\nQTY=" + weight + ", FT=" + fat + ", " + MainActivity.instace.rateString().toUpperCase() +"=" + snf + "; RT= ₹ " + rateperliter + " AMT= ₹ " + totalrupees + "";
 
-                        printString = "";
-                        printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
-                                "Name: " + member_name + "(" + code + ")" +
-                                "\nDate: " + date +
-                                "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
-                                "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
-                                "\nFat: " + fat + "  "+MainActivity.instace.rateString()+": " + snf +
-                                "\nRate/Ltr: " + rateliter +
-                                "\nAmount:  Rs " + totalamount + "\n";
+//                        printString = "";
+//                        printString = titlename + "\n" + mobile_self + "\n" + MainActivity.lineBreak() +
+//                                "Name: " + member_name + "(" + code + ")" +
+//                                "\nDate: " + date +
+//                                "\nShift: " + getTimeOne() + " (" + strShipt + ")" +
+//                                "\nLitre: " + MainActivity.twoDecimalString(weight) + " L" +
+//                                "\nFat: " + fat + "  "+ MainActivity.instace.rateString() +": " + snf +
+//                                "\nRate/Ltr: " + rateMain +
+//                                "\nAmount:  Rs " + MainActivity.oneDecimalFloatToString(totalamount) + "\n";
 
-
-                        printString = printString + MainActivity.lineBreak();
 
                         myCode = code;
-
-                        milkDBHelpers.AddMilk(code, df.format(Float.parseFloat(weight)), rateperliter,
+                        milkDBHelpers.AddMilk(code,weight, rateMain,
                                 totalamount, replaceDate,
-                                phone_number, sift, fat, fat_wt, snf, snf_wt, message, printString, date);
+                                phone_number, sift, fat, fat_wt, snf, snf_wt, cmf, "", date);
 
-                        total.setText("Total Amount");
-                        rate.setText("Rate/ltr");
-                        et_weight.setText("");
-                        et_fat.setText("");
-                        et_snf.setText("");
                         resetValue();
-
-
                         et_code.requestFocus();
-                        Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateperliter + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
+
+                        Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateMain + "\n" + "total amount :- " + totalamount, Toast.LENGTH_LONG).show();
                         cursor.moveToNext();
 
                         getCurrentCollection();
-
                         commulativeMethod();
 
                     }
@@ -564,7 +667,7 @@ public class Fragment_home extends Fragment {
 
 
 
-    private String reverceDate (){
+    private String reverceDate () {
 
         String date = tv_datepicker.getText().toString();
         String replaceDate = date.replace("/", "");
@@ -639,7 +742,10 @@ public class Fragment_home extends Fragment {
 
             message = message + "\n" + "Com. Ttl(" + preDate +
                     " - " + endDate + ") :\n" +
-                    "QTY=" + totalWeight + "\nAMT= ₹ " + totalAmount;
+                    "QTY=" + totalWeight + "\nAMT= " + totalAmount;
+
+
+            Log.e("printe  ",printString);
         }
 
 
@@ -672,16 +778,16 @@ public class Fragment_home extends Fragment {
             sp_shift.setSelection(1);
             sift = "E";
         }
-        tv_datepicker.setText(milkDBHelpers.getCurrentDateFromPublic());
+        tv_datepicker.setText(AppString.getCurrentDate());
     }
 
     private void resetValue() {
 
+        rateMain = Float.valueOf(0);
         total.setText("Total Amount");
-        rate.setText("Rate/ltr");
+        rate.setText("");
         et_weight.setText("");
         et_fat.setText("");
-
         et_code.setText("");
 
         if (sharedPreferencesUtils.getDefaultSNF() > 0){
@@ -691,6 +797,10 @@ public class Fragment_home extends Fragment {
             et_snf.setText("");
         }
     }
+
+
+
+
 
     private void createmilkvalue() {
 
@@ -715,37 +825,21 @@ public class Fragment_home extends Fragment {
             else if (snf.length() == 0)
                 et_snf.setError("Snf is required!");
             else {
-
-                        try
-                        {
-
-
+                        try {
                             if (sharedPreferencesUtils.getRateMethodCode().equals("3")){
-                                double value = Double.parseDouble(snf);
-
-                                value = roundToHalf(value);
-                                Log.e("--------value", String.valueOf(value));
-
-                                try {
-                                    snf = MainActivity.oneDecimalString(String.valueOf(value));
-                                    et_snf.setText(snf);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
+                                snf = MainActivity.twoDecimalString(String.valueOf(snf));
                             }
 
 
-                            fat = MainActivity.oneDecimalString(fat);
-                            snf = MainActivity.oneDecimalString(snf);
-                            rateperltr = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
+                            rateMain = Float.parseFloat(milkDBHelpers.getRatePerLiter(fat,snf));
 
-
-                            if (rateperltr == 0){
+                            if (rateMain == 0){
+                                rate.setText("0.0");
+                                total.setText("0.0");
                                 Toast.makeText(getActivity(), "rate not found", Toast.LENGTH_LONG).show();
                             } else {
 
-                                rate.setText(String.valueOf(rateperltr));
+                                rate.setText(MainActivity.twoDecimalFloatToString(rateMain));
                                 float totalRate = Float.parseFloat(rate.getText().toString()) * Float.parseFloat(weight);
                                 totalrs = (int) totalRate;
                                 total.setText( MainActivity.twoDecimalFloatToString(totalRate));
@@ -762,9 +856,9 @@ public class Fragment_home extends Fragment {
 
     public void getUserName() {
 
-        Log.e("getUserName", "getUserName");
         code = et_code.getText().toString();
 
+        code = String.valueOf(Integer.valueOf(code));
         if (code.length() == 1) {
             code = "00" + code;
         } else if (code.length() == 2) {
@@ -783,6 +877,7 @@ public class Fragment_home extends Fragment {
                     String member_name = cursor.getString(1);
                     tv_code_holder.setText(cursor.getString(1));
                     tv_code_holder.setTextColor(getResources().getColor(R.color.colorAccent));
+
                     tagCode = 0;
                     cursor.moveToNext();
                 }
@@ -794,6 +889,33 @@ public class Fragment_home extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Enter Another Code", Toast.LENGTH_LONG).show();
         }
+    }
+
+
+    void startFindBt() {
+        BluetoothPrinter.getInstace().findBT();
+        getBlutoothData();
+
+    }
+
+    void getBlutoothData(){
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                String mystring = BluetoothPrinter.getInstace().bluetoothString();
+                Log.e("my string",mystring);
+                et_weight.setText(mystring);
+
+                if (MainActivity.getInstace().isAutoBt == true ){
+                    getBlutoothData();
+                }
+
+            }
+        }, 500);
+
     }
 
 
@@ -813,13 +935,9 @@ public class Fragment_home extends Fragment {
 
 
     public void setTextsAccordingRate()  {
-        try {
-            lbl_snf_home.setText(MainActivity.instace.rateString());
-            et_snf.setHint("Enter " + MainActivity.instace.rateString());
-            lbl_snf_avg.setText("Avg " + MainActivity.instace.rateString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        lbl_snf_home.setText(MainActivity.instace.rateString());
+        et_snf.setHint("Enter " + MainActivity.instace.rateString());
+        lbl_snf_avg.setText("Avg " + MainActivity.instace.rateString());
     }
 
 
@@ -833,19 +951,74 @@ public class Fragment_home extends Fragment {
                 if (sharedPreferencesUtils.getDefaultSNF() > 0){
                     et_snf.setText(String.valueOf(sharedPreferencesUtils.getDefaultSNF()));
                     et_snf.setEnabled(false);
-
                 }else{
                     et_snf.setText("");
                     et_snf.setEnabled(true);
-
                 }
-
             }
 
 
-        }, 100);
+        },100);
+
+
+        if (sharedPreferencesUtils.isManualRate()) {
+            rate.setEnabled(true);
+            switchManual.setVisibility(View.VISIBLE);
+        }else {
+            rate.setEnabled(false);
+            switchManual.setVisibility(View.INVISIBLE);
+        }
+
+
+
+
+        switchManual.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String statusSwitch1, statusSwitch2;
+                if (switchManual.isChecked()){
+                    rate.setEnabled(true);
+                }else{
+                    rate.setEnabled(false);
+                    hideKeyboard(getActivity());
+                }
+            }
+        });
+
+
+        rate.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+
+                if (rate.getText().length() > 0) {
+
+                    if (rate.getText().toString().equals("Rate/ltr")) {
+                        return;
+                    }
+
+                    Float rateperliter = Float.valueOf(rate.getText().toString());
+                    if (et_weight.getText().toString().length() > 0){
+                        try {
+                            total.setText(MainActivity.twoDecimalFloatToString(rateperliter * Float.valueOf(et_weight.getText().toString())));
+                        } catch (IOException e) {
+                        }
+                    }
+
+                }else{
+
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
 
     }
+
+
 
 
 
@@ -861,12 +1034,9 @@ public class Fragment_home extends Fragment {
 
                     SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
 
-                    String date = milkDBHelpers.getCurrentDateFromPublic();
-                    date = date.replace("/", "");
-                    String dd = date.substring(0, 2);
-                    String mm = date.substring(2, 4);
-                    String yy = date.substring(4, 8);
-                    date = yy + mm + dd;
+                    String date = AppString.getCurrentDate();
+
+                    date = AppString.reverceDate(date);
 
                     Cursor cursor = sqLiteDatabase.rawQuery(" SELECT * FROM 'milk_amount' WHERE sift = '" + sift + "' and date = '" + date + "' ", null);
                     int value = 1;
@@ -880,8 +1050,8 @@ public class Fragment_home extends Fragment {
                             value++;
                             cursor.moveToNext();
                         }
-                        lbl_avgFat.setText( MainActivity.oneDecimalFloatToString(avgFat/wgt) );
-                        lbl_avgSnf.setText( MainActivity.oneDecimalFloatToString(avgSnf/wgt) );
+                        lbl_avgFat.setText( MainActivity.twoDecimalFloatToString(avgFat/wgt) );
+                        lbl_avgSnf.setText( MainActivity.twoDecimalFloatToString(avgSnf/wgt) );
                         lbl_wgt.setText( MainActivity.twoDecimalFloatToString(wgt) );
                         lbl_amt.setText( MainActivity.twoDecimalFloatToString(amt) );
                         lbl_SeriolNo.setText("Sr. No. " + value);
@@ -895,9 +1065,7 @@ public class Fragment_home extends Fragment {
                 }
 
                 catch (Exception e) {}
-
             }
-
 
         }, 100);
     }
@@ -906,13 +1074,17 @@ public class Fragment_home extends Fragment {
 
     private void verifyDetailApi(){
 
-        if (!MainActivity.instace.isNetworkConnected()){
+        if (!MainActivity.getInstace().isNetworkConnected()){
             return;
         }
 
+        if (MainActivity.getInstace().userID().toString().length() == 0 && MainActivity.getInstace().userID().toString().equals("0")) {
+            exit(0);
+        }
+        Log.e("user-",MainActivity.getInstace().userID().toString());
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url = "http://wokosoftware.com/western/index.php?uid=" + MainActivity.instace.userID() + "&action=6&android_id=10" + PinActivity.getInstace().AndroidID;
+        String url = AppUrl.mainUrl + "uid=" + MainActivity.instace.userID() + "&action=6&android_id=" + PinActivity.getInstace().AndroidID;
 
         Log.e("final ulr", url);
 
@@ -921,17 +1093,35 @@ public class Fragment_home extends Fragment {
                     @Override
                     public void onResponse(String response) {
 
+
                         try {
                             Log.e("resonce", response);
+                            Log.e("resonce", String.valueOf(response.length()));
+
+
 
                             if (response.length() > 0) {
-
                                 JSONObject jsonObject = new JSONObject(response);
+                                String authStatus = jsonObject.getString("status");
 
+                                if (authStatus == "401"){
+                                    exit(0);
+                                }
 
                                 jsonObject = jsonObject.getJSONObject("details");
                                 String status = jsonObject.getString("status").toString();
 
+                                String hc_05 = "0";
+                                try {
+                                     hc_05 = jsonObject.getString("hc_05_enable").toString();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    MainActivity.dismiss();
+                                }
+
+
+                                Log.e("should exit mobile app",status);
+                                sharedPreferencesUtils.setHC05(hc_05);
 
                                 if (!status.equals("")){
                                     MainActivity.instace.setStatus(status);
@@ -956,6 +1146,9 @@ public class Fragment_home extends Fragment {
                                     sharedPreferencesUtils.setMobile("DEMO");
                                 }
                                 else {
+                                    Log.e("should exit mobile app", String.valueOf(jsonObject));
+                                    exit(1);
+
                                     exit(0);
                                 }
 
@@ -963,10 +1156,8 @@ public class Fragment_home extends Fragment {
                               //   MainActivity.showToast("Network Error");
                             }
                         } catch (JSONException e) {
-
                             e.printStackTrace();
                             MainActivity.dismiss();
-
                         }
                     }
                 }, new com.android.volley.Response.ErrorListener() {
@@ -976,32 +1167,57 @@ public class Fragment_home extends Fragment {
             }
         });
         queue.add(stringRequest);
-
     }
 
 
+    public void download() {
 
-    public void downloadFile() {
-
-        if (!MainActivity.instace.isNetworkConnected()){
+        if (!MainActivity.instace.isNetworkConnected()) {
             return;
         }
 
         if (sharedPreferencesUtils.isDownloaded().equals("0")) {
             sharedPreferencesUtils.setIsDownloaded();
             MainActivity.instace.showLoading("Data Downloading...");
-            String url =   "http://wokosoftware.com/western/uploads/" + sharedPreferencesUtils.getUserID() + "/" + MilkDBHelpers.DATABASE_NAME;
+            String url =   "http://wokosoftware.com/western/uploads/" + sharedPreferencesUtils.getUserID() + "/" ;
             Log.e("url",url);
             new DownloadFile().execute(url);
         }
     }
 
+    int PERMISSION_REQUEST_CODE = 10;
 
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void downloadFile(){
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED  || ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[]{ android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_CODE);                }
+        else {
+            download();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_CODE){
+            if(grantResults[0]== PackageManager.PERMISSION_GRANTED)
+                download();
+        }else{
+            downloadFile();
+        }
+    }
     public static double roundToHalf(double d) {
         return Math.round(d * 2) / 2.0;
     }
-
-
 
 
 }

@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,15 +14,26 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.pdf.PdfDocument;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
+
+import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -49,38 +58,38 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.Fragment.Fragment_Master;
 import com.milk.milkcollection.Fragment.Fragment_Report;
 import com.milk.milkcollection.Fragment.Fragment_Setting;
 import com.milk.milkcollection.Fragment.Fragment_home;
 import com.milk.milkcollection.Fragment.Fragment_sell;
 import com.milk.milkcollection.R;
-import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+import com.milk.milkcollection.model.PDFDaily;
+import com.milk.milkcollection.model.SingleEntry;
 
-import java.io.BufferedReader;
+import org.w3c.dom.Document;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 
-
 public class MainActivity extends AppCompatActivity {
-
 
     public  static String ruppe = "₹";
 
@@ -92,27 +101,24 @@ public class MainActivity extends AppCompatActivity {
     public CharSequence mTitle;
     Toolbar toolbar;
     public TextView toolbartitle;
-    public ImageView toolbariv_home;
+    public ImageView toolbariv_home,toolbar_print;
     FSSession fsSession;
 
 
-    NetworkTask networktask;
+
     public static InputStream nis;
     public static OutputStream nos;
     public static Socket nsocket = new Socket();
     public static SocketAddress sockaddr;
-
+    public static String lineValue = "===========================";
 
     public static ProgressDialog progress;
-
     public String demoDate = "";
 
-    public static BluetoothPrinter myprinter;
+    public SharedPreferencesUtils sharedPreferencesUtils;
+    public MilkDBHelpers milkDBHelpers;
 
-
-    SharedPreferencesUtils sharedPreferencesUtils;
-
-
+    public boolean isAutoBt;
     public static MainActivity instace;
 
     public static MainActivity getInstace(){
@@ -132,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         sharedPreferencesUtils = new SharedPreferencesUtils(MainActivity.this);
+        milkDBHelpers = new MilkDBHelpers(MainActivity.this);
         instace = MainActivity.this;
 
         fsSession = new FSSession(MainActivity.this);
@@ -150,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
         toolbartitle = (TextView) findViewById(R.id.titletool);
         toolbariv_home = (ImageView) findViewById(R.id.iv_home);
+        toolbar_print = (ImageView) findViewById(R.id.iv_print);
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -159,8 +167,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
@@ -170,21 +176,16 @@ public class MainActivity extends AppCompatActivity {
         ) {
             @SuppressLint("RestrictedApi")
             public void onDrawerClosed(View view) {
-                //getSupportActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu();
             }
 
             @SuppressLint("RestrictedApi")
             public void onDrawerOpened(View drawerView) {
-                //getSupportActionBar().setTitle(mDrawerTitle);
                 toolbartitle.setText(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                invalidateOptionsMenu();
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
-        //toolbartitle.setText("Milk Collection");
         mDrawerToggle.syncState();
 
         toolbariv_home.setOnClickListener(new View.OnClickListener() {
@@ -212,12 +213,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        toolbar_print.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               print("Test paper\nWelcome to\nWestern Electronics Group\n");
+            }
+        });
+
+
        if (savedInstanceState == null) {
             selectItem(0);
        }
 
 
     }
+
 
 
     @Override
@@ -229,6 +239,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -390,277 +402,85 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void stopSocket()  {
-        try {
-            if (nsocket.isConnected()) {
+    public void print(String  string) {
 
-                nis.close();
-                nos.close();
-                nsocket.close();
+        String  printBy = sharedPreferencesUtils.getprintBy();
+        if (printBy.equals("blutooth")) {
+            String[] items  = string.split("\n");
 
-            } else {
-                // Log.e(" is ", "No Connected");
+            int splitValue = 25;
+            if (items.length>splitValue){
+
+                final ArrayList<String> mylist = new ArrayList<String>();
+                String check = "";
+                for (int i = 0; i < items.length; i++) {
+                    check = check + "\n" + items[i];
+                    if (i%splitValue==0 && i>0) {
+                        mylist.add(check);
+                        check = "";
+                    }
+                }
+                mylist.add(check);
+                printFromBluthooth(" \n");
+                recursiveMethod(0,mylist);
+
+            }else{
+                instace.printMainMethod(string);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        }else{
+            instace.printMainMethod(string);
         }
 
     }
 
 
 
+    public void recursiveMethod(final int count, final ArrayList mylist){
+
+         Handler handler = new Handler();
+         final int finalI = count;
+         if (count < mylist.size()){
+             handler.postDelayed(new Runnable() {
+                 @Override
+                 public void run() {
+                 String toPrint = (String) mylist.get(finalI);
+                 if (finalI==mylist.size()-1){
+                     toPrint = toPrint + " \n_WESTERN_JAIPUR_ \n\n";
+                 }
+                 printFromBluthooth(toPrint);
+                 recursiveMethod(count+1,mylist);
+                 }
+             }, 4000);
+         }
+
+
+     }
 
 
 
+    public void printMainMethod(String  printSTRING) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void runConnection() {
-
-        try {
-            sockaddr = new InetSocketAddress("192.168.4.1", 80);
-            nsocket = new Socket();
-            networktask = new NetworkTask();
-            networktask.execute(new Void[0]);
-            synchronized (nsocket) {
-                nsocket.wait(1000000);
-            }
-            if (nsocket.isConnected()) {
-
-            } else {
-                // Log.e(" is ", "No Connected");
-            }
-        } catch (Exception e) {
-
-            e.getStackTrace();
+        if (sharedPreferencesUtils.getWelcomeText().length() > 0) {
+            printSTRING = printSTRING + "\n " + sharedPreferencesUtils.getWelcomeText();
         }
-    }
-
-
-
-    private class ClientThread implements Runnable {
-
-        @Override
-        public void run() {
-
-            try {
-                sockaddr = new InetSocketAddress("192.168.4.1", 80);
-                nsocket = new Socket();
-                networktask = new NetworkTask();
-                networktask.execute(new Void[0]);
-                synchronized (nsocket) {
-                    nsocket.wait(10000);
-                }
-                if (nsocket.isConnected()) {
-
-                    Log.e(" is ", " Connected");
-
-                } else {
-                    Log.e(" is ", "No Connected");
-                }
-            } catch (Exception e) {
-
-                e.getStackTrace();
-
-
-                try {
-                    nis.close();
-                    nos.close();
-                    nsocket.close();
-                } catch (IOException e2) {
-                } catch (Exception e3) {
-                }
-            }
-        }
-
-    }
-
-    private class NetworkTask extends AsyncTask<Void, byte[], Boolean> {
-        protected void onPreExecute() {
-        }
-
-        protected Boolean doInBackground(Void... params) {
-            boolean result = false;
-            try {
-                nsocket.connect(sockaddr, 1000);
-                synchronized (nsocket) {
-                    nsocket.notify();
-                }
-                if (nsocket.isConnected()) {
-                    nis = nsocket.getInputStream();
-                    nos = nsocket.getOutputStream();
-                    byte[] buffer = new byte[4096];
-                    int read = nis.read(buffer, 0, 4096);
-                    while (read != -1) {
-                        System.arraycopy(buffer, 0, new byte[read], 0, read);
-                        publishProgress(new byte[][]{});
-                        //   publishProgress(new byte[][]{tempdata});
-                        read = nis.read(buffer, 0, 4096);
-                    }
-                }
-                synchronized (nsocket) {
-                    nsocket.notify();
-                }
-                try {
-                    nis.close();
-                    nos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
-                }
-            } catch (IOException e3) {
-                try {
-                    e3.printStackTrace();
-                    synchronized (nsocket) {
-                        nsocket.notify();
-                        result = true;
-                        synchronized (nsocket) {
-                            nsocket.notify();
-                            try {
-                                nis.close();
-                                nos.close();
-                            } catch (IOException e32) {
-                                e32.printStackTrace();
-                            } catch (Exception e22) {
-                                e22.printStackTrace();
-                            }
-                        }
-                    }
-                } catch (Throwable th) {
-                    synchronized (nsocket) {
-                        nsocket.notify();
-                        try {
-                            nis.close();
-                            nos.close();
-                        } catch (IOException e322) {
-                            e322.printStackTrace();
-                        } catch (Exception e222) {
-                            e222.printStackTrace();
-                        }
-                    }
-                }
-            } catch (Exception e2222) {
-                e2222.printStackTrace();
-                synchronized (nsocket) {
-                    nsocket.notify();
-                    result = true;
-                    synchronized (nsocket) {
-                        nsocket.notify();
-                        try {
-                            nis.close();
-                            nos.close();
-                        } catch (Exception e22222) {
-                            e22222.printStackTrace();
-                        }
-                    }
-                }
-            }
-            return Boolean.valueOf(result);
-        }
-
-        protected void onProgressUpdate(byte[]... values) {
-            String toReceive = new String();
-            String newText = "hellvcv fv";
-            // String newText = new String();
-            toReceive = "";
-
-            //  newText = editReceive.getText().toString();
-            /* if (checkHex.isChecked()) {
-                try {
-                    toReceive = myutility.convertStringToHex(new String(values[0], "ISO-8859-1"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    toReceive = new String(values[0], "ISO-8859-1");
-                } catch (UnsupportedEncodingException e2) {
-                    e2.printStackTrace();
-                }
-            }*/
-
-            if (values.length > 0) {
-
-                String toReceives = new StringBuilder(String.valueOf(newText)).append(toReceive).toString();
-                Log.e(" hello this is one ", toReceives);
-            }
-        }
-
-        protected void onCancelled() {
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    static public void print(String  printSTRING) throws IOException {
-
-
-        printSTRING = printSTRING + " _WESTERN_JAIPUR_";
 
         if (printSTRING.length() > 0) {
 
-            SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(instace.getInstace());
+            if (printBy.equals("0")) {
+                SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getInstace());
+                printBy = sharedPreferencesUtils.getprintBy();
+            }
 
-            String printBy = sharedPreferencesUtils.getprintBy();
-
-
-
-                if (printBy.equals("wifi")) {
-
-                    try {
-                        nos = nsocket.getOutputStream();
-                        nos.write(printSTRING.getBytes("UTF-8"));
-                        nos.write("\n\n\n".getBytes("UTF-8"));
-                    } catch (Exception e) {
-
-                        // MainActivity.instace.runConnection();
-
-                        nos = nsocket.getOutputStream();
-                        nos.write(printSTRING.getBytes("UTF-8"));
-                        nos.write("\n\n\n".getBytes("UTF-8"));
-
-                        // Toast.makeText(instace.getInstace(), "Print failed, please try again.", Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-
-                } else if (printBy.equals("blutooth")) {
+             if (printBy.equals("wifi")) {
 
 
-                        instace.printFromBluthooth(printSTRING+"\n\n");
-
-                } else {
+             } else if (printBy.equals("blutooth")) {
+                   printFromBluthooth(printSTRING+"\n\n");
+             }
+                 else {
                     PackageManager pm = instace.getPackageManager();
                     try {
-
 
                         printSTRING = printSTRING + "\n\n\n";
                         Intent waIntent = new Intent(Intent.ACTION_SEND);
@@ -677,110 +497,25 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(instace.getInstace(), "Please Install POS Printer Application", Toast.LENGTH_LONG).show();
                     }
                 }
-
-
         }
     }
 
 
 
 
-    BluetoothAdapter btAdapter;
-    BluetoothDevice mBtDevice;
+    String printBy = "0";
+    int BLU_ADMIN = 10;
+    String data = "";
+
     public void printFromBluthooth(final String printStiring){
 
+        data =  printStiring ;
         showLoading("Printing");
-
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
 
-
-                dismiss();
-                try {
-                    btAdapter = BluetoothAdapter.getDefaultAdapter();
-                    mBtDevice = btAdapter.getBondedDevices().iterator().next();
-
-
-                    // Get first paired device
-                } catch (Exception e) {
-                    instace.showAlert("Printer not conneted, \nEntry saved");
-                    return;
-                }
-
-                Log.e("new connection stiring",printStiring);
-
-                if (!mBtDevice.getName().equals(AppString.printername)) {
-                    instace.showAlert("WEG_Mobile Printer Not Availble");
-                    return;
-                }
-
-                if (myprinter == null) {
-                    myprinter = new BluetoothPrinter(mBtDevice);
-                }
-
-                if (myprinter.isConnected()){
-                    myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
-                    myprinter.printText(printStiring);
-                    myprinter.addNewLine();
-                    myprinter.addNewLine();
-                    myprinter.finish();
-                }
-                else{
-                    Log.e("new connection stiring",printStiring);
-                    myprinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
-
-                        @Override
-                        public void onConnected() {
-                            myprinter.setAlign(BluetoothPrinter.ALIGN_LEFT);
-                            myprinter.printText(printStiring);
-                            myprinter.addNewLine();
-                            myprinter.addNewLine();
-                            myprinter.finish();
-                        }
-
-                        public void onFailed() {
-                            Log.d("BluetoothPrinter", "Conection failed");
-                        }
-                    });
-                }
-            }
-
-        }, 100);
-
-
-
-
-
-
-    }
-
-
-
-    public void printFromOtherApp(String string){
-
-        PackageManager pm = instace.getPackageManager();
-        try {
-
-            Intent waIntent = new Intent(Intent.ACTION_SEND);
-            waIntent.setType("text/plain");
-            //   String text = "YOUR TEXT HERE";
-
-            PackageInfo info = pm.getPackageInfo("pe.diegoveloper.printerserverapp", PackageManager.GET_META_DATA);
-            // Check if package exists or not. If not then code
-            // in catch block will be called
-            waIntent.setPackage("pe.diegoveloper.printerserverapp");
-
-            waIntent.putExtra(Intent.EXTRA_TEXT, string );
-            //waIntent.putExtra(Intent.EXTRA_TEXT, "1234567890123456780912345678901234567890");
-            instace.getInstace().startActivity(Intent.createChooser(waIntent, "Share with"));
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-
-            Toast.makeText(instace.getInstace(), "Please Install Printer Application", Toast.LENGTH_LONG).show();
-        }
+        BluetoothPrinter.getInstace().sendData(data);
+        dismiss();
+        return;
     }
 
 
@@ -792,16 +527,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    static public String twoDecimalString(String  value) throws IOException {
+
+    static public String oneDecimal(String  value) {
+        try {
+            return String.format("%.1f", Float.parseFloat(value));
+        }catch (Exception e) {
+            return "0.0";
+        }
+    }
+
+    static public String twoDecimalString(String  value)  {
         try {
             String newStr = value.replace(" ", "");
                 if (newStr.length()>0)
-                            return String.format("%.1f", Float.parseFloat(newStr));
+                    return String.format("%.1f", Float.parseFloat(newStr));
                 else
                     return "0.0";
 
         }catch (Exception e) {
             return "0.0";
+        }
+    }
+
+    static public String twoDecimal(String  value)  {
+        try {
+            String newStr = value.replace(" ", "");
+            if (newStr.length()>0)
+                return String.format("%.2f", Float.parseFloat(newStr));
+            else
+                return "0.00";
+
+        }catch (Exception e) {
+            return "0.00";
         }
     }
 
@@ -813,30 +570,26 @@ public class MainActivity extends AppCompatActivity {
         return  String.format("%.2f", value);
     }
 
+
     static public String lineBreak()  {
         return "===========================\n";
     }
 
 
+
     static public void sendWhatsApp(String message) {
-
-
-
-            try {
-                Intent waIntent = new Intent(Intent.ACTION_SEND);
-                waIntent.setType("text/plain");
-                PackageManager pm = instace.getPackageManager();
-                PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-                waIntent.setPackage("com.whatsapp");
-                waIntent.putExtra(Intent.EXTRA_TEXT, message);
-                instace.startActivity(Intent.createChooser(waIntent, "Share with"));
-            } catch (Exception e) {
-                Toast.makeText(instace, "Whats App Not installed", Toast.LENGTH_LONG).show();
-                e.printStackTrace();
-            }
-
-
-
+        try {
+            Intent waIntent = new Intent(Intent.ACTION_SEND);
+            waIntent.setType("text/plain");
+            PackageManager pm = instace.getPackageManager();
+            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+            waIntent.setPackage("com.whatsapp");
+            waIntent.putExtra(Intent.EXTRA_TEXT, message);
+            instace.startActivity(Intent.createChooser(waIntent, "Share with"));
+        } catch (Exception e) {
+            Toast.makeText(instace, "Whats App Not installed", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 
 
@@ -846,64 +599,59 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == MY_PERMISSIONS_REQUEST_SEND_SMS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-///             Toast.makeText(this,"Alredy DONE",Toast.LENGTH_SHORT).show();
                 TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
-
-
-
             } else {
                 Toast.makeText(this,"ehgehfg",Toast.LENGTH_SHORT).show();
             }
         }
+
+        if (requestCode == BLU_ADMIN){
+            printFromBluthooth(data);
+        }
+
+
     }
 
 
     static public void sendTextSms(String message , String number) {
 
-
-
-            if (ActivityCompat.checkSelfPermission(instace, Manifest.permission.SEND_SMS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(instace,
-                        Manifest.permission.SEND_SMS)) {
-                } else {
-                    ActivityCompat.requestPermissions(instace, new String[]{Manifest.permission.SEND_SMS},
-                            instace.MY_PERMISSIONS_REQUEST_SEND_SMS);
-                }
+        Log.e("sms:",message);
+        if (ActivityCompat.checkSelfPermission(instace, Manifest.permission.SEND_SMS)
+            != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(instace,
+                    Manifest.permission.SEND_SMS)) {
             } else {
+                ActivityCompat.requestPermissions(instace, new String[]{Manifest.permission.SEND_SMS},
+                        instace.MY_PERMISSIONS_REQUEST_SEND_SMS);
+           }
+        } else {
 
-                try {
+            try {
 
-                    if (number.length() == 10) {
+                if (number.length() == 10) {
 
-                        SmsManager sms = SmsManager.getDefault();
-                        PendingIntent sentPI;
-                        String SENT = "SMS_SENT";
+                    SmsManager sms = SmsManager.getDefault();
+                    PendingIntent sentPI;
+                    String SENT = "SMS_SENT";
 
-                        sentPI = PendingIntent.getBroadcast(instace, 0,new Intent(SENT), 0);
+                    sentPI = PendingIntent.getBroadcast(instace, 0,new Intent(SENT), 0);
 
-                        ArrayList<String> msgArray = sms.divideMessage(message);
+                    ArrayList<String> msgArray = sms.divideMessage(message);
 
-                        sms.sendMultipartTextMessage(number, null,msgArray, null, null);
-                        Toast.makeText(instace, "SMS Sent", Toast.LENGTH_LONG).show();
-                    }
-
-                } catch (Exception e) {
-                    Toast.makeText(instace,"SMS failed, please try again.", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
+                    sms.sendMultipartTextMessage(number, null,msgArray, null, null);
+                    Toast.makeText(instace, "SMS Sent", Toast.LENGTH_LONG).show();
                 }
+
+            } catch (Exception e) {
+                Toast.makeText(instace,"SMS failed, please try again.", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
             }
+        }
     }
 
     static public void shareText(String shareText ) {
@@ -920,7 +668,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showLoading(String message){
-
         progress = new ProgressDialog(this);
         progress.setMessage(message);
         progress.setCancelable(false);
@@ -946,7 +693,12 @@ public class MainActivity extends AppCompatActivity {
         return str.replace(" ", "");
     }
 
-    public String rateString() throws IOException {
+    static public void makeTost(String message)  {
+
+        Toast.makeText(instace, message, Toast.LENGTH_LONG).show();
+    }
+
+    public String rateString() {
 
         String method = sharedPreferencesUtils.getRateMethodCode();
         if (method.equals("3"))
@@ -1073,10 +825,10 @@ public class MainActivity extends AppCompatActivity {
                 if (options[item].equals("WhatsApp")) {
                     PackageManager pm = MainActivity.getInstace().getPackageManager();
                     try {
-//pe.diegoveloper.printerserverapp
+                        //   pe.diegoveloper.printerserverapp
                         Intent waIntent = new Intent(Intent.ACTION_SEND);
                         waIntent.setType("text/plain");
-                        //   String text = "YOUR TEXT HERE";
+                        //  String text = "YOUR TEXT HERE";
 
                         PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
                         //Check if package exists or not. If not then code
@@ -1112,11 +864,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 else if (options[item].equals("Print")) {
-                    try {
-                        print(printString);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    print(printString);
                 }
             }
         });
@@ -1145,5 +893,170 @@ public class MainActivity extends AppCompatActivity {
             }
         }).show();
     }
+//
+//
+//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+//    public void createPdf() throws IOException {
+//
+//                String printAttributes = "hello";
+//                PrintedPdfDocument document = new PrintedPdfDocument(context,
+//                        printAttributes);
+//
+//        // start a page
+//                PdfDocument.Page page = document.startPage(0);
+//
+//        // draw something on the page
+//
+//        // finish the page
+//                document.finishPage(page);
+//
+//        // write the document content
+//                document.writeTo(getOutputStream());
+//
+//        //close the document
+//                document.close();
+//
+//    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void createpdf(String data, Boolean share,String title,String fileName) {
+        Rect bounds = new Rect();
+        int pageWidth = 600;
+        int pageheight = 470;
+        int pathHeight = 2;
+
+
+        String outputFile =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + File.separator + fileName;
+        File sourceFile = new File(outputFile);
+
+        PdfDocument myPdfDocument = new PdfDocument();
+        Paint paint = new Paint();
+        paint.setTextSize(10);
+
+        Paint paint2 = new Paint();
+        Path path = new Path();
+        PdfDocument.PageInfo myPageInfo = new PdfDocument.PageInfo.Builder(pageWidth, pageheight, 1).create();
+        PdfDocument.Page documentPage = myPdfDocument.startPage(myPageInfo);
+        Canvas canvas = documentPage.getCanvas();
+        int y = 25; // x = 10,
+        int x = 10;
+
+//        paint.getTextBounds(tv_title.getText().toString(), 0, tv_title.getText().toString().length(), bounds);
+
+        Paint textPaint = new Paint();
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setTextSize(20);
+
+        int xPos = (canvas.getWidth() / 2);
+        if (title != null) {
+            canvas.drawText(title, xPos, y, textPaint);
+        }else{
+            canvas.drawText("", xPos, y, textPaint);
+        }
+
+
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+//horizontal line
+        path.lineTo(pageWidth, pathHeight);
+        paint2.setColor(Color.GRAY);
+        paint2.setStyle(Paint.Style.STROKE);
+        path.moveTo(x, y);
+        canvas.drawLine(0, y, pageWidth, y, paint2);
+
+
+//blank space
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+
+
+        String str = data;
+        List<String> elephantList = Arrays.asList(str.split("\n"));
+
+        for(String item : elephantList){
+
+            y += paint.descent() - paint.ascent();
+            x = 35;
+            if (item.equals(lineValue)) {
+                String line = "--------------------------------------------------------------------------------------------";
+                canvas.drawText(line, x, y, paint);
+            }else{
+                canvas.drawText(item, x, y, paint);
+            }
+
+        }
+
+        //horizontal line
+        path.lineTo(pageWidth, pathHeight);
+        paint2.setColor(Color.GRAY);
+        paint2.setStyle(Paint.Style.STROKE);
+
+        y += 20;
+
+        path.moveTo(x, y);
+        canvas.drawLine(0, y, pageWidth, y, paint2);
+
+        //blank space
+        y += paint.descent() - paint.ascent();
+        canvas.drawText("", x, y, paint);
+
+        y += 25;
+        textPaint.setTextSize(8);
+        canvas.drawText("Western Electronics Group", xPos, y, textPaint);
+        myPdfDocument.finishPage(documentPage);
+
+        try {
+            myPdfDocument.writeTo(new FileOutputStream(sourceFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        myPdfDocument.close();
+
+        if (share) {
+            shareFile(outputFile);
+        }
+
+
+    }
+
+
+    public  void shareFile(String filepath){
+
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+        File fileWithinMyDir = new File(filepath);
+
+        Uri photoURI = FileProvider.getUriForFile(instace, instace.getApplicationContext().getPackageName() + ".provider", fileWithinMyDir);
+
+        if(fileWithinMyDir.exists()) {
+            intentShareFile.setType("application/pdf");
+//            intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://"+filepath));
+            intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, photoURI);
+            intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Sharing File");
+            startActivity(Intent.createChooser(intentShareFile, "Sharing File"));
+        }
+
+    }
+
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
 }
+
+
 

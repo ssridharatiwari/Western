@@ -32,6 +32,7 @@ import com.milk.milkcollection.adapter.SingleReportAdapter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
+import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.SingleEntry;
 import com.milk.milkcollection.model.SingleReport;
 
@@ -121,8 +122,6 @@ public class Fragment_CellReport extends Fragment {
         savedmilk_listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
-             //   deleteReport(position);
                 return true;
             }
         });
@@ -144,8 +143,76 @@ public class Fragment_CellReport extends Fragment {
             }
         });
 
+        onclickAdapter();
         return rootView;
     }
+
+
+
+
+
+    void onclickAdapter(){
+
+        savedmilk_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Sales Report");
+                builder.setItems(new CharSequence[]
+                                { "Delete"},
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // The 'which' argument contains the index position
+                                // of the selected item
+
+                                switch (which) {
+                                    case 0:
+                                        deleteReport(position);
+                                        break;
+                                }
+                            }
+                        });
+                builder.create().show();
+
+            }
+        });
+
+    }
+
+    private void deleteReport( final int position){
+
+        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+        ArrayList<Integer> reportIdList = new ArrayList<>();
+        reportIdList = milkDBHelpers.reportId();
+        SingleEntry entry = singleReportList.get(position);
+
+        reportId = Integer.valueOf(entry.getID());
+
+        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+        alertBuilder.setMessage("Are You sure want to delete this entry.");
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+                Log.e("-=-=-ddd=-=", "ddddd");
+                milkDBHelpers.deleteSaleEntry(reportId);
+                singleResultAdapter.remove((singleResultAdapter.getItem(position)));
+                singleResultAdapter.notifyDataSetChanged();
+            }
+        });
+        alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        final AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+
+    }
+
 
 
     public void SearchSqlData(){
@@ -241,6 +308,7 @@ public class Fragment_CellReport extends Fragment {
 
 
     private void getCalendarDate(){
+
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DATE);
         int month = calendar.get(Calendar.MONTH);
@@ -262,10 +330,11 @@ public class Fragment_CellReport extends Fragment {
             String date = String.valueOf(day)+"/"+"0"+String.valueOf(month)+"/"+""+String.valueOf(year);
             startDateView.setText(date);
             endDateView.setText(date);
-            endDateView.setText(date);
+
         }else if(monthlength>1&&daylength==1){
             String date = "0"+String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+String.valueOf(year);
             startDateView.setText(date);
+            endDateView.setText(date);
         }else if(monthlength>1&&daylength>1){
             String date = String.valueOf(day)+"/"+""+String.valueOf(month)+"/"+""+String.valueOf(year);
             startDateView.setText(date);
@@ -333,11 +402,7 @@ public class Fragment_CellReport extends Fragment {
 
     private void print(String printString){
 
-        try {
-            MainActivity.print(printString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainActivity.getInstace().print(printString);
 
     }
 

@@ -80,10 +80,10 @@ public class PinActivity extends AppCompatActivity {
     private EditText pinCode1;
     private TextView btnVerify, emi, btnSend,btnOldCustomer;
     ProgressDialog dialog;
-    EditText title, mobile;
+    EditText title, mobile, venderCode;
     String settitle;
     SharedPreferencesUtils sharedPreferencesUtils;
-    public String pin1, mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "";
+    public String  mobile_string, verifypin, imeiNumber = "", sim_no = "0", RandomNumber = "0", AndroidID = "0", User_id = "",loginStatus="",userStatus,userID;
 
     private static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
 
@@ -113,16 +113,19 @@ public class PinActivity extends AppCompatActivity {
 
         genRandomNo();
 
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-         String isLogin = preferences.getString("isLogin", "");
+        String isLogin = preferences.getString("isLogin", "");
+
+        String vender_name = preferences.getString("vender_name", "");
+        String vender_mobile = preferences.getString("vender_mobile", "");
+
+        Log.e("vender name",vender_name);
 
 
+        if (isLogin.equals("1") || isLogin.equals("2") ){
 
-
-
-
-         if (isLogin.equals("1") || isLogin.equals("2") ){
-
+//            startActivity(new Intent(PinActivity.this, New.class));
             startActivity(new Intent(PinActivity.this, MainActivity.class));
             finish();
         }
@@ -133,6 +136,11 @@ public class PinActivity extends AppCompatActivity {
             btnVerify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mobile_string = mobile.getText().toString();
+                    if (mobile_string.length() < 10) {
+                        makeToast("mobile number required");
+                        return;
+                    }
 
                     showLoading("Wait...");
                     hideSoftKeyBoard();
@@ -150,7 +158,6 @@ public class PinActivity extends AppCompatActivity {
                  @Override
                  public void onClick(View v) {
 
-
                      OldCustomer();
                  }
              });
@@ -160,10 +167,8 @@ public class PinActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    pin1 = pinCode1.getText().toString();
                     settitle = title.getText().toString().trim();
                     mobile_string = mobile.getText().toString();
-                    verifypin = pin1;
 
                     if (settitle.length() > 0 && mobile_string.length() > 0) {
 
@@ -182,7 +187,6 @@ public class PinActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-
                             }
                             else {
                                 Toast.makeText(PinActivity.this, "Device ID NOT genrated", Toast.LENGTH_LONG).show();
@@ -336,11 +340,11 @@ public class PinActivity extends AppCompatActivity {
 
     private void startNewActivity(){
 
+        setStatus("1");
         startActivity(new Intent(PinActivity.this, MainActivity.class));
         sharedPreferencesUtils.setTitle(settitle);
         sharedPreferencesUtils.setMobile(mobile_string);
-        sharedPreferencesUtils.printBy("wifi");
-
+        sharedPreferencesUtils.printBy("blutooth");
         finish();
 
     }
@@ -353,16 +357,22 @@ public class PinActivity extends AppCompatActivity {
         progress.show();
     }
 
+
+
     private void makeRequest() throws JSONException {
 
-
+        String vcode = "0";
+        if (venderCode.getText().toString().length() > 0) {
+            vcode  = venderCode.getText().toString();
+        }
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://wokosoftware.com/western/index.php?name=" + settitle +
+        String url =  AppUrl.mainUrl + "name=" + settitle +
                      "&sim_id=" + sim_no +
                      "&android_id=" + AndroidID +
                      "&iemi_id=" + imeiNumber +
                      "&mobile=" + mobile_string +
+                     "&vender=" + vcode +
                      "&action=1"  ;
 
 
@@ -407,18 +417,16 @@ public class PinActivity extends AppCompatActivity {
     private void verifyDetailApi(){
 
 
+
         if (!isNetworkConnected()){
             makeToast("Internet Required");
             progress.dismiss();
             return;
         }
-
-
         if (AndroidID.length() > 0) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = AppUrl.mainUrl + "android_id=" + AndroidID + "&action=2";
-
+        String url = AppUrl.mainUrl + "android_id=" + AndroidID + "&action=2&mobile=" + mobile_string;
         Log.e("final ulr", url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -428,11 +436,9 @@ public class PinActivity extends AppCompatActivity {
 
                         try {
                             Log.e("resonce", response);
-
                             if (response.length() > 0) {
 
                                 JSONObject jsonObject = new JSONObject(response);
-
                                 String jsonStatus = jsonObject.getString("status").toString();
 
                                 if (jsonStatus.equals("401")){
@@ -444,24 +450,28 @@ public class PinActivity extends AppCompatActivity {
 
                                     jsonObject = jsonObject.getJSONObject("details");
 
-                                    String userStatus = jsonObject.getString("status").toString();
-
-                                    String userID = jsonObject.getString("id").toString();
-
-                                    if (userID != "") {
-                                        sharedPreferencesUtils.setUserId(userID);
-                                    }
-                                    if (!userStatus.equals("")){
-                                        setStatus(userStatus);
-                                    }
+                                    userStatus = jsonObject.getString("status").toString();
+                                    loginStatus = jsonObject.getString("login_status_1").toString();
 
                                     if (userStatus.equals("1")){
+
+                                        userID = jsonObject.getString("id").toString();
+
+                                        if (userID != "") {
+                                            sharedPreferencesUtils.setUserId(userID);
+                                        }
+
+
                                         makeToast("Thank you : registration successful");
                                         settitle = jsonObject.getString("name").toString();
                                         mobile_string = jsonObject.getString("mobile").toString();
 
-                                        startNewActivity();
+                                        String vname = jsonObject.getString("vname").toString();
+                                        String vid = jsonObject.getString("vender_id").toString();
+                                        String vphone = jsonObject.getString("vphone").toString();
+                                        setVender(vname,vphone,vid);
 
+                                        startNewActivity();
 
                                     }else if (userStatus.equals("2")){
 
@@ -505,6 +515,34 @@ public class PinActivity extends AppCompatActivity {
     }
     }
 
+    private  void customDialog(){
+
+        String message = "Login";
+        if (loginStatus.equals("0")) {
+            message = "Login status pending. contact western";
+        }
+
+        new AlertDialog.Builder(PinActivity.this)
+            .setTitle("Start Application")
+            .setMessage(message)
+
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                 if (loginStatus.equals("1") && userStatus.equals("1")){
+                     changeLoginStaus();
+                     startNewActivity();
+                 }else{
+                     verifyDetailApi();
+                 }
+                }
+            })
+
+            .setNegativeButton(android.R.string.no, null)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show();
+    }
+
+
 
     public void setStatus (String status){
 
@@ -513,6 +551,50 @@ public class PinActivity extends AppCompatActivity {
         editor.putString("isLogin", status);
         editor.commit();
     }
+
+    public void setVender (String vname,String vphone, String vid){
+
+        sharedPreferencesUtils.setVenderName(vname);
+        sharedPreferencesUtils.setVPhone(vphone);
+
+    }
+
+
+    public void changeLoginStaus(){
+
+
+            if (!isNetworkConnected()){
+                makeToast("Internet Required");
+                progress.dismiss();
+                return;
+            }
+
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url = AppUrl.mainUrl + "action=12&user_id=" + userID;
+            Log.e("final ulr", url);
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            progress.dismiss();
+
+                                Log.e("resonce", response);
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    progress.dismiss();
+                    makeToast("Detail sending failed : network or server error");
+                    // Log.e("Not working ", error.getMessage());
+                }
+            });
+            queue.add(stringRequest);
+
+            progress.dismiss();
+
+    }
+
 
 
 
@@ -525,21 +607,20 @@ public class PinActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= 23) {
 
-
-
-
             if ((activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(android.Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) &&
                     (activity.checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED)  &&
                     (activity.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED) &&
-                    (activity.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED)){
-                Log.e("Permission", "Permission is granted");
+                    (activity.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PackageManager.PERMISSION_GRANTED) &&
+                    (activity.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED &&
+                            (activity.checkSelfPermission(Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED)))
+               {
+                // Log.e("Permission", "Permission is granted");
                 return true;
             } else {
-
-                Log.e("Permission", "Permission is revoked");
+                // Log.e("Permission", "Permission is revoked");
                 activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE,
                         Manifest.permission.SEND_SMS,Manifest.permission.ACCESS_WIFI_STATE,
@@ -571,12 +652,13 @@ public class PinActivity extends AppCompatActivity {
         emi = (TextView) findViewById(R.id.emi);
         btnVerify = (TextView) findViewById(R.id.btnVerify);
         btnSend = (TextView) findViewById(R.id.btnSend);
-        pinCode1 = (EditText) findViewById(R.id.pinCode1);
+        // pinCode1 = (EditText) findViewById(R.id.pinCode1);
         btnOldCustomer = (TextView) findViewById(R.id.btnOldCustomer);
 
 
         title = (EditText) findViewById(R.id.title);
         mobile = (EditText) findViewById(R.id.mobile);
+        venderCode = (EditText) findViewById(R.id.venderCode);
 
     }
 
@@ -628,10 +710,7 @@ public class PinActivity extends AppCompatActivity {
 
                 } else {
 
-
                 }
-
-
             }
         });
 
@@ -646,12 +725,6 @@ public class PinActivity extends AppCompatActivity {
 
     }
 
-
-    String userID = "";
-
-
-
-
     private void verifyOLDUSER(){
 
 
@@ -660,10 +733,12 @@ public class PinActivity extends AppCompatActivity {
             return;
         }
 
+
+
         showLoading("Wait...");
 
         RequestQueue queue = Volley.newRequestQueue(PinActivity.this);
-        String url = "http://wokosoftware.com/western/index.php?uid=" + userID + "&action=9&android_id=" + AndroidID;
+        String url =  AppUrl.mainUrl + "uid=" + userID + "&action=9&android_id=" + AndroidID;
 
         Log.e("final ulr", url);
 
@@ -691,10 +766,7 @@ public class PinActivity extends AppCompatActivity {
                                 if (jsonStatus.equals("200")) {
 
                                     jsonObject = jsonObject.getJSONObject("details");
-
-
-
-
+                                    // sharedPreferencesUtils.setIsDownloaded();
 
 
                                     String userStatus = jsonObject.getString("status").toString();
@@ -717,19 +789,13 @@ public class PinActivity extends AppCompatActivity {
                                 }else{
 
                                     makeToast(jsonObject.getString("message").toString());
-
                                 }
-
-
-
-
                             } else {
                                 //   MainActivity.showToast("Network Error");
                             }
                         } catch (JSONException e) {
 
                             e.printStackTrace();
-                            MainActivity.dismiss();
 
                         }
                     }

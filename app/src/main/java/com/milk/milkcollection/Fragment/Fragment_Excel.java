@@ -50,6 +50,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -73,6 +75,19 @@ import static android.R.attr.visibility;
 import static android.R.attr.visible;
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
+
+
+
+
+
+import android.content.ContentUris;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 
 /**
  * Created by Alpha on 13-12-2015.
@@ -112,10 +127,6 @@ public class Fragment_Excel extends Fragment {
 
         SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(MainActivity.instace);
         rateMethod =  sharedPreferencesUtils.getRateMethodCode();
-
-
-
-
         btn_select.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -123,10 +134,6 @@ public class Fragment_Excel extends Fragment {
                 callIntent();
             }
         });
-
-
-
-
         btn_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -283,25 +290,51 @@ public class Fragment_Excel extends Fragment {
                 }
                 intent.setType(mimeTypesStr.substring(0, mimeTypesStr.length() - 1));
             }
-
             startActivityForResult(Intent.createChooser(intent, "ChooseFile"), 0);
+        }
 
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
 
         if( data != null) {
 
-            Log.e("request code ", String.valueOf(requestCode));
-
-
             final Uri uri = data.getData();
 
-            FILE_PATH = uri.getPath();
+
+
+            try {
+
+                FILE_PATH = FilePath.getPath(getActivity(), uri);
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+//          FILE_PATH = uri.toString();
+            String path = uri.toString();
+
             Log.e("path ", FILE_PATH);
+
+            File file = new File(FILE_PATH);
 
 
             if (FILE_PATH.length() > 0) {
@@ -338,23 +371,6 @@ public class Fragment_Excel extends Fragment {
 
 
 
-    public String getRealPathFromURI(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
-
-
     private  void  getData () {
 
         try{
@@ -383,34 +399,36 @@ public class Fragment_Excel extends Fragment {
                             cursor.moveToNext();
                         }
                     }else{
-                        MainActivity.showToast("No data found");
+                        MainActivity.showToast("No fatsnf data found");
                     }
 
                 }else{
 
                     milkDBHelpers = new MilkDBHelpers(getActivity());
                     SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
+
+
+                    fat = MainActivity.oneDecimalString(fat);
+                    snf = MainActivity.oneDecimalString(snf);
+
                     Cursor cursor = sqLiteDatabase.rawQuery("Select * From 'ratechartclr' WHERE fat ='" + fat + "' and snf ='" + snf + "'", null);
-                    cursor.moveToFirst();
 
-                    if (cursor != null) {
-                        while (cursor.isAfterLast() == false) {
 
-                            txt_rate.setText(cursor.getString(cursor.getColumnIndex("rate")));
-                            et_rate.setText(cursor.getString(cursor.getColumnIndex("rate")));
-                            id_rate = cursor.getString(cursor.getColumnIndex("Id"));
+                    if (cursor != null && cursor.moveToFirst()) {
+                           String rate = (String.valueOf(cursor.getString(cursor.getColumnIndex("rate"))));
+                        et_rate.setText(cursor.getString(cursor.getColumnIndex("rate")));
+                        id_rate = cursor.getString(cursor.getColumnIndex("Id"));
 
-                            btn_save.setVisibility(View.VISIBLE);
-                            text_temp.setVisibility(View.VISIBLE);
-                            et_rate.setVisibility(View.VISIBLE);
-                            cursor.moveToNext();
-                        }
+                        et_rate.setVisibility(View.VISIBLE);
+                        btn_save.setVisibility(View.VISIBLE);
+                        text_temp.setVisibility(View.VISIBLE);
                     } else {
-                        MainActivity.showToast("No data found");
+                        MainActivity.showToast("No clr data found");
                     }
                 }
 
         } catch (Exception e) {
+            Log.e("error",e.getLocalizedMessage());
                 Toast.makeText(getActivity(), "Not Found Any Data", Toast.LENGTH_LONG).show();
         }
     }
@@ -601,34 +619,6 @@ public class Fragment_Excel extends Fragment {
                     }
 
 
-//                    CSVReader reader = new CSVReader(new InputStreamReader( new FileInputStream(initialFile)));
-//                    //CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.clr_rate)));
-//                    milkDBHelpers = new MilkDBHelpers(getActivity());
-//
-//                    String [] nextLine;
-//                    while ((nextLine = reader.readNext()) != null) {
-//
-//                        float tempClr = (float) 30;
-//                        String fat =  nextLine[0];
-//                        for (int a=1; a< nextLine.length ; a++){
-//                            String rat =  nextLine[a];
-//                            String snf = MainActivity.oneDecimalFloatToString(tempClr);
-//
-//                            if (fat.length() > 0 && rat.length() > 0) {
-//
-//                                fat = MainActivity.oneDecimalString(fat);
-//                                // Log.e("fat - " ,fat);
-//                                // Log.e("Clr" ,snf);
-//
-//                                if (snf.length() > 0 && fat.length() > 0 && rat.length() > 0) {
-//                                    milkDBHelpers.addRateClr(fat, snf, rat);
-//                                }
-//                            }
-//
-//                            tempClr = (float)(tempClr - 0.5);
-//                        }
-//                    }
-
 
                     MainActivity.instace.dismiss();
                     MainActivity.showToast("Data Successfully updated");
@@ -758,3 +748,163 @@ public class Fragment_Excel extends Fragment {
 //        tempSnf = (float) (tempSnf - 0.1);
 //        }
 //        }
+
+
+
+
+class FilePath {
+
+    public FilePath() {
+    }
+
+    /**
+     * Method for return file path of Gallery image/ Document / Video / Audio
+     *
+     * @param context
+     * @param uri
+     * @return path of the selected image file from gallery
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static String getPath(final Context context, final Uri uri) {
+
+        // check here to KITKAT or new version
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/"
+                            + split[1];
+                }
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"),
+                        Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[] { split[1] };
+
+                return getDataColumn(context, contentUri, selection,
+                        selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the value of the data column for this Uri. This is useful for
+     * MediaStore Uris, and other file-based ContentProviders.
+     *
+     * @param context
+     *            The context.
+     * @param uri
+     *            The Uri to query.
+     * @param selection
+     *            (Optional) Filter used in the query.
+     * @param selectionArgs
+     *            (Optional) Selection arguments used in the query.
+     * @return The value of the _data column, which is typically a file path.
+     */
+    public static String getDataColumn(Context context, Uri uri,
+                                       String selection, String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = { column };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection,
+                    selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    /**
+     * @param uri
+     *            The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri
+                .getAuthority());
+    }
+
+    /**
+     * @param uri
+     *            The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri
+                .getAuthority());
+    }
+
+    /**
+     * @param uri
+     *            The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri
+                .getAuthority());
+    }
+
+    /**
+     * @param uri
+     *            The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri
+                .getAuthority());
+    }
+}

@@ -22,7 +22,18 @@
            android:layout_toLeftOf="@+id/btn_searchimage"
            android:layout_toStartOf="@+id/btn_searchimage"
              />
-       <ImageView
+
+        <ImageView
+            android:id="@+id/iv_print"
+            android:layout_width="46dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="43dp"
+            android:layout_marginRight="43dp"
+            android:layout_toLeftOf="@+id/btn_searchimage"
+            android:layout_toStartOf="@+id/btn_searchimage"
+            android:src="@drawable/icon_print" />
+
+        <ImageView
            android:id="@+id/btn_addimage"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"

@@ -7,4 +7,5 @@ import android.app.Activity;
  */
 
 public class FrgSetting extends Activity {
+
 }

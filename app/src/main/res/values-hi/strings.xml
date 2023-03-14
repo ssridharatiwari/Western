@@ -2,7 +2,6 @@
 <resources>
     
 
-    <string name="app_name">Milk Collection</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="verify_by_mobile_phone">Verify By Pin</string>
@@ -17,6 +16,7 @@
     <string name="planguage">भाषा</string>
     <string name="setting">मुख्य सेटिंग</string>
     <string name="sales">सैल</string>
+    <string name="total_amount">कुल राशि</string>
 
 
     <string name="morning">सुबह</string>
@@ -24,7 +24,7 @@
     <string name="code">कोड</string>
     <string name="weight">वजन</string>
     <string name="fat">फैट</string>
-    <string name="सनफ">सनफ</string>
+    <string name="snf">सनफ</string>
     <string name="save">सेव</string>
     <string name="print">प्रिन्ट</string>
     <string name="update">अपडेट</string>
@@ -63,7 +63,7 @@
     <string name="rep_pay_rceport">भुगतान रिपोर्ट</string>
     <string name="rep_socity_report">समिति रिपोर्ट</string>
     <string name="rep_lossprofit_report">लाभ-हानि रिपोर्ट</string>
-    <string name="rep_sell_report">Sell रिपोर्ट</string>
+    <string name="rep_sell_report">Sales रिपोर्ट</string>
 
 
     <string name="mem_enter_code">कोड लिखें</string>

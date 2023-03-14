@@ -7,10 +7,6 @@
     >
 
 
-
-
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,6 +39,7 @@
             android:text="  Select from file  "
             android:textAllCaps="false"
             android:textColor="#ffffff"
+
             android:textSize="16dp" />
 
         <Button
@@ -56,6 +53,7 @@
             android:textAllCaps="false"
             android:textColor="#ffffff"
             android:textSize="16dp"
+
             android:layout_marginTop="10dp"
             />
 
@@ -77,7 +75,7 @@
 
         <TextView
 
-            android:layout_width="191dp"
+            android:layout_width="120dp"
             android:layout_height="50dp"
             android:layout_marginLeft="5dp"
             android:gravity="center_vertical"

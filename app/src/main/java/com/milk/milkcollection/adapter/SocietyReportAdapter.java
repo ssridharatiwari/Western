@@ -52,12 +52,9 @@ public class SocietyReportAdapter extends ArrayAdapter<SocietyReport> {
         if(paymentReport.getAmount()!=null) {
             holder.txtno.setText(String.valueOf(position+1));
             holder.textCount.setText(paymentReport.getCount());
-
-            holder.txtweight.setText(paymentReport.getWeight());
-            holder.txtamount.setText(paymentReport.getAmount());
-
+            holder.txtweight.setText(  MainActivity.twoDecimal(paymentReport.getWeight()));
+            holder.txtamount.setText( MainActivity.twoDecimal(paymentReport.getAmount()) );
             String date =  paymentReport.getDate().substring(0, 5)  + "-" + paymentReport.getShift();
-
             holder.textdate.setText(date);
         }
         return convertView;

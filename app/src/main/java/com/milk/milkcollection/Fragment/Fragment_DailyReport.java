@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,10 +34,14 @@ import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.adapter.DailyReportAdapter;
+import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.helper.UploadFile;
 import com.milk.milkcollection.model.DailyReport;
+import com.milk.milkcollection.model.Member;
+import com.milk.milkcollection.model.PDFDaily;
+import com.milk.milkcollection.model.SingleEntry;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -43,42 +49,31 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.IllegalFormatCodePointException;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 import static com.milk.milkcollection.Activity.MainActivity.instace;
 
-/**
- * Created by Alpha on 07-01-2016.
- */
-public class Fragment_DailyReport extends Fragment {
+ public class Fragment_DailyReport extends Fragment {
 
     private TextView daily_wight, daily_fat, daily_snf, daily_amut,lbl_snf_dr;
     private ListView savedmilk_listview;
     private Button startDateView, btnsearch;
     private String sift = "";
-    String message = "";
+    String message = "",totalSummery="",tiltle,fileName;
+
     ImageView iv_share;
-    ArrayList<Integer> id_arrayList = new ArrayList<>();
-    ArrayList<String> membercode_arrayList = new ArrayList<String>();
-    ArrayList<Float> weight_arrayList = new ArrayList<>();
-    ArrayList<Float> rate_arrayList = new ArrayList<>();
-    ArrayList<Float> fat_arrayList = new ArrayList<>();
-    ArrayList<Float> fatwt_arrayList = new ArrayList<>();
-    ArrayList<Float> snf_arrayList = new ArrayList<>();
-    ArrayList<Float> snfwt_arrayList = new ArrayList<>();
-    ArrayList<Float> totalamount_arrayList = new ArrayList<>();
-    ArrayList<String> date_arrayList = new ArrayList<String>();
-    ArrayList<String> SetAllData_arrayList = new ArrayList<String>();
-    ArrayList<String> GetAllData_arrayList = new ArrayList<>();
-    ArrayList<DailyReport> DailyReportList = new ArrayList<>();
-    ArrayList<String> dailyReportStringList = new ArrayList<>();
-    ArrayList<String> numberList = new ArrayList<>();
+    ArrayList<SingleEntry> DailyReportList = new ArrayList<>();
     private DailyReportAdapter dailyReportAdapter;
     private int reportId = 0;
     Spinner spinr_ampm;
     String shifts;
+    PDFDaily pdfDaily = new PDFDaily();
 
-    public Fragment_DailyReport() {
+     private AutoCompleteTextView acFrom,acTo;
+
+     public Fragment_DailyReport() {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -100,6 +95,8 @@ public class Fragment_DailyReport extends Fragment {
         savedmilk_listview.setEmptyView(rootView.findViewById(R.id.empty_saved_listmilk));
         savedmilk_listview.setOnCreateContextMenuListener(this);
 
+        acFrom = (AutoCompleteTextView)  rootView.findViewById(R.id.aCFrom);
+        acTo = (AutoCompleteTextView)  rootView.findViewById(R.id.aCTo);
 
         iv_share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,32 +178,37 @@ public class Fragment_DailyReport extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 // The 'which' argument contains the index position
                                 // of the selected item
+
+
+                                SingleEntry entry = DailyReportList.get(position);
+
+
+
                                 switch (which) {
                                     case 0:
-                                        String data = GetAllData_arrayList.get(position);
-                                        MainActivity.sendWhatsApp(data);
+                                        MainActivity.sendWhatsApp(entry.getPrintMassge());
                                         break;
                                     case 1:
+                                        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
+                                        Member newMenber =  milkDBHelpers.getMember(entry.getCode());
 
-                                        if(numberList.get(position)!="1234"){
-
-                                            String strSms = GetAllData_arrayList.get(position);
-                                            MainActivity.sendTextSms(strSms, numberList.get(position));
-
+                                        if(newMenber.getMobile()!="1234"){
+                                            String strSms = entry.getSMS();
+                                            MainActivity.sendTextSms(strSms,newMenber.getMobile());
                                         }else {
                                             Toast.makeText(getActivity(), "Update Number And Try Again", Toast.LENGTH_LONG).show();
                                         }
 
                                         break;
                                     case 2:
-                                        String shareText = GetAllData_arrayList.get(position);
-                                        MainActivity.shareText(shareText);
-                                        break;
 
+                                        MainActivity.sendWhatsApp(entry.getPrintMassge());
+                                        String dataShare = entry.getPrintMassge();
+                                        MainActivity.shareText(dataShare);
+                                        break;
                                     case 3:
 
-                                        String dailyReport = dailyReportStringList.get(position);
-                                        print(dailyReport);
+                                        print(entry.getPrintMassge());
                                         break;
 
                                     case 4:
@@ -224,11 +226,31 @@ public class Fragment_DailyReport extends Fragment {
             }
         });
 
+        setAcData();
         setTextsAccordingRate();
         getCalendarDate();
         uploadFile();
         return rootView;
     }
+
+    void setAcData(){
+
+
+        ArrayList<String> arryMebers = MainActivity.getInstace().milkDBHelpers.memberCodeAutoComplet();
+
+        if (arryMebers.size()> 0){
+            ArrayAdapter<String> adapter;
+            adapter = new ArrayAdapter<String>
+                    (getActivity(),android.R.layout.simple_list_item_1,arryMebers);
+            acFrom.setAdapter(adapter);
+            acTo.setAdapter(adapter);
+
+            acFrom.setText(arryMebers.get(0));
+            acTo.setText(arryMebers.get(arryMebers.size()-1));
+        }
+
+    }
+
 
     void updateEntry(int position){
 
@@ -244,11 +266,7 @@ public class Fragment_DailyReport extends Fragment {
     }
 
     public void setTextsAccordingRate()  {
-        try {
-            lbl_snf_dr.setText(MainActivity.instace.rateString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        lbl_snf_dr.setText(MainActivity.getInstace().rateString());
     }
 
     private void deleteReport( final int position){
@@ -256,7 +274,8 @@ public class Fragment_DailyReport extends Fragment {
         MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
         ArrayList<Integer> reportIdList = new ArrayList<>();
         reportIdList = milkDBHelpers.reportId();
-        reportId = id_arrayList.get(position);
+        SingleEntry entry = DailyReportList.get(position);
+        reportId = Integer.valueOf(entry.getID());
 
         final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
         alertBuilder.setMessage("Are You sure want to delete this Report ");
@@ -282,11 +301,11 @@ public class Fragment_DailyReport extends Fragment {
     }
 
     public void clickSearchButton() {
-        GetAllData_arrayList.clear();
+
         DailyReportList.clear();
         SearchSqlData();
 
-        sortByAtoZ();
+
         dailyReportAdapter = new DailyReportAdapter(getActivity(), R.layout.listviewmember, DailyReportList) {
             public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
                 TextView v = (TextView) super.getView(position, convertView, parent);
@@ -304,131 +323,121 @@ public class Fragment_DailyReport extends Fragment {
 
     public void SearchSqlData() {
 
-        id_arrayList.clear();
-        membercode_arrayList.clear();
-        weight_arrayList.clear();
-        rate_arrayList.clear();
-        totalamount_arrayList.clear();
-        date_arrayList.clear();
-        dailyReportStringList.clear();
-        GetAllData_arrayList.clear();
-        fat_arrayList.clear();
-        rate_arrayList.clear();
-        snf_arrayList.clear();
-        snfwt_arrayList.clear();
-        fatwt_arrayList.clear();
-        numberList.clear();
-        date_arrayList.clear();
+        DailyReportList.clear();
 
         String startdate = startDateView.getText().toString();
-        String startDate = startdate.replace("/", "");
-        //  Log.e("replace Daily", startDate+" ;"+startdate);
+        String startDate = AppString.reverceDate(startdate);
 
-        String dd = startDate.substring(0, 2);
-        String mm = startDate.substring(2, 4);
-        String yy = startDate.substring(4, 8);
-        startDate = yy + mm + dd;
+        if ( acFrom.getText().toString().length() == 0 ||  acTo.getText().toString().length() == 0  ) {
 
+            MainActivity.makeTost("Fill Codes");
+            return;
+        }
+
+        if (Integer.valueOf(acFrom.getText().toString()) > Integer.valueOf(acTo.getText().toString()) ){
+            MainActivity.makeTost("From code lest must less than To Code");
+            return;
+        }
 
         try {
             MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
             SQLiteDatabase sqLiteDatabase = milkDBHelpers.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery(" SELECT * FROM 'milk_amount' WHERE sift = '" + sift + "' and date = '" + startDate + "' ORDER BY memberCode", null);
 
-            if (cursor != null && cursor.moveToFirst()) {
-                while (cursor.isAfterLast() == false) {
-                    membercode_arrayList.add(cursor.getString(cursor.getColumnIndex("memberCode")));
-                    id_arrayList.add(cursor.getInt(cursor.getColumnIndex("Id")));
-                    weight_arrayList.add(cursor.getFloat(cursor.getColumnIndex("milkweight")));
-                    rate_arrayList.add(cursor.getFloat(cursor.getColumnIndex("rateperliter")));
-                    fat_arrayList.add(cursor.getFloat(cursor.getColumnIndex("fat")));
-                    fatwt_arrayList.add(cursor.getFloat(cursor.getColumnIndex("fat_wt")));
-                    snf_arrayList.add(cursor.getFloat(cursor.getColumnIndex("snf")));
-                    snfwt_arrayList.add(cursor.getFloat(cursor.getColumnIndex("snf_wt")));
-                    totalamount_arrayList.add(cursor.getFloat(cursor.getColumnIndex("totalamount")));
-                    date_arrayList.add(cursor.getString(cursor.getColumnIndex("dateSave")));
-                    GetAllData_arrayList.add(cursor.getString(cursor.getColumnIndex("sift")));
-                    dailyReportStringList.add(cursor.getString(cursor.getColumnIndex("dailyInformation")));
-                    numberList.add(cursor.getString(cursor.getColumnIndex("number")));
-                    cursor.moveToNext();
+            String query = " SELECT * FROM 'milk_amount' WHERE sift = '" + sift + "' AND date = '" + startDate + "' AND memberCode >= '" + acFrom.getText().toString() + "' AND memberCode <= '" + acTo.getText().toString() + "' ORDER BY memberCode";
+            Log.e("query ::: ",query);
+            Cursor cursor = sqLiteDatabase.rawQuery(query, null);
 
-
-
-
-                }
-            } else {
-                // Toast.makeText(getApplication(), "Not Found", Toast.LENGTH_LONG).show();
-            }
-            message = "";
             float weightTotal = 0;
             float amountTotal = 0;
             float fat_wt = 0;
             float snf_wt = 0;
-            String alldata = "";
 
-            for (int i = 0; i < weight_arrayList.size(); i++) {
+            message = "";
+            if (cursor != null && cursor.moveToFirst()) {
 
-                DailyReport dailyReport = new DailyReport();
-                dailyReport.setCode(membercode_arrayList.get(i));
-                dailyReport.setWeight(String.valueOf(weight_arrayList.get(i)));
-                dailyReport.setFat(String.valueOf(fat_arrayList.get(i)));
-                dailyReport.setSnf(String.valueOf(snf_arrayList.get(i)));
-                dailyReport.setRate(String.valueOf(rate_arrayList.get(i)));
-                dailyReport.setAmount(String.valueOf(totalamount_arrayList.get(i)));
-                dailyReport.setId(String.valueOf(id_arrayList.get(i)));
-                dailyReport.setDate(String.valueOf(date_arrayList.get(i)));
-                dailyReport.setShift(String.valueOf(GetAllData_arrayList.get(i)));
+                while (cursor.isAfterLast() == false) {
 
-                weightTotal = weightTotal + weight_arrayList.get(i);
-                amountTotal = amountTotal + totalamount_arrayList.get(i);
-                fat_wt = fat_wt + fatwt_arrayList.get(i);
-                snf_wt = snf_wt + snfwt_arrayList.get(i);
-                DailyReportList.add(dailyReport);
+                    SingleEntry entry = new SingleEntry();
+                    entry.setCode(cursor.getString(cursor.getColumnIndex(AppString.milk.code)));
+                    entry.setId(cursor.getString(cursor.getColumnIndex(AppString.milk.id)));
+                    entry.setRate(cursor.getString(cursor.getColumnIndex(AppString.milk.rate)));
+                    entry.setAmount(cursor.getString(cursor.getColumnIndex(AppString.milk.amount)));
+                    entry.setSift(cursor.getString(cursor.getColumnIndex(AppString.milk.sift)));
+                    entry.setDatesave(cursor.getString(cursor.getColumnIndex(AppString.milk.dateSave)));
+                    entry.setDate(cursor.getString(cursor.getColumnIndex(AppString.milk.date)));
+                    entry.setWeight(cursor.getString(cursor.getColumnIndex(AppString.milk.weight)));
+                    entry.setFat(cursor.getString(cursor.getColumnIndex(AppString.milk.fat)));
+                    entry.setSnf(cursor.getString(cursor.getColumnIndex(AppString.milk.snf)));
+                    entry.setFatWt(cursor.getString(cursor.getColumnIndex(AppString.milk.fat_wt)));
+                    entry.setSnfWt(cursor.getString(cursor.getColumnIndex(AppString.milk.snf_wt)));
+                    entry.setCMF(cursor.getString(cursor.getColumnIndex(AppString.milk.cmf)));
+                    DailyReportList.add(entry);
 
-                //SetAllData_arrayList.add(GetAllData_arrayList.get(i));
-                alldata = alldata + GetAllData_arrayList.get(i);
+                    weightTotal = weightTotal + Float.valueOf(entry.getWeight());
+                    amountTotal = amountTotal + Float.valueOf(entry.getAmount());
+                    fat_wt = fat_wt + Float.valueOf(entry.getFatWt());
 
-                String nwt =  weight_arrayList.get(i).toString();
 
-                String nft =  fat_arrayList.get(i).toString();
-                String nsnf =  snf_arrayList.get(i).toString();
-                String nrt =  rate_arrayList.get(i).toString();
+                    snf_wt = snf_wt + Float.valueOf(entry.getSnfWt());
 
-                message = message + "\n" + String.format("%s %-4s %-4s %-4s %-4s %-5s",membercode_arrayList.get(i),nwt,nft,nsnf,nrt,totalamount_arrayList.get(i));
+                    message = message + "\n" + String.format("%s %-4s %-4s %-4s %-4s %-5s",
+                            entry.getCode(),
+                            entry.getWeight(),
+                            entry.getfat(),
+                            entry.getSnf(),
+                            MainActivity.twoDecimalString(entry.getRate()),
+                            MainActivity.twoDecimalString(entry.getAmount()));
 
+
+                    cursor.moveToNext();
+                }
+            } else {
+                // Toast.makeText(getApplication(), "Not Found", Toast.LENGTH_LONG).show();
             }
 
-            if (sift.equals("M"))
-            {
+
+
+            if (sift.equals("M")) {
                 shifts = "Morning";
-            }
-            else
-            {
+            } else {
                 shifts = "Evening";
             }
 
-            message = "Shift Report\n"+startdate+"  "+shifts+ "\n" + MainActivity.lineBreak() + "Code Qty Fat "+MainActivity.instace.rateString()+"  Rate   AMT\n"+message;
+            // headre
+            String header = "Shift Report\n " +startdate+ "  "+shifts+ "\n" + MainActivity.lineBreak() ;
+            String header2 = "Code Qty Fat " + MainActivity.getInstace().rateString() + "  Rate   AMT" ;
 
 
-            DecimalFormat df = new DecimalFormat("#.##");
-            float avgFat = Float.valueOf(df.format(fat_wt / weightTotal));
-            float avgSnf = Float.valueOf(df.format(snf_wt / weightTotal));
+            message = header + header2 + message;
 
-            daily_fat.setText(String.valueOf(avgFat));
-            daily_snf.setText(String.valueOf(avgSnf));
+            // set data
+            float avgFat = fat_wt / weightTotal;
+            float avgSnf = snf_wt / weightTotal;
+
+            daily_fat.setText(MainActivity.twoDecimalFloatToString(avgFat));
+            daily_snf.setText(MainActivity.twoDecimalFloatToString(avgSnf));
             daily_wight.setText(MainActivity.twoDecimalFloatToString(weightTotal) + " Kg");
             daily_amut.setText(MainActivity.twoDecimalFloatToString(amountTotal) + "/-");
 
-            message = message + "\n" + MainActivity.lineBreak()
-                    +"Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + avgFat +
-                    "\nAvarage SNF   :   " + avgSnf + "\nTotal Amount  :   " + amountTotal + "/-";
 
+            String footer = MainActivity.lineBreak()
+                    +"Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + MainActivity.twoDecimalFloatToString(avgFat) +
+                    "\nAvarage SNF   :   " + MainActivity.twoDecimalFloatToString(avgSnf)+ "\nTotal Amount  :   " + MainActivity.twoDecimalFloatToString(amountTotal)  + "/-";
 
-            /// title
+            message = message + "\n" + footer;
 
             SharedPreferencesUtils  sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-            String titlename = sharedPreferencesUtils.getTitle();
-            message = titlename + "\n" + message;
+            tiltle = sharedPreferencesUtils.getTitle();
+            message = tiltle + "\n" + message;
+
+
+            fileName = "SessionReport-" + startDate + "-" + shifts + ".pdf";
+            totalSummery = "Shift Report\n"+startdate+"  "+shifts+ "\n" + MainActivity.lineBreak() + "Total Weight  :   " + weightTotal + "\nAvarage Fat   :   " + MainActivity.twoDecimalFloatToString(avgFat) +
+            "\nAvarage SNF   :   " + MainActivity.twoDecimalFloatToString(avgSnf)+ "\nTotal Amount  :   " + MainActivity.twoDecimalFloatToString(amountTotal)  + "/-";
+
+            pdfDaily.setAmounts(weightTotal, avgFat, avgSnf, amountTotal);
+            pdfDaily.setArray(DailyReportList);
+            pdfDaily.setData(tiltle,startdate,"Session Report",shifts,fileName);
 
 
         } catch (Exception e) {
@@ -448,33 +457,20 @@ public class Fragment_DailyReport extends Fragment {
             spinr_ampm.setSelection(1);
             sift = "E";
         }
-
-        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
-        startDateView.setText(milkDBHelpers.getCurrentDateFromPublic());
+        startDateView.setText(AppString.getCurrentDate());
 
         clickSearchButton();
     }
 
-    private void sortByAtoZ() {
-        Collections.sort(DailyReportList, new Comparator<DailyReport>() {
-            @Override
-            public int compare(DailyReport lhs, DailyReport rhs) {
-                return lhs.getCode().compareTo(rhs.getCode());
-            }
-        });
-
-        for (int i = 0; i < DailyReportList.size(); i++) {
-            Log.e("getCorde", DailyReportList.get(i).getCode() + "");
-        }
-
-    }
 
 
     private void shareDialog() {
-        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Report"};
+
+        final CharSequence[] options = {"WhatsApp", "Mail", "Other Share", "Print Summery","Print Total Summery","Share Pdf"};
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
                 .setTitle("Send Report");
         adb.setItems(options, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (options[item].equals("WhatsApp")) {
@@ -514,24 +510,46 @@ public class Fragment_DailyReport extends Fragment {
                     sentIntent.setType("text/plain");
                     startActivity(sentIntent);
                 }
-                else if (options[item].equals("Print Report")) {
-
+                else if (options[item].equals("Print Summery")) {
                   print(message);
                 }
+                else if (options[item].equals("Print Total Summery")) {
+                    if (totalSummery.length() > 0){
+                        print(totalSummery);
+                        Log.e("total",totalSummery);
+                    }
+                }
+
+                else if (options[item].equals("Share Pdf")) {
+                    pdfDaily.createSessionPdf(pdfDaily);
+                }
+
+
             }
         });
         adb.show();
     }
 
-    private void print(String printString){
-        try {
-            MainActivity.print(printString);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+    String getSummery(){
+
+        if (DailyReportList.size()==0) {
+            return "";
         }
 
+        String titleName = MainActivity.getInstace().sharedPreferencesUtils.getTitle();
+
+        String summery = titleName + "\nShift Report\n"+startDateView.getText()+"  "+shifts+ "\n" + MainActivity.lineBreak() +
+                         "\nTotal Milk Weight : " + daily_wight.getText() +
+                         "\nAvg Fat : " + daily_fat.getText() +
+                         "\nAvg " + MainActivity.getInstace().rateString()+ ": " + daily_fat.getText() +
+                         "\nTotal Amount : " + daily_amut.getText();
+        return  summery;
     }
 
+    private void print(String printString){
+        MainActivity.getInstace().print(printString);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void uploadFile() {

@@ -212,11 +212,7 @@ public class Fragment_LastData extends Fragment {
 
     private void print(String printString){
 
-        try {
-            MainActivity.print(printString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        MainActivity.getInstace().print(printString);
 
     }
 

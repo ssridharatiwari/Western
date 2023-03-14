@@ -7,6 +7,34 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".SplashActivity"
     android:background="@drawable/milkdropfromjug">
 
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Western Milk Collection App"
+        android:textColor="@color/action_bar_color"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:gravity="center"
+        android:text="Sanjay\n 9649542354"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:textStyle="bold" />
+
 
 
 </RelativeLayout>

@@ -91,6 +91,25 @@ android:weightSum="10">
         android:background="@drawable/rectangle"
         android:textColor="@android:color/black"/>
 
+
+
+    <EditText
+
+        android:id="@+id/venderCode"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginRight="@dimen/density_twenty"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:maxLength="10"
+        android:hint="Enter Code"
+        android:singleLine="true"
+        android:background="@drawable/rectangle"
+        android:textColor="@android:color/black"/>
+
 <TextView
     android:layout_marginRight="@dimen/density_twenty"
     android:layout_marginLeft="@dimen/density_twenty"
@@ -108,24 +127,6 @@ android:weightSum="10">
     android:layout_weight="0.38" />
 
 
-    <EditText
-
-
-        android:id="@+id/pinCode1"
-        android:layout_width="match_parent"
-        android:layout_marginTop="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="@dimen/density_twenty"
-        android:layout_marginRight="@dimen/density_twenty"
-        android:gravity="center"
-        android:textSize="25sp"
-        android:hint="Enter Code"
-        android:inputType="numberDecimal"
-        android:maxLength="7"
-        android:background="@drawable/rectangle"
-        android:imeOptions="actionDone"
-        android:visibility="gone"
-        android:textColor="@android:color/black"/>
 
 
     <TextView
@@ -158,38 +159,24 @@ android:weightSum="10">
     </LinearLayout>
 
 
-
-
-
-
-
-
-
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3.62"
+        android:layout_height="10dp"
         android:layout_marginBottom="0dp"
         android:layout_marginTop="0dp"
-        >
-
+        android:layout_weight="2">
 
 
         <TextView
-            android:gravity="center"
-            android:text="CALL @ 9829240615"
             android:layout_width="match_parent"
             android:layout_height="76dp"
             android:layout_gravity="center"
-            android:textSize="20dp"
+            android:layout_marginBottom="0dp"
+            android:gravity="center"
+            android:text="CALL @ 9829240615"
             android:textColor="@color/action_bar_color"
-            android:textStyle="bold"
-            android:layout_marginBottom="0dp"/>
-
-
-
-
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

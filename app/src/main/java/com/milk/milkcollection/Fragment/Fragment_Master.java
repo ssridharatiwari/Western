@@ -207,8 +207,6 @@ public class Fragment_Master extends Fragment {
                         File.separator + "MyData" +
                         File.separator);
 
-
-                //Log.e("Export", String.valueOf(sd));
                 boolean success = true;
                 if (!sd.exists()) {
                     success = sd.mkdir();
@@ -457,11 +455,8 @@ public class Fragment_Master extends Fragment {
 
     public void uploadFile(){
         if (MainActivity.instace.isNetworkConnected()){
-            //uploadFile();
             MainActivity.getInstace().showLoading("Uploading..");
             new UploadFile().execute();
-
-
         }else{
             MainActivity.makeToast("Internet Connection not available");
         }

@@ -1,14 +1,17 @@
 package com.milk.milkcollection.model;
 
-/**
- * Created by Er. Arjun on 06-03-2016.
- */
+import android.util.Log;
+
+import com.milk.milkcollection.Activity.MainActivity;
+
+import java.io.IOException;
+
 public class SingleEntry {
 
-// a.execSQL("create table milk_amount(Id Integer primary Key Autoincrement,memberCode text,milkweight text,rateperliter text ,totalamount text,date text,milkinformation text," + "sift text,fat text,fat_wt text,snf text,snf_wt text,allInformation text,dailyInformation text,dateSave text)");
 
 
-    String id,code,date,sift,weight,rate,amount,fat,snf,datesave,fatWt,snfWt,mobie;
+   public String id,code,date,sift,weight,rate,amount,fat,snf,datesave,fatWt,snfWt,mobie, cmf="0",memberName="",memberMobile="",title="",selfNumber="";
+
 
     public SingleEntry(){}
 
@@ -48,9 +51,13 @@ public class SingleEntry {
     }
 
     public void setSnfWt(String snfWt) {
-        this.datesave = snfWt;
+        if (snfWt!=null){
+            this.snfWt = snfWt;
+        }
+
     }
     public String getSnfWt() { return snfWt;}
+
 
     public void setCode(String code) {
         this.code = code;
@@ -100,6 +107,69 @@ public class SingleEntry {
     }
     public void setMobile(String mobie) {
         this.mobie = mobie;
+    }
+
+    public String getCmf() {
+        return cmf;
+    }
+    public void setCMF(String cmf) {
+        this.cmf = cmf;
+    }
+
+
+    public String getSMS() {
+
+        String  message = MainActivity.getInstace().sharedPreferencesUtils.getTitle() + "\n" + "Dt:" + date + "(" + sift + ")\n" +
+                MainActivity.getInstace().milkDBHelpers.getMemberNameByCode(code) + "(" + code + ")" +
+                "\nFt: " + fat + " , Snf: " + snf +
+                "\nQT=" + weight +  "\nRT=" + MainActivity.twoDecimal(rate) + " AMT=" + MainActivity.twoDecimal(amount);
+
+        if (Float.parseFloat(cmf) > 0) {
+            try {
+                message = message + " CM Fund= " + cmf + " Total: " + MainActivity.twoDecimalFloatToString(Float.valueOf(cmf) + Float.valueOf(amount));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return message;
+    };
+
+
+    public String getPrintMassge(){
+
+
+        if (title.equals("")) {
+            title = MainActivity.getInstace().sharedPreferencesUtils.getTitle();
+        }
+
+        if (selfNumber.equals("")) {
+            selfNumber = MainActivity.getInstace().sharedPreferencesUtils.getMobile();
+        }
+
+        if (memberName.equals("")) {
+            Log.e("code",code);
+            memberName = MainActivity.getInstace().milkDBHelpers.getMemberNameByCode(code);
+        }
+
+        String printString = title + "\n" +
+                            selfNumber + "\n" + MainActivity.lineBreak() +
+                            "\nName: " + memberName + "(" + code + ")" +
+                            "\nDate: " + datesave + " - " +sift +
+                            "\nFat: " + fat + " , SNF: " + snf +
+                            "\nLitre: " + MainActivity.twoDecimal(weight) + " L" +
+                            "\nRate/Ltr: " + MainActivity.twoDecimal(rate) +
+                            "\nAmount: Rs " + amount;
+
+        if (Float.parseFloat(cmf) > 0) {
+            printString = printString +  "\nCM Fund: Rs " + cmf;
+            printString = printString +  "\nTotal: Rs " + (Float.parseFloat(cmf) + Float.parseFloat(amount));
+        }
+
+        Log.e("print",printString );
+
+        printString = printString + "\n\n" + MainActivity.lineBreak();
+        return printString;
+
     }
 
 }

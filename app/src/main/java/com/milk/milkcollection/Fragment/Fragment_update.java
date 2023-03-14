@@ -44,6 +44,7 @@ import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.DailyReport;
+import com.milk.milkcollection.model.SingleEntry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,7 +78,7 @@ public class Fragment_update extends Fragment {
     Boolean isSMSSemd = false,isPrint;
 
 
-    public DailyReport entry = new DailyReport();
+    public SingleEntry entry = new SingleEntry();
 
 
     public Fragment_update() {
@@ -121,12 +122,12 @@ public class Fragment_update extends Fragment {
         // toolbartitle.setText(titlename);
 
         et_code.setText(entry.getCode());
-        et_fat.setText(entry.getFat());
+        et_fat.setText(entry.getfat());
         et_snf.setText(entry.getSnf());
         et_weight.setText(entry.getWeight());
-        sift = entry.getShift();
+        sift = entry.getSift();
 
-        tv_datepicker.setText(entry.getDate());
+        tv_datepicker.setText(entry.getDatesave());
 
 
 
@@ -187,7 +188,7 @@ public class Fragment_update extends Fragment {
         });
 
 
-        if(entry.getShift().equals("M")) {
+        if(entry.getSift().equals("M")) {
             sp_shift.setSelection(0);
         } else {
             sp_shift.setSelection(1);
@@ -270,7 +271,11 @@ public class Fragment_update extends Fragment {
 
             public void afterTextChanged(Editable s) {
 
-                createmilkvalue();
+
+                if (!sharedPreferencesUtils.getRateMethodCode().equals("3")) {
+                    createmilkvalue();
+                }
+
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -308,17 +313,9 @@ public class Fragment_update extends Fragment {
     private void printMethod() {
 
         isPrint = false;
-        try {
-            try {
-                MainActivity.print(printString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), "Print failed, please try again.", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
+        MainActivity.getInstace().print(printString);
+
     }
 
     public boolean funSaveEntry() {
@@ -411,11 +408,13 @@ public class Fragment_update extends Fragment {
                         phone_number = cursor.getString(3);
                         String member_name = (String)tv_code_holder.getText();
                         Float totalamount = Float.parseFloat(totalrupees);
-                        DecimalFormat df = new DecimalFormat("#.##");
-                        fat = String.valueOf(df.format(Float.parseFloat(fat)));
-                        snf = String.valueOf(df.format(Float.parseFloat(snf)));
-                        weight = String.valueOf(df.format(Float.parseFloat(weight)));
 
+                        DecimalFormat df = new DecimalFormat("#.##");
+
+                        fat = String.valueOf(MainActivity.twoDecimal(et_fat.getText().toString()));
+                        snf = String.valueOf(MainActivity.twoDecimal(et_snf.getText().toString()));
+
+                        weight = String.valueOf(df.format(Float.parseFloat(weight)));
 
 
                         String strShipt = "Eve";
@@ -441,9 +440,17 @@ public class Fragment_update extends Fragment {
 
                         myCode = code;
 
-                        milkDBHelpers.update(code, df.format(Float.parseFloat(weight)), rateperliter,
-                                totalamount, replaceDate,
-                                phone_number, sift, fat, fat_wt, snf, snf_wt, message, printString, date,entry.getId());
+                        entry.setCode(code);
+                        entry.setSnf(snf);
+                        entry.setSnfWt(String.valueOf(snf_wt));
+                        entry.setFat(fat);
+                        entry.setFatWt(String.valueOf(fat_wt));
+                        entry.setWeight(weight);
+                        entry.setRate(String.valueOf(rateperliter));
+                        entry.setAmount(String.valueOf(totalamount));
+                        entry.setAmount(String.valueOf(totalamount));
+
+                        milkDBHelpers.update(entry);
 
                         total.setText("Total Amount");
                         rate.setText("Rate/ltr");
@@ -452,8 +459,6 @@ public class Fragment_update extends Fragment {
                         et_snf.setText("");
                         resetValue();
 
-
-                        et_code.requestFocus();
                         Toast.makeText(getActivity(), "Weight :- " + weight + "\n" + "Rate/liter  :- " + rateperliter + "\n" + "total amount :- " + totalrupees, Toast.LENGTH_LONG).show();
                         cursor.moveToNext();
 
@@ -542,7 +547,7 @@ public class Fragment_update extends Fragment {
 
                                 try {
                                     snf = MainActivity.oneDecimalString(String.valueOf(value));
-                                    et_snf.setText(snf);
+                                    // et_snf.setText(snf);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -628,13 +633,9 @@ public class Fragment_update extends Fragment {
     }
 
     public void setTextsAccordingRate()  {
-        try {
-            lbl_snf_home.setText(MainActivity.instace.rateString());
-            et_snf.setHint("Enter " + MainActivity.instace.rateString());
-            lbl_snf_avg.setText("Avg " + MainActivity.instace.rateString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        lbl_snf_home.setText(MainActivity.instace.rateString());
+        et_snf.setHint("Enter " + MainActivity.instace.rateString());
+        lbl_snf_avg.setText("Avg " + MainActivity.instace.rateString());
     }
 
 

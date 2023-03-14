@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Milk Collection</string>
+    <string name="app_name" translatable="false">Milk V2.7</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="verify_by_mobile_phone">Verify By Pin</string>
@@ -31,9 +31,6 @@
     <string name="serial_no">SN</string>
 
     <string name="save_print_sms">save print sms</string>
-
-
-
     <string name="no_entry_text">No Entry Today</string>
     <string name="print_save">Print Save</string>
     <string name="select_date">Select Date</string>
@@ -44,10 +41,9 @@
     <string name="enter_snf">Enter Snf</string>
     <string name="purchase_report">Pur. Report</string>
 
-
     <string name="rate_per_ltr">RT/LTR</string>
     <string name="total_rt">Total RT</string>
-
+    <string name="total_amount">Total Amt</string>
 
     <string name="mas_add_member">Add Member</string>
     <string name="mas_show_member">Show Member</string>
@@ -59,18 +55,16 @@
     <string name="mas_rate_chart">Rate Chart</string>
     <string name="mas_backup">Data send to Sever</string>
 
-
     <string name="rep_mem_lzr">Member Ladger</string>
     <string name="rep_daily_report">Daily Report</string>
     <string name="rep_pay_report">Payment Report</string>
     <string name="rep_socity_report">Society Report</string>
     <string name="rep_lossprofit_report">Loss Profit Report</string>
-    <string name="rep_sell_report">Sell Report</string>
+    <string name="rep_sell_report">Sales Report</string>
 
     <string name="mem_enter_code">Enter Code</string>
     <string name="mem_enter_name">Enter Name</string>
     <string name="mem_enter_phone">Enter Moble No.</string>
-
 
     <string name="lw_weight">Wt</string>
     <string name="lw_rate">Rate</string>
@@ -80,7 +74,6 @@
     <string name="lw_name">Name</string>
     <string name="lw_to">To</string>
     <string name="lw_rate_detail">Rate List</string>
-
 
     <string name="rt_from_fat">from fat</string>
     <string name="rt_to_fat">to fat</string>
@@ -92,20 +85,13 @@
     <string name="rt_comition_type">Comition Type:</string>
     <string name="posrtIP">192.168.4.1</string>
 
-
     <string name="change_rate_method">Change Rate Method</string>
     <string name="change_print_method">Change Print Method</string>
     <string name="change_society_name">Change Society Name</string>
     <string name="change_comultive">Change Society Name</string>
+    <string name="change_default">फ़िक्स SNF</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-
-
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="kgfat_rate">KG FAT KG SNF(SRS)</string>
-
-    //
 
 </resources>

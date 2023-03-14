@@ -80,6 +80,71 @@
                 android:layout_height="39dp" />
 
         </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_height="40dp"
+            android:layout_weight="3"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+
+                android:layout_weight="2.5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="17dp"
+                android:text="From Code"/>
+
+            <AutoCompleteTextView
+                android:layout_marginLeft="5dp"
+                android:id="@+id/codeFrom"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:inputType="number"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+
+                android:background="@drawable/spinner_blue_border"
+                android:ems="10"
+                android:layout_weight="2.5"/>
+
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+
+                android:layout_marginLeft="15dp"
+                android:layout_weight="2.5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="17dp"
+                android:text="To Code"/>
+
+            <AutoCompleteTextView
+                android:inputType="number"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/codeTo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/spinner_blue_border"
+                android:ems="10"
+                android:layout_weight="2.5"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 
