@@ -1,42 +1,19 @@
 package com.milk.milkcollection.Fragment;
 
 import android.app.Fragment;
-import android.content.ContentProvider;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import static android.content.ContentValues.TAG;
-import static java.lang.System.exit;
 
 
 public class SecureSetiing extends Fragment {

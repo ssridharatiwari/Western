@@ -12,64 +12,36 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
-
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.milk.milkcollection.R;
-import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.AppUrl;
-import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.channels.FileChannel;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.milk.milkcollection.Activity.MainActivity.dismiss;
-import static com.milk.milkcollection.Activity.MainActivity.instace;
-import static java.lang.System.exit;
 
 
 public class PinActivity extends AppCompatActivity {
@@ -284,22 +256,29 @@ public class PinActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
 
-                TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                assert mngr != null;
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                AndroidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-                imeiNumber = mngr.getDeviceId();
-                emi.setText("Device - " + AndroidID);
-                getDeviceIDS();
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        assert mngr != null;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        try {
+            AndroidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+            imeiNumber = mngr.getDeviceId();
+            emi.setText("Device - " + AndroidID);
+            getDeviceIDS();
+        } catch (Exception e)
+        {
+            Toast.makeText(instace, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
 
 
     }
@@ -357,7 +336,14 @@ public class PinActivity extends AppCompatActivity {
         progress.show();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progress != null && progress.isShowing()) {
+            progress.dismiss();
+        }
 
+    }
 
     private void makeRequest() throws JSONException {
 
@@ -679,7 +665,7 @@ public class PinActivity extends AppCompatActivity {
 
 
 
-        android.support.v7.app.AlertDialog.Builder alert = new android.support.v7.app.AlertDialog.Builder(PinActivity.this);
+      AlertDialog.Builder alert = new AlertDialog.Builder(PinActivity.this);
 
         final EditText edittext = new EditText(PinActivity.this);
 
@@ -691,7 +677,7 @@ public class PinActivity extends AppCompatActivity {
 
         alert.setView(edittext);
 
-        final android.support.v7.app.AlertDialog.Builder ok = alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        final AlertDialog.Builder ok = alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public String toString() {
                 return "$classname{}";
@@ -700,8 +686,8 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //What ever you want to do with the value
 
-
-                String YouEditTextValue = edittext.getText().toString();
+                String YouEditTextValue="";
+                 YouEditTextValue = edittext.getText().toString();
                 userID =  YouEditTextValue;
 
                 if ( Float.parseFloat(YouEditTextValue) > 0.0) {

@@ -1,19 +1,14 @@
 package com.milk.milkcollection.Fragment;
 
-import android.Manifest;
-import android.Manifest.permission;
+import static android.content.ContentValues.TAG;
+import static java.lang.System.exit;
+
 import android.app.Fragment;
 import android.content.ContentProvider;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +17,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -38,9 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-
-import static android.content.ContentValues.TAG;
-import static java.lang.System.exit;
 
 
 public class Fragment_Setting extends Fragment {

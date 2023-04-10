@@ -9,13 +9,11 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.print.pdf.PrintedPdfDocument;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -47,7 +45,6 @@ import com.milk.milkcollection.helper.AppUrl;
 import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.DownloadFile;
-import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
 import com.milk.milkcollection.model.SingleEntry;
 
@@ -460,7 +457,7 @@ public class Fragment_home extends Fragment {
 
         if (milkDBHelpers.isAlredy(reverceDate(),sift,code)){
             
-            new android.support.v7.app.AlertDialog.Builder(instace).setTitle("Message")
+            new AlertDialog.Builder(instace).setTitle("Message")
                     .setMessage(AppString.reentryTitle)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override

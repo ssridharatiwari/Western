@@ -1,12 +1,12 @@
 package com.milk.milkcollection.Fragment;
 
+import static java.lang.Float.parseFloat;
+
 import android.app.Fragment;
 import android.content.Context;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,7 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
@@ -27,8 +28,6 @@ import com.milk.milkcollection.helper.SharedPreferencesUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-
-import static java.lang.Float.parseFloat;
 
 /**
  * Created by Alpha on 13-12-2015.

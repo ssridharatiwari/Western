@@ -1,19 +1,14 @@
 package com.milk.milkcollection.Fragment;
 
 
-import android.app.AlertDialog;
+import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
+
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,31 +26,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import androidx.annotation.RequiresApi;
+
 import com.milk.milkcollection.Activity.MainActivity;
-import com.milk.milkcollection.Activity.PinActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.DatePickerFragment;
-import com.milk.milkcollection.helper.DownloadFile;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
-import com.milk.milkcollection.model.DailyReport;
 import com.milk.milkcollection.model.SingleEntry;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Calendar;
-
-import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
-import static com.milk.milkcollection.Activity.MainActivity.oneDecimalFloatToString;
-import static java.lang.System.exit;
 
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class Fragment_update extends Fragment {

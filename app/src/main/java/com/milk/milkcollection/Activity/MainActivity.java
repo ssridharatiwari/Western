@@ -3,6 +3,7 @@ package com.milk.milkcollection.Activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -14,8 +15,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,22 +24,10 @@ import android.graphics.pdf.PdfDocument;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-
-import android.print.pdf.PrintedPdfDocument;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -58,6 +45,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.Fragment.Fragment_Master;
 import com.milk.milkcollection.Fragment.Fragment_Report;
@@ -68,10 +65,6 @@ import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.BluetoothPrinter;
 import com.milk.milkcollection.helper.FSSession;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
-import com.milk.milkcollection.model.PDFDaily;
-import com.milk.milkcollection.model.SingleEntry;
-
-import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -596,6 +589,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_SEND_SMS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -606,11 +600,11 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
             } else {
-                Toast.makeText(this,"ehgehfg",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "ehgehfg", Toast.LENGTH_SHORT).show();
             }
         }
 
-        if (requestCode == BLU_ADMIN){
+        if (requestCode == BLU_ADMIN) {
             printFromBluthooth(data);
         }
 
@@ -880,7 +874,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void showAlert(String message) {
 
-        new android.support.v7.app.AlertDialog.Builder(instace).setTitle("Message")
+        new AlertDialog.Builder(instace).setTitle("Message")
                 .setMessage(message)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override

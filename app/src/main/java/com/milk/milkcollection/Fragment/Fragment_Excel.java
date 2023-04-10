@@ -18,9 +18,9 @@ import android.os.Handler;
 
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,63 +31,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.milk.milkcollection.Activity.MainActivity;
-import com.milk.milkcollection.Activity.PinActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
 import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
-import com.milk.milkcollection.model.ListRate;
-import com.milk.milkcollection.model.SingleReport;
 
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.IllegalFormatCodePointException;
-import java.util.Iterator;
-import java.util.List;
 
-import android.app.Application;
-import android.content.ContentResolver;
 import android.content.Context;
 
 
-import org.json.JSONException;
-
-import static android.R.attr.key;
-import static android.R.attr.logo;
-import static android.R.attr.visibility;
-import static android.R.attr.visible;
-import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
-
-
-
-
-
-import android.content.ContentUris;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 
 /**
  * Created by Alpha on 13-12-2015.

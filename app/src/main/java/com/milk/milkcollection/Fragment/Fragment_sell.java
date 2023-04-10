@@ -1,15 +1,12 @@
 package com.milk.milkcollection.Fragment;
 
 
-import android.app.AlertDialog;
+import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
+
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,10 +19,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
@@ -33,16 +31,10 @@ import com.milk.milkcollection.R;
 import com.milk.milkcollection.helper.AppString;
 import com.milk.milkcollection.helper.DatePickerFragment;
 import com.milk.milkcollection.helper.SharedPreferencesUtils;
-import com.milk.milkcollection.model.DailyReport;
-import com.milk.milkcollection.model.Member;
 import com.milk.milkcollection.model.SingleEntry;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.Date;
-
-import static com.milk.milkcollection.Activity.MainActivity.hideKeyboard;
 
 @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class Fragment_sell extends Fragment {

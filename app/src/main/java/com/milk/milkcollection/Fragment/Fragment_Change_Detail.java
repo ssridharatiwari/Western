@@ -1,5 +1,8 @@
 package com.milk.milkcollection.Fragment;
 
+import static android.content.ContentValues.TAG;
+import static com.milk.milkcollection.Activity.MainActivity.instace;
+
 import android.Manifest;
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -9,9 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +19,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 
 import com.milk.milkcollection.Activity.MainActivity;
 import com.milk.milkcollection.Database.MilkDBHelpers;
@@ -32,9 +36,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-
-import static android.content.ContentValues.TAG;
-import static com.milk.milkcollection.Activity.MainActivity.instace;
 
 
 public class Fragment_Change_Detail extends Fragment {
