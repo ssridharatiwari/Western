@@ -1,5 +1,6 @@
 package com.milk.milkcollection.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -215,6 +216,7 @@ public class Fragment_CellReport extends Fragment {
 
 
 
+    @SuppressLint("Range")
     public void SearchSqlData(){
 
 

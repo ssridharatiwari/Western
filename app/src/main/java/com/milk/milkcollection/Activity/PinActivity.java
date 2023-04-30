@@ -15,9 +15,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -25,11 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -97,7 +91,6 @@ public class PinActivity extends AppCompatActivity {
 
         if (isLogin.equals("1") || isLogin.equals("2") ){
 
-//            startActivity(new Intent(PinActivity.this, New.class));
             startActivity(new Intent(PinActivity.this, MainActivity.class));
             finish();
         }
@@ -207,80 +200,9 @@ public class PinActivity extends AppCompatActivity {
 
     @SuppressLint("HardwareIds")
     private void getDeviceIDS() {
-        try {
-
-            try {
-
-                if (isPermissionGranted(PinActivity.this)){
-
-                    AndroidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-
-                    // Check if the READ_PHONE_STATE permission is already available.
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                                Manifest.permission.READ_PHONE_STATE)) {
-                        } else {
-                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},
-                                    MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
-                        }
-                    } else {
-
-                        AndroidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-
-                        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                        assert mngr != null;
-                        imeiNumber = mngr.getDeviceId();
-
-                        emi.setText("Device - " + AndroidID);
-
-                        // READ_PHONE_STATE permission is already been granted.
-                        //  Toast.makeText(this, "Alredy granted", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            // Toast.makeText(PinActivity.this, "SMS failed, please try again.", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
-    }
-
-    @SuppressLint("HardwareIds")
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        assert mngr != null;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        try {
-            AndroidID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-            imeiNumber = mngr.getDeviceId();
-            emi.setText("Device - " + AndroidID);
-            getDeviceIDS();
-        } catch (Exception e)
-        {
-            Toast.makeText(instace, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-
-
+        AndroidID = "123456";
+        imeiNumber = "123456";
+//        emi.setText("Device - " + AndroidID);
     }
 
     private void sendSMS() {
@@ -691,9 +613,7 @@ public class PinActivity extends AppCompatActivity {
                 userID =  YouEditTextValue;
 
                 if ( Float.parseFloat(YouEditTextValue) > 0.0) {
-
                     verifyOLDUSER();
-
                 } else {
 
                 }

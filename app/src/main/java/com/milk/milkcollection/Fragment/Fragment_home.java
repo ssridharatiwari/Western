@@ -99,6 +99,8 @@ public class Fragment_home extends Fragment {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
 
+
+
         rootView.playSoundEffect(android.view.SoundEffectConstants.CLICK);
         comission = "+";
 
@@ -147,7 +149,7 @@ public class Fragment_home extends Fragment {
 
 
 
-        verifyDetailApi();
+//        verifyDetailApi();
 
         et_snf.setOnKeyListener(new View.OnKeyListener() {
             @Override

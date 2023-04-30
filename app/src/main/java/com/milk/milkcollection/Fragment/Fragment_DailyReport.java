@@ -221,7 +221,9 @@ import static com.milk.milkcollection.Activity.MainActivity.instace;
         setAcData();
         setTextsAccordingRate();
         getCalendarDate();
-        uploadFile();
+
+        // commented upload file process
+        // uploadFile();
         return rootView;
     }
 

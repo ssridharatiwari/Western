@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/western.iml" filepath="$PROJECT_DIR$/.idea/modules/western.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/western.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/western.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/western.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/western.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/western.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/western.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/western.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/western.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MilkCollection.iml" filepath="$PROJECT_DIR$/.idea/modules/MilkCollection.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MilkCollection.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MilkCollection.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MilkCollection.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MilkCollection.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MilkCollection.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MilkCollection.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MilkCollection.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MilkCollection.app.unitTest.iml" />
     </modules>
   </component>
 </project>
