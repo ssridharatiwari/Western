@@ -149,7 +149,7 @@ public class Fragment_home extends Fragment {
 
 
 
-//        verifyDetailApi();
+        verifyDetailApi();
 
         et_snf.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -1080,7 +1080,8 @@ public class Fragment_home extends Fragment {
         if (MainActivity.getInstace().userID().toString().length() == 0 && MainActivity.getInstace().userID().toString().equals("0")) {
             exit(0);
         }
-        Log.e("user-",MainActivity.getInstace().userID().toString());
+
+//        Log.e("user-",MainActivity.getInstace().userID().toString());
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         String url = AppUrl.mainUrl + "uid=" + MainActivity.instace.userID() + "&action=6&android_id=" + PinActivity.getInstace().AndroidID;

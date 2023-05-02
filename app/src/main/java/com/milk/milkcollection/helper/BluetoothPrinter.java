@@ -1,20 +1,26 @@
 package com.milk.milkcollection.helper;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.milk.milkcollection.Activity.MainActivity;
+import com.milk.milkcollection.R;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -524,7 +530,34 @@ public class BluetoothPrinter {
 
 
     public void sendData(String text){
-        printFromBluthooth(text);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            MainActivity.instace.requestPermissions(new String[]{Manifest.permission.BLUETOOTH,
+//                    Manifest.permission.BLUETOOTH_CONNECT,}, 100);
+//        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(MainActivity.instace, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.instace, new String[]{Manifest.permission.BLUETOOTH}, 1);
+            } else if (ActivityCompat.checkSelfPermission(MainActivity.instace, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.instace, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 2);
+            } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S && ActivityCompat.checkSelfPermission(MainActivity.instace, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.instace, new String[]{Manifest.permission.BLUETOOTH_CONNECT},3);
+            } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S && ActivityCompat.checkSelfPermission(MainActivity.instace, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.instace, new String[]{Manifest.permission.BLUETOOTH_SCAN}, 4);
+            } else {
+
+            }
+
+        }
+
+
+//        printFromBluthooth(text);
+
+
+        Printooth.init(MainActivity.instace.getBaseContext());
+
+
     }
 
 
