@@ -1,7 +1,5 @@
 package com.milk.milkcollectionapp.Fragment;
 
-import static com.milk.milkcollectionapp.myutility.getcurrentcalDate;
-
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -82,7 +80,6 @@ public class FragmentCMPaymentReport extends Fragment {
         toolbartitle = (TextView)getActivity().findViewById(R.id.titletool);
         toolbartitle.setText(getResources().getString(R.string.payment_report_text));
 
-        MilkDBHelpers milkDBHelpers = new MilkDBHelpers(getActivity());
         startDateView.setText(AppString.getCurrentDate());
         endDateView.setText(AppString.getCurrentDate());
 
@@ -118,8 +115,8 @@ public class FragmentCMPaymentReport extends Fragment {
         });
 
 
-        startDateView.setText(getcurrentcalDate());
-        endDateView.setText(getcurrentcalDate());
+        startDateView.setText(AppString.getCurrentDate());
+        endDateView.setText(AppString.getCurrentDate());
 
         startDateView.setOnClickListener(v -> {
             DialogFragment picker = new DatePickerFragment(startDateView);

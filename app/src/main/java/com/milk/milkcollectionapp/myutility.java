@@ -64,27 +64,4 @@ public final class myutility {
         }
         return true;
     }
-
-    public static String getcurrentcalDate() {
-        Calendar today = Calendar.getInstance();
-        int date = today.get(Calendar.DATE);
-        int month = today.get(Calendar.MONTH);
-        int year = today.get(Calendar.YEAR);
-        month++;
-
-        return  year + "-" + (month >= 10 ? month : "0" + month)
-                + "-" + (date >= 10 ? date : "0" + date);
-
-    }
-
-    public static String getOneMonthDate() {
-        Calendar today = Calendar.getInstance();
-        int date = today.get(Calendar.DATE);
-        int month = today.get(Calendar.MONTH);
-        int year = today.get(Calendar.YEAR);
-
-        return  year + "-" + (month >= 10 ? month : "0" + month)
-                + "-" + (date >= 10 ? date : "0" + date);
-
-    }
 }

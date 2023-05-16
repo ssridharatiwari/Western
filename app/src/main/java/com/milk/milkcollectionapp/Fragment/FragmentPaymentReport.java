@@ -1,7 +1,5 @@
 package com.milk.milkcollectionapp.Fragment;
 
-import static com.milk.milkcollectionapp.myutility.getcurrentcalDate;
-
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -118,9 +116,8 @@ public class FragmentPaymentReport extends Fragment {
             }
         });
 
-
-        startDateView.setText(getcurrentcalDate());
-        endDateView.setText(getcurrentcalDate());
+        startDateView.setText(AppString.getCurrentDate());
+        endDateView.setText(AppString.getCurrentDate());
 
         startDateView.setOnClickListener(v -> {
             DialogFragment picker = new DatePickerFragment(startDateView);

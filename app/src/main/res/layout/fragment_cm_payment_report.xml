@@ -280,7 +280,6 @@
         android:weightSum="10">
 
         <TextView
-            android:id="@+id/search_Avg_fat"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -292,7 +291,6 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/search_Qty"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -304,7 +302,6 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/search_Avg_snf"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -316,7 +313,6 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/search_amount"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -337,6 +333,7 @@
         android:weightSum="10">
 
         <TextView
+            android:id="@+id/search_Avg_fat"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -349,6 +346,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/search_Qty"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -360,6 +358,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/search_weight"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -371,6 +370,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/search_amount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

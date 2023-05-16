@@ -1,7 +1,5 @@
 package com.milk.milkcollectionapp.Fragment;
 
-import static com.milk.milkcollectionapp.myutility.getcurrentcalDate;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -28,6 +26,7 @@ import com.milk.milkcollectionapp.Activity.MainActivity;
 import com.milk.milkcollectionapp.Database.MilkDBHelpers;
 import com.milk.milkcollectionapp.R;
 import com.milk.milkcollectionapp.adapter.SingleReportAdapter;
+import com.milk.milkcollectionapp.helper.AppString;
 import com.milk.milkcollectionapp.helper.DatePickerFragment;
 import com.milk.milkcollectionapp.helper.FSSession;
 import com.milk.milkcollectionapp.helper.SharedPreferencesUtils;
@@ -104,8 +103,9 @@ public class Fragment_CellReport extends Fragment {
         });
 
         savedmilk_listview.setOnItemLongClickListener((parent, view, position, id) -> true);
-        startDateView.setText(getcurrentcalDate());
-        endDateView.setText(getcurrentcalDate());
+
+        startDateView.setText(AppString.getCurrentDate());
+        endDateView.setText(AppString.getCurrentDate());
 
         startDateView.setOnClickListener(v -> {
             DialogFragment picker = new DatePickerFragment(startDateView);
