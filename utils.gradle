@@ -1,0 +1,20 @@
+task renameBundle(type: Exec) {
+    def baseName = getProperty('archivesBaseName')
+
+    def stdout = new ByteArrayOutputStream()
+    def stderr = new ByteArrayOutputStream()
+
+    commandLine "copy.bat", rootProject.getProjectDir().getAbsolutePath() + "\\release\\${baseName}-release.aab", "C:\\Users\\Lenovo\\Desktop\\apps\\release\\${baseName}.aab", "C:\\Users\\Lenovo\\Desktop\\apps\\release"
+    workingDir = rootProject.getProjectDir().getAbsolutePath()
+    ignoreExitValue true
+    standardOutput stdout
+    errorOutput stderr
+
+    doLast {
+        if (execResult.getExitValue() == 0) {
+            println ":${project.name}:${name} > ${stdout.toString()}"
+        } else {
+            println ":${project.name}:${name} > ${stderr.toString()}"
+        }
+    }
+}

@@ -1,15 +1,12 @@
-
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [<!ENTITY appname "Western Milk Company"><!ENTITY package "com.milk.milkcollectionapp">]>
 <resources>
-    
-
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="verify_by_mobile_phone">Verify By Pin</string>
     <string name="date_button_set">Set Date</string>
     <string name="western_set">Western Milk Collection</string>
     <string name="payment_report_text">भुगतान रिपोर्ट</string>
-
-
     <string name="home">दूध संग्रह</string>
     <string name="master">मास्टर</string>
     <string name="report">रिपोर्ट</string>
@@ -17,8 +14,6 @@
     <string name="setting">मुख्य सेटिंग</string>
     <string name="sales">सैल</string>
     <string name="total_amount">कुल राशि</string>
-
-
     <string name="morning">सुबह</string>
     <string name="evening">शाम</string>
     <string name="code">कोड</string>
@@ -33,7 +28,6 @@
     <string name="amount">रुपए</string>
     <string name="serial_no">अनु क्र.</string>
     <string name="save_print_sms">सेव प्रिन्ट मेसज</string>
-
     <string name="no_entry_text">आज की कोई जमा नहीं है</string>
     <string name="print_save">Print Save</string>
     <string name="select_date">तारीख़ चुनें</string>
@@ -43,10 +37,8 @@
     <string name="enter_fat">फैट लिखें</string>
     <string name="enter_snf">सनफ लिखें</string>
     <string name="purchase_report">खरीद रिपोर्ट</string>
-
     <string name="rate_per_ltr">रेट/लीटर</string>
     <string name="total_rt">टोटल रेट</string>
-
     <string name="mas_add_member">सदस्य जोड़ें</string>
     <string name="mas_show_member">सभी सदस्य</string>
     <string name="mas_add_rate">दर जोड़ें</string>
@@ -56,21 +48,17 @@
     <string name="mas_import">सूची</string>
     <string name="mas_mail">मेल भेजे</string>
     <string name="mas_rate_chart">रेट चार्ट</string>
-
-
     <string name="rep_mem_lzr">सदस्य पासबूक</string>
     <string name="rep_daily_report">खरीद रिपोर्ट</string>
     <string name="rep_pay_rceport">भुगतान रिपोर्ट</string>
     <string name="rep_socity_report">समिति रिपोर्ट</string>
     <string name="rep_lossprofit_report">लाभ-हानि रिपोर्ट</string>
     <string name="rep_sell_report">Sales रिपोर्ट</string>
-
-
     <string name="mem_enter_code">कोड लिखें</string>
     <string name="mem_enter_name">नाम लिखें</string>
     <string name="mem_enter_phone">मोबाइल लिखें</string>
-
-
+    <string name="rep_pay_report">Payment Report</string>
+    <string name="posrtIP">192.168.4.1</string>
     <string name="lw_weight">वेट</string>
     <string name="lw_rate"> रेट</string>
     <string name="lw_amout">रुपए</string>
@@ -79,8 +67,6 @@
     <string name="lw_name">नाम</string>
     <string name="lw_to">से</string>
     <string name="lw_rate_detail">रेट सूची</string>
-
-
     <string name="rt_from_fat">फैट से</string>
     <string name="rt_to_fat">फैट तक</string>
     <string name="rt_from_snf">सनफ से</string>
@@ -89,14 +75,13 @@
     <string name="rt_kg_snf_rt">KG सनफ रेट</string>
     <string name="rt_comition">कमीशन</string>
     <string name="rt_comition_type">कमीशन टाइप :</string>
-
-
     <string name="change_rate_method">दूध दर प्रकार</string>
     <string name="change_print_method">प्रिन्ट विधि बदलें</string>
     <string name="change_society_name">सोसाइटी नाम बदलें</string>
     <string name="change_comultive">कूल योग तारीख से तारीख</string>
     <string name="change_default">फ़िक्स SNF</string>
-
     <string name="kgfat_rate">किलो फैट किलो सनफ</string>
-
+    <string name="Avg_snf" translatable="false">Snf</string>
+    <string name="avg_fat" translatable="false">Avg Fat</string>
+    <string name="qty" translatable="false">Qty</string>
 </resources>

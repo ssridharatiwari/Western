@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".Activity.MainActivity"
-    android:fitsSystemWindows="true">
+    tools:context=".Activity.MainActivity">
 
     <include layout="@layout/toolbar" />
 
@@ -12,20 +12,36 @@
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!-- The main content view -->
+
         <FrameLayout
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <!-- The navigation drawer -->
-        <ListView
-            android:id="@+id/left_drawer"
+
+
+        <LinearLayout
+            android:id="@+id/lay_drawer"
             android:layout_width="240dp"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="vertical"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:background="@color/colorPrimaryDark" />
+            android:layout_gravity="start">
+
+            <ImageView
+                android:layout_width="@dimen/onetwenty"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/twelve"
+                android:layout_height="@dimen/onetwenty"
+                android:src="@drawable/milkdropfromjug" />
+
+            <ListView
+                android:id="@+id/left_drawer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:choiceMode="singleChoice"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"
+                android:paddingTop="@dimen/fifteen" />
+        </LinearLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
 </LinearLayout>

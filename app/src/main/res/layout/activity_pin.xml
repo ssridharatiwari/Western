@@ -1,160 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context="com.milk.milkcollection.Activity.PinActivity"
-android:background="@color/app_background"
-android:orientation="vertical"
-android:weightSum="10">
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    android:orientation="vertical"
     android:weightSum="10"
-    android:gravity="center"
-    android:background="@color/action_bar_color"
-    android:layout_height="0dp"
-    android:layout_weight="1">
+    tools:context="com.milk.milkcollectionapp.Activity.PinActivity">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="10"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:text="@string/western_set"
-        android:textColor="#fff"
-        android:textSize="20sp"/>
-</LinearLayout>
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight=".9">
-    <TextView
-        android:id="@+id/emi"
-        android:gravity="center"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="17dp"
-        />
-</LinearLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/action_bar_color"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:gravity="center"
+            android:text="@string/western_set"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".9">
+
+        <TextView
+            android:id="@+id/emi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="17dp" />
+    </LinearLayout>
 
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_marginLeft="@dimen/density_twenty"
-    android:layout_marginRight="@dimen/density_twenty"
-    android:layout_marginTop="@dimen/density_five"
-    android:padding="@dimen/density_fifteen"
-    android:layout_weight="0.10"
-    android:layout_gravity="center"
-    android:background="@drawable/rectangle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginTop="@dimen/density_five"
+        android:layout_marginRight="@dimen/density_twenty"
+        android:layout_weight="0.10"
+        android:background="@drawable/rectangle"
+        android:padding="@dimen/density_fifteen"
         android:visibility="gone"
-    android:weightSum="0">
-
-
+        android:weightSum="0">
     </LinearLayout>
-
 
 
     <EditText
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
         android:layout_height="50dp"
         android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="@dimen/density_twenty"
+        android:background="@drawable/rectangle"
         android:gravity="center"
-        android:textSize="20sp"
         android:hint="Enter Socity Name"
         android:singleLine="true"
-        android:background="@drawable/rectangle"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
 
     <EditText
-
         android:id="@+id/mobile"
-        android:inputType="number"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
         android:layout_height="50dp"
         android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="@dimen/density_twenty"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:maxLength="10"
-        android:hint="Enter Mobile"
-        android:singleLine="true"
         android:background="@drawable/rectangle"
-        android:textColor="@android:color/black"/>
-
-
+        android:gravity="center"
+        android:hint="Enter Mobile"
+        android:inputType="number"
+        android:maxLength="10"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
 
     <EditText
-
         android:id="@+id/venderCode"
-        android:inputType="number"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
         android:layout_height="50dp"
         android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="@dimen/density_twenty"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:maxLength="10"
-        android:hint="Enter Code"
-        android:singleLine="true"
         android:background="@drawable/rectangle"
-        android:textColor="@android:color/black"/>
+        android:gravity="center"
+        android:hint="Enter Code"
+        android:inputType="number"
+        android:maxLength="10"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
 
-<TextView
-    android:layout_marginRight="@dimen/density_twenty"
-    android:layout_marginLeft="@dimen/density_twenty"
-    android:layout_marginTop="10dp"
-    android:id="@+id/btnSend"
-    android:layout_width="230dp"
-    android:inputType="textNoSuggestions"
-    android:layout_height="30dp"
-    android:layout_gravity="center"
-    android:text="Send Detail"
-    android:textColor="#fff"
-    android:gravity="center"
-    android:textSize="23sp"
-    android:background="@drawable/button_pink"
-    android:layout_weight="0.38" />
-
-
+    <TextView
+        android:id="@+id/btnSend"
+        android:layout_width="230dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="@dimen/density_twenty"
+        android:layout_weight="0.38"
+        android:background="@drawable/button_pink"
+        android:gravity="center"
+        android:inputType="textNoSuggestions"
+        android:text="Send Detail"
+        android:textColor="#fff"
+        android:textSize="23sp" />
 
 
     <TextView
-        android:layout_marginRight="@dimen/density_twenty"
-        android:layout_marginLeft="@dimen/density_twenty"
-        android:layout_marginTop="20dp"
         android:id="@+id/btnVerify"
         android:layout_width="222dp"
-        android:inputType="textNoSuggestions"
         android:layout_height="30dp"
         android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="@dimen/density_twenty"
+        android:layout_weight="0.49"
+        android:background="@drawable/button_pink"
+        android:gravity="center"
+        android:inputType="textNoSuggestions"
         android:text="Verify Detail"
         android:textColor="#fff"
-        android:gravity="center"
         android:textSize="23sp"
-        android:background="@drawable/button_pink"
-        android:layout_weight="0.49"
         android:visibility="visible" />
-
 
 
     <LinearLayout
 
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black"
-        >
+        android:layout_marginTop="20dp"
+        android:background="@color/black">
 
     </LinearLayout>
 
@@ -162,8 +150,8 @@ android:weightSum="10">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:layout_marginBottom="0dp"
         android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
         android:layout_weight="2">
 
 
@@ -181,20 +169,20 @@ android:weightSum="10">
     </LinearLayout>
 
     <TextView
-        android:layout_marginRight="@dimen/density_twenty"
-        android:layout_marginLeft="@dimen/density_twenty"
-        android:layout_marginTop="10dp"
         android:id="@+id/btnOldCustomer"
         android:layout_width="230dp"
-        android:inputType="textNoSuggestions"
         android:layout_height="30dp"
         android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/density_twenty"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="@dimen/density_twenty"
+        android:layout_weight="0.38"
+        android:background="@drawable/button_pink"
+        android:gravity="center"
+        android:inputType="textNoSuggestions"
         android:text="Old Customer"
         android:textColor="#fff"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:background="@drawable/button_pink"
-        android:layout_weight="0.38" />
+        android:textSize="20sp" />
 
 </LinearLayout>
 

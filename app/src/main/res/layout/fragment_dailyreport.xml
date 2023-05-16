@@ -1,312 +1,368 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:weightSum="10">
 
     <LinearLayout
-        android:layout_weight="2.4"
         android:id="@+id/line1"
         android:layout_width="match_parent"
-        android:background="@drawable/rectangle"
-        android:orientation="vertical"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/density_five"
-        android:weightSum="9"
-        android:layout_height="0dp">
+        android:layout_weight="3.1"
+        android:background="@color/back_color"
+        android:orientation="vertical"
+        android:weightSum="9">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_gravity="top"
             android:layout_weight="3"
             android:orientation="horizontal"
-            android:layout_gravity="top"
             android:weightSum="10">
+
             <Spinner
                 android:id="@+id/spinner_ampm"
-                android:layout_weight="5"
-                android:textSize="18dp"
-                android:layout_marginLeft="@dimen/density_ten"
-                android:text="Search"
-                android:layout_marginTop="5dp"
-                android:paddingLeft="@dimen/density_five"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="@dimen/density_twenty"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_weight="5"
                 android:background="@drawable/spinner_blue_border"
-                />
+                android:paddingLeft="@dimen/density_five"
+                android:text="Search"
+                android:textSize="18dp" />
+
             <Button
                 android:id="@+id/btn_startdatemilk"
-                android:layout_weight="5"
-                android:textSize="15dp"
-                android:text="start/date"
-                android:gravity="center"
-                android:layout_marginLeft="5dp"
-                android:onClick="startDate"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"/>
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="@dimen/ten"
+                android:layout_marginRight="10dp"
+                android:layout_weight="5"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:onClick="startDate"
+                android:text="start/date"
+                android:textSize="15dp" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
-            android:layout_height="0dp"
             android:layout_weight="3"
             android:orientation="horizontal"
             android:weightSum="10">
 
-            <ImageView
-                android:id="@+id/iv_share"
-                android:layout_weight="2.5"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/img"
-                />
-            <TextView
-                android:layout_weight="2.5"
-                android:layout_width="0dp"
-                android:layout_height="match_parent" />
+            <!--            <TextView-->
+            <!--                android:layout_weight="2.5"-->
+            <!--                android:layout_width="0dp"-->
+            <!--                android:layout_height="match_parent" />-->
 
             <Button
                 android:id="@+id/btn_searchmilk"
-                android:layout_weight="5"
-                android:textSize="18dp"
-                android:text="@string/lw_search"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="@dimen/density_ten"
+                android:layout_marginRight="10dp"
+                android:layout_weight="9"
+                android:background="@drawable/button_blue"
                 android:gravity="center"
+                android:text="@string/lw_search"
                 android:textAllCaps="false"
                 android:textColor="@color/app_background"
-                android:layout_marginTop="@dimen/density_five"
-                android:background="@drawable/button_blue"
-                android:layout_width="0dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_height="match_parent" />
+                android:textSize="18dp" />
+
+            <ImageView
+                android:id="@+id/iv_share"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="@dimen/twenty"
+                android:layout_marginTop="@dimen/ten"
+                android:background="@drawable/img" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
-            android:layout_height="0dp"
             android:layout_weight="3"
             android:orientation="horizontal"
             android:weightSum="10">
 
-
             <TextView
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-
-                android:layout_weight="2.5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="17dp"
-                android:text="From Code"/>
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="2.5"
+                android:text="From Code"
+                android:textSize="17dp" />
 
             <AutoCompleteTextView
-                android:layout_marginLeft="5dp"
                 android:id="@+id/aCFrom"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:inputType="number"
+                android:layout_height="40dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="2.5"
                 android:background="@drawable/spinner_blue_border"
                 android:ems="10"
-                android:layout_weight="2.5"/>
-
+                android:inputType="number" />
 
             <TextView
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-
-                android:layout_marginLeft="15dp"
-                android:layout_weight="2.5"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textSize="17dp"
-                android:text="To Code"/>
-
-            <AutoCompleteTextView
-                android:inputType="number"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_weight="2.5"
+                android:text="To Code"
+                android:textSize="17dp" />
+
+            <AutoCompleteTextView
                 android:id="@+id/aCTo"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="2.5"
                 android:background="@drawable/spinner_blue_border"
                 android:ems="10"
-                android:layout_weight="2.5"/>
+                android:inputType="number" />
 
         </LinearLayout>
     </LinearLayout>
 
-
-
-
-
-
     <LinearLayout
-        android:layout_weight=".7"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:layout_height="0dp"
+        android:layout_weight=".7"
         android:orientation="horizontal"
         android:weightSum="10">
-        <TextView
-            android:text="@string/serial_no"
-            android:layout_gravity="center"
-            android:gravity="left|center_vertical"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:textSize="15dp"
-            android:layout_height="45dp"
-            />
 
         <TextView
-            android:text="@string/code"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:gravity="left|center_vertical"
+            android:text="@string/serial_no"
+            android:textSize="15dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
             android:layout_weight="1.1"
-            android:layout_width="0dp"
-            android:textSize="15dp"
-            android:layout_height="45dp"
-            />
-        <TextView
-            android:text="@string/lw_weight"
-            android:layout_gravity="center"
             android:gravity="left|center_vertical"
+            android:text="@string/code"
+            android:textSize="15dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
             android:layout_weight="1.5"
-            android:layout_width="0dp"
-            android:textSize="15dp"
-            android:layout_height="45dp"
-            />
-        <TextView
-            android:text="@string/fat"
-            android:layout_gravity="center"
             android:gravity="left|center_vertical"
-            android:layout_weight="1.4"
+            android:text="@string/lw_weight"
+            android:textSize="15dp" />
+
+        <TextView
             android:layout_width="0dp"
-            android:textSize="15dp"
             android:layout_height="45dp"
-            />
+            android:layout_gravity="center"
+            android:layout_weight="1.4"
+            android:gravity="left|center_vertical"
+            android:text="@string/fat"
+            android:textSize="15dp" />
+
         <TextView
             android:id="@+id/lbl_snf_dr"
-            android:text="@string/snf"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
-            android:gravity="left|center_vertical"
             android:layout_weight="1.4"
-            android:layout_width="0dp"
-            android:textSize="15dp"
-            android:layout_height="45dp"
-            />
-        <TextView
-            android:text="@string/lw_rate"
-            android:layout_gravity="center"
             android:gravity="left|center_vertical"
+            android:text="@string/snf"
+            android:textSize="15dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
             android:layout_weight="1.7"
-            android:layout_width="0dp"
-            android:textSize="15dp"
-            android:layout_height="45dp"
-            />
-        <TextView
-            android:text="@string/lw_amout"
-            android:layout_gravity="center"
             android:gravity="left|center_vertical"
-            android:layout_weight="2"
+            android:text="@string/lw_rate"
+            android:textSize="15dp" />
+
+        <TextView
             android:layout_width="0dp"
-            android:textSize="15dp"
             android:layout_height="45dp"
-            />
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="left|center_vertical"
+            android:text="@string/lw_amout"
+            android:textSize="15dp" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_weight="6"
         android:layout_width="match_parent"
-        android:background="@drawable/rectangle"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:background="@drawable/rectangle">
 
         <TextView
             android:id="@+id/empty_saved_listmilk"
             android:layout_width="wrap_content"
             android:layout_height="140dp"
-            android:textSize="23sp"
-            android:paddingTop="40dp"
-            android:visibility="gone"
-            android:textColor="@color/colorPrimaryDark"
             android:gravity="center_horizontal"
+            android:paddingTop="40dp"
             android:text="No Information are Search yet
    Please Search your information"
-            />
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="23sp"
+            android:visibility="gone" />
+
         <ListView
             android:id="@+id/saved_listviewmilk"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
+
         </ListView>
+
     </LinearLayout>
+
     <LinearLayout
-        android:layout_weight=".8"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginRight="4dp"
-        android:layout_height="0dp"
+        android:paddingTop="@dimen/twelve"
+        android:background="#F3F0F0"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/ten"
+        android:weightSum="10">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/weight"
+            android:textColor="@color/grey_40"
+            android:textSize="@dimen/ts_thirteen"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:text="@string/fat"
+            android:textColor="@color/grey_40"
+            android:textSize="@dimen/ts_thirteen"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/Avg_snf"
+            android:textColor="@color/grey_40"
+            android:textSize="@dimen/ts_thirteen"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:text="@string/lw_amout"
+            android:textColor="@color/grey_40"
+            android:textSize="@dimen/ts_thirteen"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginBottom="@dimen/seven"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F3F0F0"
         android:orientation="horizontal"
         android:weightSum="10">
+
         <TextView
             android:id="@+id/daily_wight"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/lw_weight"
-            android:layout_weight="2.4"
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="10.00"
             android:textColor="@color/colorPrimaryDark"
-            android:layout_marginLeft="@dimen/density_five"/>
+            android:textSize="13dp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/daily_fat"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="15dp"
-            android:text="@string/fat"
-            android:layout_marginLeft="@dimen/density_five"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_weight="2.4"
             android:layout_width="0dp"
-            android:layout_height="45dp" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:text="11.60"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="13dp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/daily_snf"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="15dp"
-            android:text="@string/snf"
-            android:layout_marginLeft="@dimen/density_five"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_weight="2.4"
             android:layout_width="0dp"
-            android:layout_height="45dp" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="40.00"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="13dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/daily_amut"
-            android:textColor="@color/colorPrimaryDark"
-            android:layout_gravity="center"
-            android:gravity="right|center"
-            android:textSize="15dp"
-            android:text="@string/amount"
-            android:layout_marginLeft="@dimen/density_five"
-            android:layout_weight="2.6"
             android:layout_width="0dp"
-            android:layout_height="45dp" />
-
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:text="1000.00"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="13dp"
+            android:textStyle="bold" />
     </LinearLayout>
-
-
 </LinearLayout>

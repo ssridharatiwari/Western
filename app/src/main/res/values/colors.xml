@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#4155C5</color>
+    <color name="colorPrimaryDark">#4155C5</color>
     <color name="colorAccent">#FF4081</color>
     <color name="black">#000</color>
     <color name="action_bar_color">#27a7e0</color>
@@ -10,6 +10,7 @@
     <color name="gray">#888E89</color>
     <color name="mycolor">#FF6666</color>
     <color name="your_surface_color">#FFFFFF</color>
-
-
+    <color name="transparent">#00000000</color>
+    <color name="grey_40">#999999</color>
+    <color name="back_color">#F3F0F0</color>
 </resources>
