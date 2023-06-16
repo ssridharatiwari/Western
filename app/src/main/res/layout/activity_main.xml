@@ -1,23 +1,35 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".Activity.MainActivity">
+    tools:context=".activity.MainActivity">
 
     <include layout="@layout/toolbar" />
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/forty"
         android:layout_height="match_parent">
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tvstatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/twenty"
+            android:layout_marginTop="@dimen/twenty"
+            android:text="Status"
+            android:textColor="@color/black"
+            android:textSize="@dimen/ts_twenty"
+            android:textStyle="bold" />
 
         <FrameLayout
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
 
         <LinearLayout
             android:id="@+id/lay_drawer"
@@ -32,7 +44,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/twelve"
                 android:layout_height="@dimen/onetwenty"
-                android:src="@drawable/milkdropfromjug" />
+                android:src="@drawable/logo" />
 
             <ListView
                 android:id="@+id/left_drawer"
@@ -44,4 +56,5 @@
                 android:paddingTop="@dimen/fifteen" />
         </LinearLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
-</LinearLayout>
+
+</RelativeLayout>

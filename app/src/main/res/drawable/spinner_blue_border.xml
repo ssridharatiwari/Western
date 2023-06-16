@@ -6,10 +6,10 @@
             android:shape="rectangle">
             <solid android:color="#FFFFFF" />
             <corners
-                android:bottomLeftRadius="@dimen/twenty"
-                android:bottomRightRadius="@dimen/twenty"
-                android:topLeftRadius="@dimen/twenty"
-                android:topRightRadius="@dimen/twenty" />
+                android:bottomLeftRadius="@dimen/five"
+                android:bottomRightRadius="@dimen/five"
+                android:topLeftRadius="@dimen/five"
+                android:topRightRadius="@dimen/five" />
             <stroke
                 android:width="1dip"
                 android:color="@color/grey_40" />
@@ -18,8 +18,8 @@
     <item>
         <bitmap
             android:gravity="bottom|right"
-            android:tint="@color/grey_40"
-            android:src="@drawable/arrow_icon" />
+            android:src="@drawable/arrow_icon"
+            android:tint="@color/grey_40" />
         <padding
             android:bottom="25dp"
             android:left="0dp"

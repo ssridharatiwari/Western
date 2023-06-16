@@ -79,7 +79,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/lll"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:weightSum="2.2">
@@ -242,15 +241,15 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <RadioButton
-                        android:id="@+id/radioIncreasing"
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/radioplus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
                         android:text="Plus +" />
 
-                    <RadioButton
-                        android:id="@+id/radioDecreasing"
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/radiominus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"

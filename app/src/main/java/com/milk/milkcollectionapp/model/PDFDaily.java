@@ -11,7 +11,7 @@ import android.os.Environment;
 
 import androidx.annotation.RequiresApi;
 
-import com.milk.milkcollectionapp.Activity.MainActivity;
+import com.milk.milkcollectionapp.activity.MainActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
  * Created by Er. Arjun on 06-03-2016.
  */
 public class PDFDaily {
-
     public ArrayList<SingleEntry> reportList = new ArrayList<>();
     public String date  = "";
     public String shift  = "";

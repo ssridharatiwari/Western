@@ -96,4 +96,6 @@
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="kgfat_rate">KG FAT KG SNF(SRS)</string>
 
+    <string name="permission_request">The permission is required to run this app</string>>
+    <string name="permission_canceled">The permission is required to run this app</string>>
 </resources>

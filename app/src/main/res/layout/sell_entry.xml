@@ -110,7 +110,6 @@
         android:layout_height="0dp"
         android:weightSum="2">
         <TextView
-            android:id="@+id/s_snf_home"
             android:text="@string/snf"
             android:gravity="center_vertical"
             android:layout_weight="1"

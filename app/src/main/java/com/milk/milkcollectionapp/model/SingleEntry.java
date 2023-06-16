@@ -2,7 +2,7 @@ package com.milk.milkcollectionapp.model;
 
 import android.util.Log;
 
-import com.milk.milkcollectionapp.Activity.MainActivity;
+import com.milk.milkcollectionapp.activity.MainActivity;
 
 import java.io.IOException;
 

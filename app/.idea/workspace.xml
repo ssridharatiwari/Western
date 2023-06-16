@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ccd676d0-9cea-4395-bc47-9c40f083ee2d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/blutoothcommunication/BluetoothGattAttributes.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/blutoothcommunication/BluetoothLeService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/blutoothcommunication/DeviceInfoManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/blutoothcommunication/SimplePreference.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/app_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/splash.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/milkcollectionchild/res/values-en/strings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/milkcollectionchild/res/values-hi/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/app/western.app.androidTest.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/app/western.app.androidTest.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/app/western.app.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/app/western.app.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules/app/western.app.unitTest.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules/app/western.app.unitTest.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Activity/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Activity/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/FragmentCMPaymentReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/FragmentCMPaymentReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/FragmentPaymentReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/FragmentPaymentReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_CellReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_CellReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_DailyReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_DailyReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_SingleReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_SingleReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_SocietyReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_SocietyReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_home.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/Fragment_home.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/ReportLossProfit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/Fragment/ReportLossProfit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/ShowCustomToast.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/ShowCustomToast.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/apicalling/WebService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/apicalling/WebService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/application/AppApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/application/AppApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/helper/BluetoothPrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/milk/milkcollectionapp/helper/BluetoothPrinter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/milkdropfromjug.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_splash.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_splash.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values-en/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values-en/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values-hi/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values-hi/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/milkcollection/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/milkcollection/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/milkcollectionchild/res/values/strings.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="2QAoVhWa5wlIo7s2d1ltcNbBWrg" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "last_opened_file_path": "/Users/macbook/StudioProjects/western/app"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ccd676d0-9cea-4395-bc47-9c40f083ee2d" name="Changes" comment="" />
+      <created>1684805773152</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1684805773152</updated>
+    </task>
+    <servers />
+  </component>
+</project>

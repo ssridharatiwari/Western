@@ -6,7 +6,7 @@
     android:background="@color/app_background"
     android:orientation="vertical"
     android:weightSum="10"
-    tools:context="com.milk.milkcollectionapp.Activity.PinActivity">
+    tools:context="com.milk.milkcollectionapp.activity.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,8 +52,7 @@
         android:background="@drawable/rectangle"
         android:padding="@dimen/density_fifteen"
         android:visibility="gone"
-        android:weightSum="0">
-    </LinearLayout>
+        android:weightSum="0"></LinearLayout>
 
 
     <EditText
@@ -102,62 +101,42 @@
         android:textColor="@android:color/black"
         android:textSize="20sp" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/btnSend"
         android:layout_width="230dp"
-        android:layout_height="30dp"
+        android:layout_height="@dimen/forty"
         android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/density_twenty"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="@dimen/density_twenty"
-        android:layout_weight="0.38"
-        android:background="@drawable/button_pink"
+        android:layout_marginTop="@dimen/forty"
+        android:background="@drawable/button_blue"
         android:gravity="center"
-        android:inputType="textNoSuggestions"
         android:text="Send Detail"
         android:textColor="#fff"
-        android:textSize="23sp" />
+        android:textSize="@dimen/ts_twenty" />
 
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/btnVerify"
-        android:layout_width="222dp"
-        android:layout_height="30dp"
+        android:layout_width="230dp"
+        android:layout_height="@dimen/forty"
         android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/density_twenty"
         android:layout_marginTop="20dp"
-        android:layout_marginRight="@dimen/density_twenty"
-        android:layout_weight="0.49"
-        android:background="@drawable/button_pink"
+        android:background="@drawable/button_blue"
         android:gravity="center"
-        android:inputType="textNoSuggestions"
         android:text="Verify Detail"
         android:textColor="#fff"
-        android:textSize="23sp"
-        android:visibility="visible" />
-
-
-    <LinearLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/black">
-
-    </LinearLayout>
-
+        android:textSize="@dimen/ts_twenty" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="0dp"
         android:layout_weight="2">
 
-
         <TextView
+            android:id="@+id/tvCall"
             android:layout_width="match_parent"
-            android:layout_height="76dp"
+            android:layout_height="@dimen/sixty"
             android:layout_gravity="center"
             android:layout_marginBottom="0dp"
             android:gravity="center"
@@ -165,24 +144,19 @@
             android:textColor="@color/action_bar_color"
             android:textSize="20dp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
     <TextView
         android:id="@+id/btnOldCustomer"
         android:layout_width="230dp"
-        android:layout_height="30dp"
+        android:layout_height="@dimen/forty"
         android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/density_twenty"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="@dimen/density_twenty"
-        android:layout_weight="0.38"
-        android:background="@drawable/button_pink"
+        android:layout_marginTop="@dimen/twenty"
+        android:background="@drawable/button_blue"
         android:gravity="center"
-        android:inputType="textNoSuggestions"
         android:text="Old Customer"
         android:textColor="#fff"
-        android:textSize="20sp" />
+        android:textSize="@dimen/ts_twenty" />
 
 </LinearLayout>
 

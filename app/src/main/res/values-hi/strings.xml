@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [<!ENTITY appname "Western Milk Company"><!ENTITY package "com.milk.milkcollectionapp">]>
+<!DOCTYPE resources [<!ENTITY appname "Western Electronics"><!ENTITY package "com.milk.milkcollectionapp">]>
 <resources>
+    <string name="app_name" translatable="false">&appname;</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="verify_by_mobile_phone">Verify By Pin</string>
-    <string name="date_button_set">Set Date</string>
     <string name="western_set">Western Milk Collection</string>
     <string name="payment_report_text">भुगतान रिपोर्ट</string>
     <string name="home">दूध संग्रह</string>
@@ -14,24 +13,17 @@
     <string name="setting">मुख्य सेटिंग</string>
     <string name="sales">सैल</string>
     <string name="total_amount">कुल राशि</string>
-    <string name="morning">सुबह</string>
-    <string name="evening">शाम</string>
     <string name="code">कोड</string>
     <string name="weight">वजन</string>
     <string name="fat">फैट</string>
     <string name="snf">सनफ</string>
     <string name="save">सेव</string>
-    <string name="print">प्रिन्ट</string>
     <string name="update">अपडेट</string>
     <string name="mobile">मोबाइल</string>
     <string name="date">तारीख</string>
     <string name="amount">रुपए</string>
     <string name="serial_no">अनु क्र.</string>
-    <string name="save_print_sms">सेव प्रिन्ट मेसज</string>
-    <string name="no_entry_text">आज की कोई जमा नहीं है</string>
-    <string name="print_save">Print Save</string>
     <string name="select_date">तारीख़ चुनें</string>
-    <string name="sms">संदेश</string>
     <string name="enter_code">कोड लिखें</string>
     <string name="enter_weight">वजन लिखें</string>
     <string name="enter_fat">फैट लिखें</string>
@@ -44,13 +36,11 @@
     <string name="mas_add_rate">दर जोड़ें</string>
     <string name="mas_show_rt">दर दिखाएं</string>
     <string name="mas_export">बैकअप</string>
-    <string name="mas_backup">बैकअप</string>
     <string name="mas_import">सूची</string>
     <string name="mas_mail">मेल भेजे</string>
     <string name="mas_rate_chart">रेट चार्ट</string>
     <string name="rep_mem_lzr">सदस्य पासबूक</string>
     <string name="rep_daily_report">खरीद रिपोर्ट</string>
-    <string name="rep_pay_rceport">भुगतान रिपोर्ट</string>
     <string name="rep_socity_report">समिति रिपोर्ट</string>
     <string name="rep_lossprofit_report">लाभ-हानि रिपोर्ट</string>
     <string name="rep_sell_report">Sales रिपोर्ट</string>
@@ -58,14 +48,12 @@
     <string name="mem_enter_name">नाम लिखें</string>
     <string name="mem_enter_phone">मोबाइल लिखें</string>
     <string name="rep_pay_report">Payment Report</string>
-    <string name="posrtIP">192.168.4.1</string>
     <string name="lw_weight">वेट</string>
     <string name="lw_rate"> रेट</string>
     <string name="lw_amout">रुपए</string>
     <string name="lw_search">लिस्ट</string>
     <string name="lw_sift">सिफ्ट</string>
     <string name="lw_name">नाम</string>
-    <string name="lw_to">से</string>
     <string name="lw_rate_detail">रेट सूची</string>
     <string name="rt_from_fat">फैट से</string>
     <string name="rt_to_fat">फैट तक</string>
@@ -84,4 +72,14 @@
     <string name="Avg_snf" translatable="false">Snf</string>
     <string name="avg_fat" translatable="false">Avg Fat</string>
     <string name="qty" translatable="false">Qty</string>
+
+    <string name="unknown_service">unknown service</string>
+    <string name="unknown_characteristic">unknown_characteristic</string>
+    <string name="permission_request">The permission is required to run this app</string>
+    <string name="ble_canceldfind">Canceled searching</string>
+    <string name="ble_not_find">No devices found</string>
+    <string name="ble_canceled">You need to turn on the bluetooth service</string>
+    <string name="ble_selected">You have set up a Bluetooth connection device</string>
+    <string name="str_datana">NA</string>
+    <string name="str_defaultdata">--</string>
 </resources>

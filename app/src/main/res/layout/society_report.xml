@@ -14,8 +14,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/fifteen"
+            android:layout_marginRight="@dimen/fifteen"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/density_ten"
+            android:paddingBottom="@dimen/twelve"
+            android:background="#F3F0F0"
             android:orientation="vertical">
 
             <LinearLayout
@@ -29,7 +33,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="4"
                     android:background="@color/transparent"
-                    android:gravity="center"
+                    android:gravity="bottom"
                     android:onClick="startDate"
                     android:text="Form Date"
                     android:textSize="@dimen/ts_fifteen" />
@@ -39,17 +43,15 @@
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
-                    android:text="To"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/ts_twenty"
-                    android:textStyle="italic" />
+                    android:textSize="@dimen/ts_twenty" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
                     android:background="@color/transparent"
-                    android:gravity="center"
+                    android:gravity="bottom"
                     android:onClick="endDate"
                     android:text="To Date"
                     android:textSize="@dimen/ts_fifteen" />
@@ -57,16 +59,18 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/forty"
                 android:orientation="horizontal"
                 android:weightSum="10">
 
                 <TextView
+                    android:background="@drawable/spinner_blue_border"
                     android:id="@+id/btn_startdate"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
-                    android:gravity="center_horizontal"
+                    android:paddingLeft="@dimen/seven"
+                    android:gravity="center_vertical"
                     android:text="15/05/2023"
                     android:textColor="@color/grey_40"
                     android:textSize="@dimen/ts_forteen"
@@ -82,11 +86,13 @@
                     android:textStyle="italic" />
 
                 <TextView
+                    android:background="@drawable/spinner_blue_border"
                     android:id="@+id/btn_enddate"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
-                    android:gravity="center_horizontal"
+                    android:paddingLeft="@dimen/seven"
+                    android:gravity="center_vertical"
                     android:text="16/05/2023"
                     android:textColor="@color/grey_40"
                     android:textSize="@dimen/ts_forteen"
@@ -96,8 +102,9 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/thirty"
-                android:layout_marginRight="@dimen/thirty"
+                android:layout_marginTop="@dimen/twelve"
+                android:layout_marginLeft="@dimen/fifteen"
+                android:layout_marginRight="@dimen/fifteen"
                 android:orientation="horizontal"
                 android:weightSum="10">
 
@@ -122,7 +129,6 @@
                     android:background="@drawable/img" />
             </RelativeLayout>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -194,12 +200,11 @@
 
             <TextView
                 android:id="@+id/empty_saved_list"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="140dp"
                 android:gravity="center_horizontal"
                 android:paddingTop="40dp"
-                android:text="No Information are Search yet
-   Please Search your information"
+                android:text="@string/str_datana"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="23sp"
                 android:visibility="gone" />
@@ -222,31 +227,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
             android:background="#F3F0F0"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/ten"
             android:paddingTop="@dimen/twelve"
-            android:weightSum="10">
+            android:weightSum="2">
+
 
             <TextView
-                android:id="@+id/search_Avg_fat"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="@string/avg_fat"
-                android:textColor="@color/grey_40"
-                android:textSize="@dimen/ts_thirteen"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/search_Qty"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/qty"
                 android:textColor="@color/grey_40"
@@ -254,23 +245,10 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/search_Avg_snf"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="@string/Avg_snf"
-                android:textColor="@color/grey_40"
-                android:textSize="@dimen/ts_thirteen"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/search_amount"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/lw_amout"
                 android:textColor="@color/grey_40"
@@ -284,49 +262,28 @@
             android:layout_marginBottom="@dimen/seven"
             android:background="#F3F0F0"
             android:orientation="horizontal"
-            android:weightSum="10">
+            android:weightSum="2">
 
             <TextView
+                android:id="@+id/search_weight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/ten"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:text="10.00"
+                android:text="@string/str_defaultdata"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="13dp"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/search_amount"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:text="11.60"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="13dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="40.00"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="13dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="3"
-                android:gravity="center"
-                android:text="1000.00"
+                android:text="@string/str_defaultdata"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="13dp"
                 android:textStyle="bold" />

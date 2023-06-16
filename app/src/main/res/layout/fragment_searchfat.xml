@@ -1,48 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/rectangle"
-        android:layout_height="wrap_content">
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:background="@color/action_bar_color"
-            android:layout_height="40dp">
+            android:layout_height="40dp"
+            android:background="@color/action_bar_color">
+
             <TextView
-                android:text="@string/lw_rate_detail"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:textColor="@color/app_background"
                 android:layout_width="match_parent"
-                android:layout_height="45dp" />
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:text="@string/lw_rate_detail"
+                android:textColor="@color/app_background"
+                android:textSize="18sp" />
         </LinearLayout>
+
         <ListView
             android:id="@+id/saved_listview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </ListView>
+            android:layout_height="match_parent"/>
     </LinearLayout>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        >
+        android:layout_gravity="center">
+
         <TextView
             android:id="@+id/empty_saved_list"
             android:layout_width="wrap_content"
             android:layout_height="120dp"
-            android:textSize="23sp"
-            android:paddingTop="40dp"
-            android:visibility="gone"
-            android:textColor="@color/colorPrimaryDark"
             android:gravity="center_horizontal"
-            android:text="No Information are saved yet
-                             Please create your information"
-            />
+            android:paddingTop="40dp"
+            android:text="Rate Not Added"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="23sp"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </LinearLayout>

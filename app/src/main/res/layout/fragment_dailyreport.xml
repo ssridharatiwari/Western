@@ -1,368 +1,371 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="10">
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/line1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/density_five"
-        android:layout_weight="3.1"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:background="@color/back_color"
-        android:orientation="vertical"
-        android:weightSum="9">
+        android:layout_above="@+id/lay_footer"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="top"
-            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/twelve"
+            android:layout_above="@+id/lay_footer"
+            android:layout_marginLeft="@dimen/fifteen"
+            android:layout_marginTop="@dimen/density_ten"
+            android:layout_marginRight="@dimen/fifteen"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/forty"
+                android:layout_gravity="top"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <Spinner
+                    android:id="@+id/spinner_ampm"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@drawable/spinner_blue_border"
+                    android:paddingLeft="@dimen/density_five"
+                    android:text="Search" />
+
+                <Button
+                    android:layout_marginLeft="@dimen/twelve"
+                    android:id="@+id/btn_startdatemilk"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@drawable/spinner_blue_border"
+                    android:gravity="center"
+                    android:onClick="startDate"
+                    android:text="start/date"
+                    android:textSize="15dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/five"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="From Code"
+                        android:textSize="@dimen/ts_fifteen" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/aCFrom"
+                        android:layout_width="@dimen/hundred"
+                        android:layout_height="@dimen/forty"
+                        android:background="@drawable/blue_border"
+                        android:ems="10"
+                        android:inputType="number"
+                        android:paddingLeft="@dimen/seven" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20dp"
+                    android:textStyle="italic" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="To Code"
+                        android:textSize="@dimen/ts_fifteen" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/aCTo"
+                        android:layout_width="@dimen/hundred"
+                        android:layout_height="@dimen/forty"
+                        android:background="@drawable/blue_border"
+                        android:inputType="number"
+                        android:paddingLeft="@dimen/seven" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/density_ten"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <Button
+                    android:id="@+id/btn_searchmilk"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="9"
+                    android:background="@drawable/button_blue"
+                    android:gravity="center"
+                    android:text="@string/lw_search"
+                    android:textAllCaps="false"
+                    android:textColor="@color/app_background"
+                    android:textSize="18dp" />
+
+                <ImageView
+                    android:id="@+id/iv_share"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/twenty"
+                    android:background="@drawable/img" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:paddingLeft="@dimen/five"
+            android:background="@drawable/rectangle"
             android:orientation="horizontal"
             android:weightSum="10">
 
-            <Spinner
-                android:id="@+id/spinner_ampm"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="@dimen/density_twenty"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="5"
-                android:background="@drawable/spinner_blue_border"
-                android:paddingLeft="@dimen/density_five"
-                android:text="Search"
-                android:textSize="18dp" />
 
-            <Button
-                android:id="@+id/btn_startdatemilk"
+            <TextView
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="@dimen/ten"
-                android:layout_marginRight="10dp"
-                android:layout_weight="5"
-                android:background="@color/transparent"
-                android:gravity="center"
-                android:onClick="startDate"
-                android:text="start/date"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="left|center_vertical"
+                android:text="@string/serial_no"
                 android:textSize="15dp" />
 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_weight="1.1"
+                android:gravity="left|center_vertical"
+                android:text="@string/code"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_weight="1.5"
+                android:gravity="left|center_vertical"
+                android:text="@string/lw_weight"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_weight="1.4"
+                android:gravity="left|center_vertical"
+                android:text="@string/fat"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/lbl_snf_dr"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_weight="1.4"
+                android:gravity="left|center_vertical"
+                android:text="@string/snf"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_weight="1.7"
+                android:gravity="left|center_vertical"
+                android:text="@string/lw_rate"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:gravity="left|center_vertical"
+                android:text="@string/lw_amout"
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="4dp"
+            android:layout_weight="6"
+            android:background="@drawable/rectangle">
+
+            <TextView
+                android:id="@+id/empty_saved_listmilk"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:gravity="center_horizontal"
+                android:paddingTop="40dp"
+                android:text="@string/str_datana"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="23sp"
+                android:visibility="gone" />
+
+            <ListView
+                android:id="@+id/saved_listviewmilk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lay_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginRight="4dp"
-            android:layout_weight="3"
+            android:background="#F3F0F0"
             android:orientation="horizontal"
+            android:paddingStart="@dimen/ten"
+            android:paddingTop="@dimen/twelve"
             android:weightSum="10">
 
-            <!--            <TextView-->
-            <!--                android:layout_weight="2.5"-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="match_parent" />-->
-
-            <Button
-                android:id="@+id/btn_searchmilk"
+            <TextView
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="@dimen/density_ten"
-                android:layout_marginRight="10dp"
-                android:layout_weight="9"
-                android:background="@drawable/button_blue"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="2"
                 android:gravity="center"
-                android:text="@string/lw_search"
-                android:textAllCaps="false"
-                android:textColor="@color/app_background"
-                android:textSize="18dp" />
+                android:text="@string/weight"
+                android:textColor="@color/grey_40"
+                android:textSize="@dimen/ts_thirteen"
+                android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/iv_share"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="@dimen/twenty"
-                android:layout_marginTop="@dimen/ten"
-                android:background="@drawable/img" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="@string/fat"
+                android:textColor="@color/grey_40"
+                android:textSize="@dimen/ts_thirteen"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/Avg_snf"
+                android:textColor="@color/grey_40"
+                android:textSize="@dimen/ts_thirteen"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="@string/lw_amout"
+                android:textColor="@color/grey_40"
+                android:textSize="@dimen/ts_thirteen"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/seven"
+            android:background="#F3F0F0"
             android:orientation="horizontal"
             android:weightSum="10">
 
             <TextView
+                android:id="@+id/daily_wight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="2.5"
-                android:text="From Code"
-                android:textSize="17dp" />
-
-            <AutoCompleteTextView
-                android:id="@+id/aCFrom"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="2.5"
-                android:background="@drawable/spinner_blue_border"
-                android:ems="10"
-                android:inputType="number" />
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/ten"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/str_defaultdata"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="13dp"
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/daily_fat"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="2.5"
-                android:text="To Code"
-                android:textSize="17dp" />
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="@string/str_defaultdata"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="13dp"
+                android:textStyle="bold" />
 
-            <AutoCompleteTextView
-                android:id="@+id/aCTo"
+            <TextView
+                android:id="@+id/daily_snf"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="2.5"
-                android:background="@drawable/spinner_blue_border"
-                android:ems="10"
-                android:inputType="number" />
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/str_defaultdata"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="13dp"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/daily_amut"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="@string/str_defaultdata"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="13dp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_weight=".7"
-        android:orientation="horizontal"
-        android:weightSum="10">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="left|center_vertical"
-            android:text="@string/serial_no"
-            android:textSize="15dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_weight="1.1"
-            android:gravity="left|center_vertical"
-            android:text="@string/code"
-            android:textSize="15dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_weight="1.5"
-            android:gravity="left|center_vertical"
-            android:text="@string/lw_weight"
-            android:textSize="15dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_weight="1.4"
-            android:gravity="left|center_vertical"
-            android:text="@string/fat"
-            android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/lbl_snf_dr"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_weight="1.4"
-            android:gravity="left|center_vertical"
-            android:text="@string/snf"
-            android:textSize="15dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_weight="1.7"
-            android:gravity="left|center_vertical"
-            android:text="@string/lw_rate"
-            android:textSize="15dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_weight="2"
-            android:gravity="left|center_vertical"
-            android:text="@string/lw_amout"
-            android:textSize="15dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
-        android:background="@drawable/rectangle">
-
-        <TextView
-            android:id="@+id/empty_saved_listmilk"
-            android:layout_width="wrap_content"
-            android:layout_height="140dp"
-            android:gravity="center_horizontal"
-            android:paddingTop="40dp"
-            android:text="No Information are Search yet
-   Please Search your information"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="23sp"
-            android:visibility="gone" />
-
-        <ListView
-            android:id="@+id/saved_listviewmilk"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp">
-
-        </ListView>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="4dp"
-        android:paddingTop="@dimen/twelve"
-        android:background="#F3F0F0"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/ten"
-        android:weightSum="10">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="@string/weight"
-            android:textColor="@color/grey_40"
-            android:textSize="@dimen/ts_thirteen"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:text="@string/fat"
-            android:textColor="@color/grey_40"
-            android:textSize="@dimen/ts_thirteen"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="@string/Avg_snf"
-            android:textColor="@color/grey_40"
-            android:textSize="@dimen/ts_thirteen"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:text="@string/lw_amout"
-            android:textColor="@color/grey_40"
-            android:textSize="@dimen/ts_thirteen"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginBottom="@dimen/seven"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#F3F0F0"
-        android:orientation="horizontal"
-        android:weightSum="10">
-
-        <TextView
-            android:id="@+id/daily_wight"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/ten"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="10.00"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="13dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/daily_fat"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:text="11.60"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="13dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/daily_snf"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="40.00"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="13dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/daily_amut"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:text="1000.00"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="13dp"
-            android:textStyle="bold" />
-    </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

@@ -10,7 +10,7 @@ import android.os.Build;
 import android.os.Environment;
 import androidx.annotation.RequiresApi;
 
-import com.milk.milkcollectionapp.Activity.MainActivity;
+import com.milk.milkcollectionapp.activity.MainActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;

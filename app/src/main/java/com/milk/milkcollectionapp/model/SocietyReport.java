@@ -16,9 +16,6 @@ public class SocietyReport {
         this.shift = sift;
     }
 
-
-
-
     public String getShift() { return shift;}
 
     public String getCount() { return count;}

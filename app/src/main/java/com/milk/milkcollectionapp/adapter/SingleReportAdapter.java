@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.milk.milkcollectionapp.Activity.MainActivity;
+import com.milk.milkcollectionapp.activity.MainActivity;
 import com.milk.milkcollectionapp.R;
 import com.milk.milkcollectionapp.model.SingleEntry;
 

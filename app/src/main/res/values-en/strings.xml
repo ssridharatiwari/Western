@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [<!ENTITY appname "Western Milk Company"><!ENTITY package "com.milk.milkcollectionapp">]>
+<!DOCTYPE resources [<!ENTITY appname "Western Electronics"><!ENTITY package "com.milk.milkcollectionapp">]>
 <resources>
     <string name="app_name" translatable="false">&appname;</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="verify_by_mobile_phone">Verify By Pin</string>
-    <string name="date_button_set">Set Date</string>
     <string name="western_set">Western Milk Collection</string>
     <string name="payment_report_text">Payment Report</string>
     <string name="home">Home</string>
@@ -14,24 +12,17 @@
     <string name="setting">Setting</string>
     <string name="sales">Sales</string>
     <string name="planguage">Language</string>
-    <string name="morning">morning</string>
-    <string name="evening">evening</string>
     <string name="code">Code</string>
     <string name="weight">Weight</string>
     <string name="fat">Fat</string>
     <string name="snf">Snf</string>
     <string name="save">Save</string>
-    <string name="print">Print</string>
     <string name="update">Update</string>
     <string name="mobile">Mobile</string>
     <string name="date">Date</string>
     <string name="amount">Amount</string>
     <string name="serial_no">SN</string>
-    <string name="save_print_sms">save print sms</string>
-    <string name="no_entry_text">No Entry Today</string>
-    <string name="print_save">Print Save</string>
     <string name="select_date">Select Date</string>
-    <string name="sms">SMS</string>
     <string name="enter_code">Enter Code</string>
     <string name="enter_weight">Enter Weight</string>
     <string name="enter_fat">Enter Fat</string>
@@ -48,7 +39,6 @@
     <string name="mas_import">Import</string>
     <string name="mas_mail">Mail</string>
     <string name="mas_rate_chart">Rate Chart</string>
-    <string name="mas_backup">Data send to Sever</string>
     <string name="rep_mem_lzr">Member Ladger</string>
     <string name="rep_daily_report">Daily Report</string>
     <string name="rep_pay_report">Payment Report</string>
@@ -64,9 +54,7 @@
     <string name="lw_search">Search</string>
     <string name="lw_sift">sift</string>
     <string name="lw_name">Name</string>
-    <string name="lw_to">To</string>
     <string name="lw_rate_detail">Rate List</string>
-    <string name="rep_pay_rceport">भुगतान रिपोर्ट</string>
     <string name="rt_from_fat">from fat</string>
     <string name="rt_to_fat">to fat</string>
     <string name="rt_from_snf">from snf</string>
@@ -75,15 +63,24 @@
     <string name="rt_kg_snf_rt">kg snf rate</string>
     <string name="rt_comition">Comition</string>
     <string name="rt_comition_type">Comition Type:</string>
-    <string name="posrtIP">192.168.4.1</string>
     <string name="change_rate_method">Change Rate Method</string>
     <string name="change_print_method">Change Print Method</string>
     <string name="change_society_name">Change Society Name</string>
     <string name="change_comultive">Change Society Name</string>
     <string name="change_default">फ़िक्स SNF</string>
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="kgfat_rate">KG FAT KG SNF(SRS)</string>
     <string name="Avg_snf" translatable="false">Snf</string>
     <string name="avg_fat" translatable="false">Avg Fat</string>
     <string name="qty" translatable="false">Qty</string>
+
+    <string name="unknown_service">unknown service</string>
+    <string name="unknown_characteristic">unknown_characteristic</string>
+    <string name="permission_request">The permission is required to run this app</string>
+
+    <string name="ble_canceldfind">Canceled searching</string>
+    <string name="ble_not_find">No devices found</string>
+    <string name="ble_canceled">You need to turn on the bluetooth service</string>
+    <string name="ble_selected">You have set up a Bluetooth connection device</string>
+    <string name="str_datana">NA</string>
+    <string name="str_defaultdata">--</string>
 </resources>
